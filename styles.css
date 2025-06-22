@@ -12,15 +12,17 @@ body{
 header{
     background-color: #480E0E;
     width: 100%;
-    height: 7%;
+    height: 10%;
 }
 
 /*NAV STUFF V*/
 header nav {
     display: flex;
     flex-direction: row;
+    align-items: center;
     padding: 0.5rem;
     justify-content: space-between;
+    height: 100%;
 }
 
 .logo{
@@ -28,10 +30,13 @@ header nav {
     width: fit-content;
 }
 nav ul{
+    align-items: center;
     display: flex;
     flex-direction: row;
     list-style-type: none;
     gap: 1rem;
+    padding: 0;
+    margin: 0;
 }
 
 nav section{
@@ -73,7 +78,44 @@ nav section{
 }
 
 nav aside{
+    display: flex;
+    align-items: center;
+    justify-items: center;
     margin-left: 0.5rem;
+    height: 100%;
+    width: auto;
 }
 
 /*MAIN STUFF V*/
+
+main{
+    display: flex;
+    height: 90%;
+    width: 100%;
+    flex-direction: row;
+}
+
+.container-fluid{
+    width: 100%;
+    height: 100%;
+    padding: 0;
+}
+
+.top {
+    background-color: #a44;
+    color: white;
+    height: 60vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.bottom-left, .bottom-right {
+    background-color: #444;
+    border: white;
+    height: 30vh;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
