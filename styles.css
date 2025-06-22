@@ -1,15 +1,20 @@
 *{
     padding: 0;
     margin: 0;
-    font-size: 24px;
     font-family: "Bayon", sans-serif;
 
+}
+nav a, main a {
+  text-decoration: none;
+  color: inherit;
+  font-weight: inherit;
 }
 body{
     height: 100vh;
     width: 100vw;
 }
 header{
+    color: white;
     background-color: #480E0E;
     width: 100%;
     height: 10%;
@@ -26,8 +31,8 @@ header nav {
 }
 
 .logo{
-    height: 5vh;
-    width: fit-content;
+    height: auto;
+    width: clamp(7rem, 10vw, 10rem);
 }
 nav ul{
     align-items: center;
@@ -43,11 +48,14 @@ nav section{
     margin-right: 2rem;
 }
 
-.TopButtons{
+.TopButtons, .TopButtons a{
+    font-size: clamp(1rem, 1.5vw, 1.5rem);
     display: flex;
     align-items: center;
     gap: 0.5rem;
-    color: white;
+    color: #D59F0A;
+    -webkit-text-stroke: 1px #480E0E;
+    text-shadow: 0px 3px 0px black;
     place-content: center; /*setea align items y justify items a la vez*/
     margin: 0;
     position: relative;
@@ -56,8 +64,8 @@ nav section{
 }
 
 .TopButtons img {
-  width: 20px;
-  height: 20px;
+  width: clamp(1rem, 1.5vw, 1.5rem);
+  height: 3vh;
 }
 
 .TopButtons::before {
@@ -89,10 +97,17 @@ nav aside{
 /*MAIN STUFF V*/
 
 main{
+    background-image: url(Images/background.png);
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    font-size: 24px;
     display: flex;
-    height: 90%;
-    width: 100%;
+    height: 90vh;
+    width: 100vw;
     flex-direction: row;
+    justify-content: center;
+    align-items: center;
 }
 
 .container-fluid{
@@ -112,10 +127,18 @@ main{
 
 .bottom-left, .bottom-right {
     background-color: #444;
-    border: white;
+    border: 1px solid white;
     height: 30vh;
     color: white;
     display: flex;
     align-items: center;
     justify-content: center;
+}
+
+main button{
+    background-color: #A44141;
+    padding-left: 1rem;
+    padding-right: 1rem;
+    border-radius: 5px;
+    
 }
