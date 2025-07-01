@@ -9,6 +9,8 @@ const background = document.querySelector(".background"); // landing
 const playBtn = document.querySelector(".play");//landing;
 
 const leaveBtn = document.getElementById("LEAVE");
+const statsBtn = document.getElementById("STATS");
+const centerDiv = document.querySelector(".center-section");
 
 if(playBtn){
     playBtn.addEventListener("click", () =>{
@@ -20,8 +22,14 @@ if(playBtn){
 
 if(leaveBtn){
     leaveBtn.addEventListener("click", () =>{
-        console.log("working")
         window.open("../LandingPage/landing.html", "_self");
+    });
+}
+
+if(statsBtn){
+    centerDiv.classList.toggle("hidden");
+    statsBtn.addEventListener("click", () =>{
+        centerDiv.classList.toggle("hidden");
     });
 }
 
