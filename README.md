@@ -1,2 +1,0 @@
-# Proyect-GBloom
-Testing

@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
+</head>
+<body>
+  <label for="options">Choose an option:</label>
+<input list="optionList" id="options" name="options" />
+
+<datalist id="optionList">
+  <option value="Option 1">
+  <option value="Option 2">
+  <option value="Option 3">
+</datalist>
+<div class="dropdown">
+  <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+    Select an option
+  </button>
+  <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+    <li><a class="dropdown-item" href="#">Option 1</a></li>
+    <li><a class="dropdown-item" href="#">Option 2</a></li>
+    <li><a class="dropdown-item" href="#">Option 3</a></li>
+  </ul>
+</div>
+
+  <style>
+    *{
+      margin: 0;
+      padding: 0;
+    }
+    body{
+      height: 100vh;
+      width: 100vw;
+      font-family: "Bayon", sans-serif;
+      font-weight: 800;
+      background-color: antiquewhite;
+
+    }
+    .circle-button {
+    align-items: center;
+    appearance: none;
+    box-shadow: rgba(45, 35, 66, 0.4) 0 2px 4px,rgba(45, 35, 66, 0.3) 0 7px 13px -3px,#b18409 0 -3px 0 inset;
+    box-sizing: border-box;
+    display: inline-flex;
+    justify-content: center;
+    line-height: 1;
+    list-style: none;
+    overflow: hidden;
+    padding-left: 16px;
+    padding-right: 16px;
+
+    transition: box-shadow .15s,transform .15s;
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: manipulation;
+    white-space: nowrap;
+    will-change: box-shadow,transform; /*le avisa al buscador que las propiedades  cambiarán, hace queel componente se renderice en una capa propia y permite animaciones mas fluidas*/
+
+    background-color: #D59F0A;
+    border: none;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    }
+
+    /*button anims*/
+    .circle-button:hover {
+        transform: translateY(-2px);
+    }
+
+    .circle-button:active {
+        box-shadow: #b18409 0 3px 7px inset;
+        transform: translateY(2px);
+    }
+
+
+    .circle-button img {
+        height: 30px;
+        width: auto;
+    }
+
+
+    footer{
+      position: fixed;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%); /* Centra exactamente */
+      
+      height: 5vw;
+      width: 40vw;
+      background-color: #A44141;
+      
+    }
+
+    footer .circle-button{
+        box-shadow: rgba(45, 35, 66, 0.4) 0 2px 4px,rgba(45, 35, 66, 0.3) 0 7px 13px -3px,#200606 0 -3px 0 inset;
+        background-color: #480E0E;
+        height: 70px;
+        width: 70px;
+    }
+    footer .circle-button:active {
+        box-shadow: #200606 0 3px 7px inset;
+        transform: translateY(2px);
+    }
+
+    .footer-container{
+        display: flex;
+        flex-direction: row;
+        position: relative;
+        bottom: 5vh;
+        justify-content: space-evenly;
+        align-items: center;
+    }
+  </style>
+  <footer>
+    <div class="footer-container">
+        <button class="circle-button" id="SETTINGSbtn"><img src="Resources/Icons/settings-svgrepo-com.svg" alt="Settings"></button>
+        <button class="circle-button" id="PLAYbtn"><img src="Resources/Icons/play-1003-svgrepo-com.svg" alt=""></button>
+        <button class="circle-button" id="PROFILEbtn"><img src="Resources/Icons/profile-round-1346-svgrepo-com.svg" alt=""></button>
+    </div>
+  </footer>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
