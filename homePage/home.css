@@ -125,7 +125,7 @@ footer {
     
 }
 
-footer .circle-button{
+.footer-container .circle-button{
     box-shadow: rgba(45, 35, 66, 0.4) 0 2px 4px,rgba(45, 35, 66, 0.3) 0 7px 13px -3px,#270707 0 -3px 0 inset;
     background-color: #480E0E;
     height: 70px;
@@ -188,6 +188,7 @@ footer .circle-button:active {
     align-items: center;
     justify-content: flex-start;
     gap: 2rem;
+    margin-bottom: 1rem;
 }
 .row span{
     width: fit-content;
@@ -259,8 +260,49 @@ hr {
     padding-right: 1rem;
     background-color: #b18409;
 }
+.nav-tabs .nav-link {
+    margin-top: 1rem;
+    width: fit-content;
+    font-size: 32px;
+    color: #D59F0A;      /* Inactive tab text color */
+    border: 0;
+}
+.nav-tabs .nav-link.active {
+    background-color: #732E2E;
+    color: white !important;     /* Force override Bootstrap's blue */
+    border-color: white;
+}
+.tab-content{
+    border: 0;
+    background-color: #732E2E;
+    height: 50vh;
+    width: 100%;
+}
+.profilepic{
+    height: 70px;
+    width: 95px;
+}
 
-@media screen and (max-width: 720px) {
+.footerheader{
+    margin-bottom: 0.5rem;
+}
+.row .circle-button{margin-left: 22vw;
+    display: flex;
+    background-color: #D59F0A;
+    align-self: flex-end;
+    justify-self: end;
+}
+@media screen and (max-width: 900px) {
+    .nav-tabs .nav-link {
+        padding: 0.5rem 0.75rem;  /* Less vertical and horizontal padding */
+        line-height: 1.5;
+        font-size: 28px;
+        color: #D59F0A;      /* Inactive tab text color */
+        border: 0;
+    }
+    .tab-content{
+        font-size: 24px;
+    }
     footer{
         height: 20vh;
         width: 110vw;
@@ -275,5 +317,20 @@ hr {
     }
     footer .circle-button img{
         height: 40px;
+    }
+}   
+@media screen and (max-width: 450px) {
+    .playSection input{
+        font-size: 24px;
+    }
+    .nav-tabs .nav-link {
+        padding: 0.25rem 0.5rem;  /* Less vertical and horizontal padding */
+        line-height: 1.5;
+        font-size: 24px;
+        color: #D59F0A;      /* Inactive tab text color */
+        border: 0;
+    }
+    .tab-content{
+        font-size: 24px;
     }
 }   
