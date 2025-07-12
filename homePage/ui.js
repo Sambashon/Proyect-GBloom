@@ -1,9 +1,7 @@
-
 const settingsbtn = document.getElementById("SETTINGSbtn");
 const playbtn = document.getElementById("PLAYbtn");
 const profilebtn = document.getElementById("PROFILEbtn");
 const footer = document.querySelector("footer");
-
 
 const footerbody = document.createElement("section");
 footerbody.classList.add("footerbody");
@@ -12,10 +10,16 @@ footerheader.classList.add("footerheader");
 const footertitle = document.createElement("h2");
 footertitle.classList.add("footertitle");
 
+function createLine(){
+    const line = document.createElement("hr");
+    return line;
+}
 
 const state = {
     volume: 100,
     settingsOpen: false,
+    profileOpen: false,
+    playOpen: false,
     selectedGraphics: null,
     currentPanel: null
 };
@@ -40,6 +44,7 @@ function showPanel(panelName, contentBuilder) {
     
     state.currentPanel = panelName;
     footer.classList.add("visible");
+    footer.classList.remove("hiding");
     createFooterStructure(panelName);
     
     if (contentBuilder) {
@@ -49,9 +54,12 @@ function showPanel(panelName, contentBuilder) {
 
 function closePanel() {
     footer.classList.remove("visible");
+    footer.classList.add("hiding");
     footerbody.innerHTML = "";
     state.currentPanel = null;
     state.settingsOpen = false;
+    state.playOpen = false;
+    state.profileOpen = false;
 }
 
 function createRow() {
@@ -129,25 +137,67 @@ function createGraphicsDropdown() {
         li.appendChild(a);
         menu.appendChild(li);
     });
-    
+    const line = createLine();
     dropdown.append(button, menu);
     graphicsRow.append(graphicsSpan, dropdown);
     return graphicsRow;
+}
+
+function createtopHalf(){
+    const topContainer = document.createElement("section");
+    topContainer.classList.add("playSection");
+
+    const codeInput = document.createElement("input");
+    codeInput.type = "text";
+    codeInput.placeholder = "Insert Game Code";
+
+    const joinBtn = document.createElement("button");
+    joinBtn.classList.add("circle-button");
+    joinBtn.innerText = "Join";
+
+    const orLabel = document.createElement("p");
+    orLabel.innerText = "or";
+
+    topContainer.append(codeInput, joinBtn, orLabel);
+    return topContainer;
+}
+
+function createbottomHalf(){
+    const bottomContainer = document.createElement("section");
+    bottomContainer.classList.add("playSection");
+
+    const hostBtn = document.createElement("button");
+    hostBtn.classList.add("circle-button");
+    hostBtn.innerText = "Host a game";
+
+    bottomContainer.appendChild(hostBtn);
+    return bottomContainer;
 }
 
 function buildSettingsContent() {
     const volumeControl = createVolumeControl();
     const graphicsDropdown = createGraphicsDropdown();
     
-    footerbody.append(volumeControl, graphicsDropdown);
+    const line = createLine();
+    footerbody.append(volumeControl, line, graphicsDropdown);
     state.settingsOpen = true;
 }
 
+function buildPlayContent(){
+    const top = createtopHalf();
+    const bottom = createbottomHalf();
+    const line = createLine();
+
+    footerbody.append(top, line, bottom);
+    state.playOpen = true;
+}
+
 function buildProfileContent() {
-    const profileInfo = document.createElement("div");
+    const profileInfo = document.createElement("article");
     profileInfo.classList.add("profile-info");
-    profileInfo.innerHTML = "<p>Profile information will go here</p>";
+    profileInfo.innerHTML = "<p>Profile information will go here, player stats, everything</p>";
     footerbody.appendChild(profileInfo);
+    state.profileOpen = true;
 }
 
 settingsbtn.addEventListener("click", () => {
@@ -156,6 +206,9 @@ settingsbtn.addEventListener("click", () => {
 
 profilebtn.addEventListener("click", () => {
     showPanel("Profile", buildProfileContent);
+});
+playbtn.addEventListener("click", () => {
+    showPanel("Join a Game", buildPlayContent);
 });
 
 
