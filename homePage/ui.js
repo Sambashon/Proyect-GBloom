@@ -210,9 +210,7 @@ function buildPlayContent(){
 }
 
 function buildProfileContent() {
-    const avatarRow = createAvatarRow();
 
-    footerbody.append(avatarRow);
 }
 
 settingsbtn.addEventListener("click", () => {
@@ -225,7 +223,6 @@ profilebtn.addEventListener("click", () => {
 playbtn.addEventListener("click", () => {
     showPanel("Join a Game", buildPlayContent);
 });
-
 
 document.addEventListener("click", (e) => {
     if (state.currentPanel && 
