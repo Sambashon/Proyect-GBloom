@@ -1,0 +1,67 @@
+Settings
+<footer class="hidden"> se le pone el visible para que suba y baje
+        <div class="footer-container">
+            
+            <button class="circle-button" id="SETTINGSbtn"><img src="../Resources/Icons/settings-svgrepo-com.svg" alt="Settings"></button>
+            <button class="circle-button" id="PLAYbtn"><img src="../Resources/Icons/play-1003-svgrepo-com.svg" alt=""></button>
+            <button class="circle-button" id="PROFILEbtn"><img src="../Resources/Icons/profile-round-1346-svgrepo-com.svg" alt=""></button>
+        </div>
+    <section class="footerbody">
+  <header class="footerheader">
+    <h2 class="footertitle">Settings</h2>
+  </header>
+
+  <div class="row">
+    <span>Volume:</span>
+    <input type="range" min="0" max="100" step="1" class="volSlider">
+    <span>100</span>
+  </div>
+
+  <hr>
+
+  <div class="row">
+    <span>Graphics:</span>
+    <div class="dropdown">
+      <button class="btn btn-secondary dropdown-toggle customDropdown"
+              type="button"
+              id="graphicsDropdownButton"
+              data-bs-toggle="dropdown"
+              aria-expanded="false">
+        Select
+      </button>
+      <ul class="dropdown-menu customdropdownmenu" aria-labelledby="graphicsDropdownButton">
+        <li><a class="dropdown-item" href="#">Low</a></li>
+        <li><a class="dropdown-item" href="#">Medium</a></li>
+        <li><a class="dropdown-item" href="#">High</a></li>
+      </ul>
+    </div>
+  </div>
+</section>
+</footer>
+
+Play
+<footer class="hidden"> se le pone el visible para que suba y baje
+        <div class="footer-container">
+            
+            <button class="circle-button" id="SETTINGSbtn"><img src="../Resources/Icons/settings-svgrepo-com.svg" alt="Settings"></button>
+            <button class="circle-button" id="PLAYbtn"><img src="../Resources/Icons/play-1003-svgrepo-com.svg" alt=""></button>
+            <button class="circle-button" id="PROFILEbtn"><img src="../Resources/Icons/profile-round-1346-svgrepo-com.svg" alt=""></button>
+        </div>
+<section class="footerbody">
+  <header class="footerheader">
+    <h2 class="footertitle">Join a Game</h2>
+  </header>
+
+  <section class="playSection">
+    <input type="text" placeholder="Insert Game Code">
+    <button class="circle-button">Join</button>
+    <p>or</p>
+  </section>
+
+  <hr>
+
+  <section class="playSection">
+    <button class="circle-button">Host a game</button>
+  </section>
+</section>
+</footer>
