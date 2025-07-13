@@ -1,0 +1,108 @@
+*{
+    margin: 0;
+    padding: 0;
+}
+
+body{
+    overflow-y: hidden;
+    font-family: "Bayon", sans-serif;
+    font-weight: bolder;
+    line-height: 65px;
+    color: #D59F0A;
+
+    -webkit-text-stroke: 0.2px #480E0E;
+    text-shadow: 0px 4px 1px black;
+}
+
+.gamelogo img {
+    width: 30vw;
+    height: auto;
+}
+
+header:not(footer header){
+    all: unset;
+    user-select: none;
+    height: 5vh;
+    padding: 10px 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-direction: row;
+    background-color: #480E0E;
+}
+.logo{
+    height: 100%;
+    width: fit-content;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.logo img{
+    width: 100%;
+    height: 100%;
+
+}
+.circle-button {
+    align-items: center;
+    appearance: none;
+    box-shadow: rgba(45, 35, 66, 0.4) 0 2px 4px,rgba(45, 35, 66, 0.3) 0 7px 13px -3px,#b18409 0 -3px 0 inset;
+    box-sizing: border-box;
+    display: inline-flex;
+    justify-content: center;
+    line-height: 1;
+    list-style: none;
+    overflow: hidden;
+
+    transition: box-shadow .15s,transform .15s;
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: manipulation;
+    white-space: nowrap;
+    will-change: box-shadow,transform; /*le avisa al buscador que las propiedades  cambiarán, hace queel componente se renderice en una capa propia y permite animaciones mas fluidas*/
+
+    background-color: #D59F0A;
+    border: none;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    margin-left: 1rem;
+    margin-right: 1rem;
+}
+
+/*button anims*/
+.circle-button:hover {
+    transform: translateY(-2px);
+}
+
+.circle-button:active {
+    box-shadow: #b18409 0 3px 7px inset;
+    transform: translateY(2px);
+}
+
+
+.circle-button img {
+    height: 30px;
+    width: auto;
+}
+
+@media screen and (max-width: 720px) {
+    footer{
+        height: 20vh;
+        width: 110vw;
+    }
+    .circle-button{
+        width: 40px;
+        height: 40px;
+    }
+    footer .circle-button{
+        width: 80px;
+        height: 80px;
+    }
+    footer .circle-button img{
+        height: 40px;
+    }
+}

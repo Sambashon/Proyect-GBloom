@@ -1,0 +1,74 @@
+main {
+    height: 95dvh;
+    background-color: #A44141;
+}
+
+form {
+    width: 50dvw;
+    justify-self: center;
+    justify-items: left;
+}
+
+h2, label{
+    margin-bottom: 0 !important;
+}
+
+#checkbox {
+    display: flex;
+    margin-bottom: 0;
+    height: 14dvh;
+}
+
+#register {
+    display: block;
+    border: #D59F0A;
+    background-color: #D59F0A;
+    height: 7dvh;
+    width: 250px;
+}
+
+#boton-area {
+    width: 50dvw;
+    justify-items: center;
+}
+
+div {
+    height: 16.83dvh;
+}
+
+p {
+    margin-left: 5px;
+    margin-top: 20px;
+    margin-bottom: 0;
+    align-self: center;
+    font-size: 14px;
+    line-height: 17px;
+    -webkit-text-stroke: 0;
+    letter-spacing: 2px;
+}
+
+.form-check-input {
+    margin-left: 0px !important;
+    margin-top: 20px;
+}
+
+.form-control {
+    width: 50dvw;
+}
+
+@media screen and (max-width: 720px) { 
+    form {
+        width: 80dvw;
+        justify-self: center;
+        justify-items: left;
+    }
+
+    .form-control {
+        width: 80dvw;
+    }
+
+    #boton-area {
+    width: 80dvw;
+    justify-items: center;
+}
+}
