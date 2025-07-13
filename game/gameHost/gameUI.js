@@ -4,10 +4,23 @@ const statsBtn = document.getElementById("statsBtn");
 
 const pauseMenu = document.getElementById("pausedMenu");
 const statsMenu = document.getElementById("statsMenu");
+const leaveMenu = document.getElementById("leaveMenu");
 
 const playBtn = document.getElementById("PLAYBtn");
 const settingsBtn = document.getElementById("SETTINGSBtn");
 const leaveBtn = document.getElementById("LEAVEBtn");
+
+const tohomeBtn = document.getElementById("tohomeBtn");
+const endGameBtn = document.getElementById("endGameBtn");
+
+tohomeBtn.addEventListener("click", () =>{
+    window.location = "../../homePage/home.html"
+})
+endGameBtn.addEventListener("click", () =>{
+    alert("UnderConstruction...");
+    window.location = "../../homePage/home.html"
+})
+
 
 function closeMenus(button) {
     const parentMenu = button.closest(".buttonMenu");
@@ -24,11 +37,15 @@ xOut.forEach(button => {
 
 pauseBtn.addEventListener("click", () => {
     pauseMenu.classList.remove("d-none");
+
+    leaveMenu.classList.add("d-none");
     statsMenu.classList.add("d-none");
 });
 
 statsBtn.addEventListener("click", () => {
     statsMenu.classList.remove("d-none");
+
+    leaveMenu.classList.add("d-none");
     pauseMenu.classList.add("d-none");
 });
 
@@ -41,5 +58,10 @@ settingsBtn.addEventListener("click", () =>{
 })
 
 leaveBtn.addEventListener("click", () =>{
-    window.location.href = "../homePage/home.html"
+    leaveMenu.classList.remove("d-none");
+
+    statsMenu.classList.add("d-none");
+    pauseMenu.classList.add("d-none");
 })
+
+

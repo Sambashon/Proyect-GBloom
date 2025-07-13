@@ -1,3 +1,4 @@
+
 *{
     margin: 0;
     padding: 0;
@@ -98,10 +99,9 @@ main{
     background-color: #A44141;
 
     align-items: center;
-    gap: 5vh;
 }
 .profileContainer{
-    
+    cursor: pointer;
     height: fit-content;
     width: fit-content;
     min-width: 105px;
@@ -134,18 +134,93 @@ span {
     line-height: 1;
     height: calc(fit-content -10px);
 }
+main header{
+    margin: 1rem;
+    display: flex;
+    flex-direction: row;
+    gap: 1rem;
+}
+.square-item {
+    aspect-ratio: 1 / 1;      /* Makes it a square */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    border: 2px solid #480E0E;
+}
+.customContainer{
+    width: 30vw;
+    height: 30vw;
+    margin: 0;
+    margin-bottom: 5vw;
+}
+div:has(section){
+    border-radius: 5rem;
+}
 
+footer{
+    gap:1rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    
+}
+article{
+    margin-top: 30px;
+    margin-bottom: 30vw;
+}
 
+.bordered{
+    border: 5px solid #480E0E;
+}
+input{
+    all: unset;
+    background-color: inherit;
+    color: white;
+    border: none;
+    border-bottom: 2px solid #b18409;
+    width: fit-content;
+    height: 5vh;
+    font-size: 1.5rem;
+}
+
+.customRow{
+    display: flex;
+    width: 100%;
+    height: fit-content;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 3rem;
+}
 
 
 @media (max-width: 768px) {
+    .customContainer{
+        height: 330px;
+        width: 330px;
+        margin-bottom: 5vw;
+    }
     .profileContainer img{
         height: 70px;
         width: 70px;
+    }
+    .circle-button{
+        font-size: 16px !important;
+        padding: 0.5rem 0;
     }
     .profileContainer{
         min-height: 75px;
         min-width: 75px;
         padding: 5px;
     }
+}
+@media (max-width: 450px) {
+    .customContainer{
+        height: 270px;
+        width: 270px;
+        margin-bottom: 5vw;
+    }
+
 }

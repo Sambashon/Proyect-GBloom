@@ -18,7 +18,12 @@ body{
     width: 30vw;
     height: auto;
 }
-
+.customRow{
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    gap: 4vh;
+}
 header:not(footer header){
     all: unset;
     user-select: none;
@@ -43,12 +48,12 @@ header:not(footer header){
 
 }
 .circle-button {
-    align-items: center;
+    display: flex;
+
     appearance: none;
     box-shadow: rgba(45, 35, 66, 0.4) 0 2px 4px,rgba(45, 35, 66, 0.3) 0 7px 13px -3px,#b18409 0 -3px 0 inset;
     box-sizing: border-box;
-    display: inline-flex;
-    justify-content: center;
+    
     line-height: 1;
     list-style: none;
     overflow: hidden;
@@ -62,15 +67,13 @@ header:not(footer header){
 
     background-color: #D59F0A;
     border: none;
-    border-radius: 50%;
-    width: 40px;
-    height: 40px;
-    display: flex;
+    border-radius: 10px;
+    width: fit-content;
+    height: fit-content;
+    padding: 1rem;
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    margin-left: 1rem;
-    margin-right: 1rem;
 }
 
 /*button anims*/

@@ -5,5 +5,5 @@ backBtn.addEventListener("click", () =>{
     window.location.href = "../../homePage/home.html"
 })
 joinBtn.addEventListener("click", () =>{
-    window.location.href = "../../gamePage/game.html"
+    window.location.href = "../../game/gameGuest/game.html"
 })

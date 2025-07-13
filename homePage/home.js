@@ -1,3 +1,10 @@
+const register = document.getElementById("register");
+register.addEventListener("click", () =>{
+    window.location = "../loginStuff/confirmation/confirmation.html";
+})
+
+
+
 
 const settingsbtn = document.getElementById("SETTINGSbtn");
 const playbtn = document.getElementById("PLAYbtn");
@@ -165,7 +172,7 @@ function createGameSection(isTop = true) {
         hostBtn.classList.add("circle-button");
         hostBtn.innerText = "Host a game";
         hostBtn.addEventListener("click", () =>{
-            window.location.href = "../lobby/hostLobby/lobby.html";
+            window.location.href = "../lobby/hostLobby/config.html";
         })
         container.appendChild(hostBtn);
 

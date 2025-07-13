@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
-    <link rel="icon" href="../../Resources/Logo/GbloomClassic.svg">
+    <link rel="icon" href="../Resources/Logo/GbloomClassic.svg">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -21,31 +21,41 @@
         </section>
     </header>
     <main>
-        <header>
-            <h1>Your party</h1>
-            <button class="circle-button">Edit</button>
+        <header class="text-center fluid">
+            <h1>Player 1's party</h1>
+            <h3>code: xxx xxx xxx</h3>
         </header>
 
-        <article class="text-center customContainer">
-            <div class="row g-2">
-                <div class="col-6 g-1">
-                    <section class="square-item rounded-2">2</section>
-                </div>
-                <div class="col-6 g-1">
-                    <section class="square-item rounded-2">3</section>
-                </div>
-                <div class="col-6 g-1">
-                    <section class="square-item rounded-2">4</section>
-                </div>
-                <div class="col-6 g-1">
-                    <section class="square-item rounded-2">5</section>
-                </div>
-            </div>
+        <article class="container text-center" id="players">
+            
+            <section class="row flex-nowrap justify-content-center">
+                <section class="col">
+                    <div class="profileContainer">
+                        <img src="../../Resources/Icons/defautlprofilepic.png" alt="profilepicture" height="100" width="100">
+                    </div>
+                </section>
+                <section class="col">
+                    <div class="profileContainer">
+                        <img src="../../Resources/Icons/defautlprofilepic.png" alt="profilepicture" height="100" width="100">
+                    </div>
+                </section>
+                <section class="col">
+                    <div class="profileContainer"></div>
+                </section>
+            </section>
+
+            <section class="row flex-nowrap justify-content-center">
+                <section class="col">
+                    <div class="profileContainer"></div>
+                </section>
+                <section class="col">
+                    <div class="profileContainer"></div>
+                </section>
+            </section>
         </article>
-        <footer>
-            <button class="circle-button" id="virtual">Virtual Game</button>
-            <button class="circle-button" id="sync">Board Sync</button>
-        </footer>
+
+        <h2>2/5 Players</h2>
+        <button class="circle-button" id="startBtn">Start</button>
         <script src="lobby.js"></script>
     </main>
 </body>
