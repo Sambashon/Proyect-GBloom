@@ -93,7 +93,7 @@ header section{
 main{
     all: unset;
     display: flex;
-    background-color: #A44141;
+    background-color: #A0BCFA;
     height: 95vh;
     width: 100vw;
 }

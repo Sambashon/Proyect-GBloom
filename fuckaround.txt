@@ -1,0 +1,20 @@
+/* Volume */
+
+position: absolute;
+width: 101px;
+height: 58px;
+left: 27px;
+top: 351px;
+
+font-family: 'Bayon';
+font-style: normal;
+font-weight: 400;
+font-size: 32px;
+line-height: 58px;
+/* identical to box height */
+text-align: center;
+
+color: #D59F0A;
+
+border: 1px solid rgba(72, 14, 14, 0.7);
+text-shadow: 0px 4px 1px rgba(0, 0, 0, 0.6);
