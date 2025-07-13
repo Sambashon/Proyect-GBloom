@@ -153,7 +153,7 @@ function createGameSection(isTop = true) {
         joinBtn.innerText = "join";
         
         joinBtn.addEventListener("click", () =>{
-            window.location.href = "../lobbyPage/lobby.html"
+            window.location.href = "../lobby/guestLobby/lobby.html"
         });
 
         const orLabel = document.createElement("p");
@@ -164,7 +164,12 @@ function createGameSection(isTop = true) {
         const hostBtn = document.createElement("button");
         hostBtn.classList.add("circle-button");
         hostBtn.innerText = "Host a game";
+        hostBtn.addEventListener("click", () =>{
+            window.location.href = "../lobby/hostLobby/lobby.html";
+        })
         container.appendChild(hostBtn);
+
+        
     }
     
     return container;

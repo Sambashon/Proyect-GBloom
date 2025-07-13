@@ -135,9 +135,6 @@ span {
     height: calc(fit-content -10px);
 }
 
-@media (max-width: 576px) {
-}
-
 @media (max-width: 768px) {
     .profileContainer img{
         height: 70px;

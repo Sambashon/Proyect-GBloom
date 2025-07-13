@@ -16,44 +16,38 @@
       align-items: center;
       justify-content: center;
     }
-    article{
-      height: 40%;
-      width: fit-content;
-      border: 1px solid grey;
-    }
-
-    main{
-      all: unset;
-      height: 20vw;
-      width: 20vw;
-      background-color: black;
-    }
+    .square-item {
+  aspect-ratio: 1 / 1;      /* Makes it a square */
+  background-color: #d59f0a;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem;
+  border: 2px solid white;
+}
+.customContainer{
+    width: 40vw;
+    height: 40vw;
+}
   </style>
 
-  <article>
-    <nav>
-      <ul class="nav nav-tabs" id="myTab" role="tablist">
-        <li class="nav-item" role="presentation">
-          <button class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#home-tab-pane" type="button" role="tab" aria-controls="home-tab-pane" aria-selected="true">Home</button>
-        </li>
-        <li class="nav-item" role="presentation">
-          <button class="nav-link" id="profile-tab" data-bs-toggle="tab" data-bs-target="#profile-tab-pane" type="button" role="tab" aria-controls="profile-tab-pane" aria-selected="false">Profile</button>
-        </li>
-        <li class="nav-item" role="presentation">
-          <button class="nav-link" id="contact-tab" data-bs-toggle="tab" data-bs-target="#contact-tab-pane" type="button" role="tab" aria-controls="contact-tab-pane" aria-selected="false">Contact</button>
-        </li>
-        
-    </ul>
-    </nav>
+<article class="container text-center customContainer">
+  <div class="row g-2">
+    <div class="col-6">
+      <section class="square-item">1</section>
+    </div>
+    <div class="col-6">
+      <section class="square-item">2</section>
+    </div>
+    <div class="col-6">
+      <section class="square-item">3</section>
+    </div>
+    <div class="col-6">
+      <section class="square-item">4</section>
+    </div>
+  </div>
+</article>
 
-
-    <section class="tab-content" id="myTabContent">
-      <div class="tab-pane fade show active" id="home-tab-pane" role="tabpanel" aria-labelledby="home-tab" tabindex="0">Hello World</div>
-      <div class="tab-pane fade" id="profile-tab-pane" role="tabpanel" aria-labelledby="profile-tab" tabindex="0">...</div>
-      <div class="tab-pane fade" id="contact-tab-pane" role="tabpanel" aria-labelledby="contact-tab" tabindex="0">...</div>
-      <div class="tab-pane fade" id="disabled-tab-pane" role="tabpanel" aria-labelledby="disabled-tab" tabindex="0">...</div>
-    </section>
-  </article>
 
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
