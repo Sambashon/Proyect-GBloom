@@ -217,9 +217,9 @@ function createTabbedContent() {
     ul.setAttribute("role", "tablist");
 
     const tabs = [
-        { id: "general", label: "General", active: true, content: "<input>waza</input>" },
-        { id: "pD", label: "Personal Data", active: false, content: "waza" },
-        { id: "stats", label: "Stats", active: false, content: "Contact us at: contact@example.com" }
+        { id: "general", label: "General", active: true, content: "" },
+        { id: "pD", label: "Personal Data", active: false, content: "" },
+        { id: "stats", label: "Stats", active: false, content: "Contact us at: gbloomenterprise@gmail.com" }
     ];
 
     tabs.forEach(tab => {

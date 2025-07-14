@@ -46,6 +46,17 @@ header section{
     height: 100%;
 
 }
+
+#curtain {
+    position: absolute;
+    width: 100dvw;
+    height: 100dvh;
+    background-color: rgba(0, 0, 0, 0.3);
+    z-index: -1;
+    left: 0px;
+    top: 0px;
+}
+
 .circle-button {
     align-items: center;
     appearance: none;
