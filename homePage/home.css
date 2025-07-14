@@ -330,10 +330,7 @@ hr {
         width: 40px;
         height: 40px;
     }
-    footer .circle-button{
-        width: 80px;
-        height: 80px;
-    }
+    
     footer .circle-button img{
         height: 40px;
     }
@@ -353,3 +350,16 @@ hr {
         font-size: 24px;
     }
 }   
+
+@media screen and (max-height: 700px){
+    .playSection{
+        gap:0.5rem;
+    }
+    .playSection.circle-button{
+        width: fit-content;
+        height: 30px;
+        border-radius: 1rem;
+        padding: 0.5rem;
+        font-size: 16px !important;
+    }
+}

@@ -35,6 +35,7 @@ header section{
     justify-content: center;
     gap: 0.5rem;
 }
+
 .logo{
     height: 100%;
     width: fit-content;
@@ -96,6 +97,7 @@ header section{
     box-shadow: #b18409 0 3px 7px inset;
     transform: translateY(2px);
 }
+
 
 .circle-button img {
     height: 30px;
@@ -215,6 +217,7 @@ footer span{
     height: 500px;
     width: 500px;
     overflow-y: auto; /* enables scroll */
+    overflow-x: hidden;
     z-index: 2;
     position: fixed;
     top: 47%;
@@ -227,6 +230,8 @@ footer span{
     flex-direction: row;
     align-items: center;
     justify-content: space-between;
+    width: calc(fit-content +2vw);
+    height: 7vh;
 }
 .buttonMenu h2, .buttonMenu p{
     margin: 0;
@@ -263,6 +268,11 @@ article hr{
 p{
     font-size: 20px;
 }
+#leaveMenu .BUTTONS-WRAPPER .circle-button{
+    width: fit-content;
+    padding: 10px;
+    border-radius: 2rem;
+}
 
 a{
     margin-left: 20px;
@@ -276,6 +286,13 @@ a{
 a:hover{
     background-color: #A44141;
 }
+
+@media screen and (max-width: 550px){
+    a{
+        display: none;
+    }
+}
+
 @media screen and (max-width: 900px) {
     a{
         font-size: 10px;
@@ -293,7 +310,8 @@ a:hover{
         top: 40%;
         left: 50%;
         transform: translate(-50%, -50%);
-
+        height: 400px;
+        width: 400px;
     }
     footer{
         height: 30vh;
@@ -305,7 +323,15 @@ a:hover{
     footer h4{
         font-size: 24px;
     }
-
+    .BUTTONS-WRAPPER .circle-button{
+        padding: 2rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    .BUTTONS-WRAPPER img{
+        height: 35px;
+    }
     .INVENTORY-WRAPPER{
         height: 100%;
         width: 65vw;
@@ -343,14 +369,20 @@ a:hover{
         height: 350px;
         width: 350px;
     }
+    .buttonMenu h3{
+        font-size: 16px;
+    }
 }
+
 @media screen and (max-width: 550px){
     a{
         display: none;
     }
 }
-
 @media screen and (max-width: 450px) {
+    article header .circle-button{
+        padding: 1rem;
+    }
     main img{
         height: 300px;
         width: 300px;
@@ -359,6 +391,7 @@ a:hover{
         height: 250px;
         width: 250px;
     }
+
     .INVENTORY-WRAPPER{
         height: 100%;
         width: 70vw;
@@ -386,7 +419,7 @@ a:hover{
         border-right: 1px solid black;
     }
     .DICE-CONTAINER img{
-        height: 80px;
+        height: 90px;
         width: auto;
     }
 }
