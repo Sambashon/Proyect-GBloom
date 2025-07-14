@@ -46,3 +46,11 @@ Permite jugar partidas completas desde la app simulando el juego físico.
 
 ## 📄 Licencia
 Este proyecto fue desarrollado como parte de un proyecto de egreso académico. El uso y distribución está sujeto a las condiciones definidas por la institución correspondiente.
+
+---
+
+## 	Instrucciones de instalación
+Debido a que nuestro sistema no cuenta con un backend real, se puede accede simplemente abriendo uno de los muchos “archivos.html”.
+1- Dirigirse a nuestro repositorio de GitHub “Proyect-GBloom”
+2- Dirigirse a la rama “Primera-Entrega”
+3- Hacer click en el botón de “<> code” y descargas el código en un .zip
