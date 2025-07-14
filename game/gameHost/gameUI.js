@@ -1,3 +1,4 @@
+const curtain = document.querySelector("#curtain");
 const xOut = document.querySelectorAll("#xOut");
 const pauseBtn = document.getElementById("pauseBtn");
 const statsBtn = document.getElementById("statsBtn");
@@ -29,13 +30,25 @@ function closeMenus(button) {
     }
 }
 
+function showCurtain() {
+    curtain.style.zIndex = "1";
+    curtain.style.backgroundColor = "rgba(0, 0, 0, 0.3)"
+}
+
+function hideCurtain() {
+    curtain.style.backgroundColor = "rgba(0, 0, 0, 0)"
+    curtain.style.zIndex = "-1";
+}
+
 xOut.forEach(button => {
     button.addEventListener("click", () => {
+        hideCurtain();
         closeMenus(button);
     });
 });
 
 pauseBtn.addEventListener("click", () => {
+    showCurtain()
     pauseMenu.classList.remove("d-none");
 
     leaveMenu.classList.add("d-none");
@@ -43,6 +56,7 @@ pauseBtn.addEventListener("click", () => {
 });
 
 statsBtn.addEventListener("click", () => {
+    showCurtain()
     statsMenu.classList.remove("d-none");
 
     leaveMenu.classList.add("d-none");
@@ -50,6 +64,7 @@ statsBtn.addEventListener("click", () => {
 });
 
 playBtn.addEventListener("click",() => {
+    hideCurtain();
     closeMenus(playBtn);
 })
 
