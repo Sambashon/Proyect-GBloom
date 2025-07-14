@@ -217,9 +217,9 @@ function createTabbedContent() {
     ul.setAttribute("role", "tablist");
 
     const tabs = [
-        { id: "general", label: "General", active: true, content: "" },
-        { id: "pD", label: "Personal Data", active: false, content: "" },
-        { id: "stats", label: "Stats", active: false, content: "Contact us at: gbloomenterprise@gmail.com" }
+        { id: "general", label: "General", active: true, content: "General Stuff. Under construction" },
+        { id: "pD", label: "Personal Data", active: false, content: "Personal Data stuff. Under construction" },
+        { id: "stats", label: "Stats", active: false, content: "Under construction" }
     ];
 
     tabs.forEach(tab => {
