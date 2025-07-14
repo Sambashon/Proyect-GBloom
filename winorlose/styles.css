@@ -118,8 +118,8 @@ hr {
     padding: 1rem;
     border-radius: 10px;
 
-    height: 500px;
-    width: 500px;
+    height: 40vh;
+    width: 50vw;
     overflow-y: auto; /* enables scroll */
     overflow-x: hidden;
 
@@ -132,4 +132,10 @@ hr {
     justify-content: space-between;
     width: calc(fit-content +2vw);
     height: 7vh;
+}
+@media screen and (max-width: 576px){
+    .finalStats{
+        width: 80vw;
+        height: 70vh;
+    }
 }

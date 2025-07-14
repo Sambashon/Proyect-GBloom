@@ -5,12 +5,12 @@ const playwithoutaccBtn = document.getElementById("playWithoutBtn");
 
 registerBtn.addEventListener("click", () =>{
         window.location = "../register/register.html";
-    })
+})
 
 loginBtn.addEventListener("click", () =>{
         window.location = "../login/login.html";
-    })
+})
 
-    playwithoutaccBtn.addEventListener("click", () =>{
-        window.location = "../../homepage/home.html";
-    })
+playwithoutaccBtn.addEventListener("click", () =>{
+    window.location = "../../homepage/home.html";
+})

@@ -86,7 +86,6 @@ header section{
     transform: translateY(2px);
 }
 
-
 .circle-button img {
     height: 30px;
     width: auto;
@@ -110,8 +109,8 @@ main img{
     top: 47%;
     left: 50%;
     transform: translate(-50%, -50%);
-    height: 650px;
-    width: 650x;
+    height: 50vh;
+    width: auto;
 }
 footer{
     z-index: 1;
@@ -258,7 +257,7 @@ a{
     margin-left: 20px;
     margin-right: 20px;
     text-decoration: none;
-    color: white;
+    color: unset;
     letter-spacing: 2px;
     -webkit-text-stroke: 0px  !important;
 
@@ -267,6 +266,14 @@ a:hover{
     background-color: #A44141;
 }
 @media screen and (max-width: 900px) {
+    a{
+        font-size: 10px;
+        height: 50px;
+        width: fit-content;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
     article h2 {
         font-size: 20px;
     }
@@ -275,8 +282,7 @@ a:hover{
         top: 40%;
         left: 50%;
         transform: translate(-50%, -50%);
-        height: 400px;
-        width: 400px;
+
     }
     footer{
         height: 30vh;
@@ -327,7 +333,11 @@ a:hover{
         width: 350px;
     }
 }
-
+@media screen and (max-width: 550px){
+    a{
+        display: none;
+    }
+}
 
 @media screen and (max-width: 450px) {
     main img{
@@ -365,7 +375,7 @@ a:hover{
         border-right: 1px solid black;
     }
     .DICE-CONTAINER img{
-        height: 40px;
+        height: 80px;
         width: auto;
     }
 }
