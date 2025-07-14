@@ -3,6 +3,10 @@ const loginBtn = document.getElementById("loginBtn");
 const playwithoutaccBtn = document.getElementById("playWithoutBtn");
 
 
+xOut.addEventListener("click", () => {
+  window.location = "../../homePage/home.html";
+})
+
 registerBtn.addEventListener("click", () =>{
         window.location = "../register/register.html";
 })

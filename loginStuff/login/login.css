@@ -17,6 +17,10 @@ form {
     justify-content: center;
 }
 
+button {
+    color: white;
+}
+
 h2, label{
     margin-bottom: 0 !important;
 }

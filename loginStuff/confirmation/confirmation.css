@@ -14,6 +14,10 @@ body{
     text-shadow: 0px 4px 1px black;
 }
 
+button {
+    color: white;
+}
+
 main {
     height: 95dvh;
     background-color: #A44141;
@@ -49,6 +53,11 @@ hr{
     background-color: #000; 
     border: none;
     border-radius: 5rem;
+}
+
+#xOut.circle-button {
+    padding-bottom: 0  !important;
+    padding-top: 6px !important;
 }
 
 @media screen and (max-width: 720px) { 

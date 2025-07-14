@@ -60,7 +60,7 @@ syncBtn.addEventListener("click", () =>{
 
 startBtn.addEventListener("click", () =>{
     if(virtualSelected){
-        window.location = "../../game/gameHost/game.html";
+        window.location = "lobby.html";
     }else if(syncSelected){
         alert("Page under construction...");
     }
