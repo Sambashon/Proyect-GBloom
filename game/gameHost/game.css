@@ -31,6 +31,8 @@ header:not(footer header){
 header section{
     display: flex;
     flex-direction: row;
+    align-items: center;
+    justify-content: center;
     gap: 0.5rem;
 }
 
@@ -259,6 +261,19 @@ p{
     width: fit-content;
     padding: 10px;
     border-radius: 2rem;
+}
+
+a{
+    margin-left: 20px;
+    margin-right: 20px;
+    text-decoration: none;
+    color: unset;
+    letter-spacing: 2px;
+    -webkit-text-stroke: 0px  !important;
+
+}
+a:hover{
+    background-color: #A44141;
 }
 
 @media screen and (max-width: 550px){

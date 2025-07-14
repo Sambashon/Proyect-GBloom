@@ -17,7 +17,7 @@
     <header>
         <aside class="logo"><img src="../../Resources/Logo/GBloomHorizontal.svg" alt="GBLOOM"></aside>
         <section>
-            <button class="circle-button"><img src="../../Resources/Icons/leave-svgrepo-com.svg" alt="back" height="30px" width="30px" id="backBtn"></button>
+            <button type="button" class="circle-button" data-bs-toggle="modal" data-bs-target="#exampleModal"><img src="../../Resources/Icons/leave-svgrepo-com.svg" alt="back" height="30px" width="30px" id="backBtn"></button>
         </section>
     </header>
     <main>
@@ -54,9 +54,27 @@
             </section>
         </article>
 
+        
+
         <h2>2/5 Players</h2>
         <button class="circle-button" id="startBtn">Start</button>
-        <script src="lobby.js"></script>
+        
     </main>
+    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <section class="modal-dialog">
+                <div class="modal-content">
+                    <header class="modal-header">
+                        <h1 class="modal-title fs-5" id="exampleModalLabel">You are currently hosting this game, you can choose to</h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </header>
+                    <footer class="modal-footer">
+                        <button type="button" class="circle-button" data-bs-dismiss="modal" id="endSession">End session</button>
+                        <button type="button" class="circle-button" id="LEAVEBtn">leave</button>
+                    </footer>
+                </div>
+            </section>
+        </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="lobby.js"></script>
 </body>
 </html>
