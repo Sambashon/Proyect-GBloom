@@ -136,6 +136,6 @@ hr {
 @media screen and (max-width: 576px){
     .finalStats{
         width: 80vw;
-        height: 70vh;
+        height: 60vh;
     }
 }
