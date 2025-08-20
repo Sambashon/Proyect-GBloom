@@ -1,0 +1,4 @@
+RewriteEngine On
+
+# Redirigir raíz (/) a /home (visible en URL)
+RewriteRule ^$ /homePage/home.html [R=302,L]

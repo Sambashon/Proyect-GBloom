@@ -1,0 +1,365 @@
+#register{
+    cursor: pointer;
+    background-color: #000;
+}
+.buttonsTopRow{
+    display: flex;
+    flex-direction: row;
+    gap: 1rem;
+}
+#register.circle-button{
+    width: fit-content !important;
+    border-radius: 10px;
+    background-color: #D59F0A;
+    padding: 1rem;
+}
+*{
+    margin: 0;
+    padding: 0;
+}
+
+button {
+    color: white;
+}
+
+body{
+    height: 100vh;
+    width: 100vw;
+    font-family: "Bayon", sans-serif;
+    font-weight: bolder;
+    line-height: 65px;
+    color: #D59F0A;
+
+    -webkit-text-stroke: 0.2px #480E0E;
+    text-shadow: 0px 4px 1px black;
+}
+main{
+    all: unset;
+    position: fixed;
+    background-image: url(../Resources/Backgrounds/background.png);
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh; /* So it pushes logo to middle and footer to bottom */
+    width: 100vw;
+    flex-direction: column;
+}
+.gamelogo img {
+    width: 30vw;
+    height: auto;
+}
+
+header:not(footer header){
+    all: unset;
+    user-select: none;
+    height: 5vh;
+    padding: 10px 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-direction: row;
+    background-color: #480E0E;
+}
+.logo{
+    height: 100%;
+    width: fit-content;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.logo img{
+    width: 100%;
+    height: 100%;
+
+}
+.circle-button {
+    align-items: center;
+    appearance: none;
+    box-shadow: rgba(45, 35, 66, 0.4) 0 2px 4px,rgba(45, 35, 66, 0.3) 0 7px 13px -3px,#b18409 0 -3px 0 inset;
+    box-sizing: border-box;
+    display: inline-flex;
+    justify-content: center;
+    line-height: 1;
+    list-style: none;
+    overflow: hidden;
+
+    transition: box-shadow .15s,transform .15s;
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: manipulation;
+    white-space: nowrap;
+    will-change: box-shadow,transform; /*le avisa al buscador que las propiedades  cambiarán, hace queel componente se renderice en una capa propia y permite animaciones mas fluidas*/
+
+    background-color: #D59F0A;
+    border: none;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    margin-left: 1rem;
+    margin-right: 1rem;
+}
+
+/*button anims*/
+.circle-button:hover {
+    transform: translateY(-2px);
+}
+
+.circle-button:active {
+    box-shadow: #b18409 0 3px 7px inset;
+    transform: translateY(2px);
+}
+
+
+.circle-button img {
+    height: 30px;
+    width: auto;
+}
+
+
+footer {
+    z-index: 2;
+    position: fixed;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%) translateY(50%); /* Instead of bottom: -70px */
+    height: 15vh;
+    width: 60vw;
+    background-color: #A44141;
+    border-radius: 100%;
+    display: flex;
+    flex-direction: column;
+
+    transition:
+        transform 0.6s ease,
+        opacity 0.6s ease,
+        height 0.6s ease,
+        border-radius 0.6s ease;
+    
+}
+
+.footer-container .circle-button{
+    box-shadow: rgba(45, 35, 66, 0.4) 0 2px 4px,rgba(45, 35, 66, 0.3) 0 7px 13px -3px,#270707 0 -3px 0 inset;
+    background-color: #480E0E;
+    height: 70px;
+    width: 70px;
+}
+footer .circle-button:active {
+    box-shadow: #270707 0 3px 7px inset;
+    transform: translateY(2px);
+}
+
+.footer-container{
+    display: flex;
+    margin: none;
+    padding: none;
+    flex-direction: row;
+    position: relative;
+    bottom: 5vh;
+    justify-content: space-evenly;
+    align-items: center;
+}
+#PLAYbtn{
+    margin-bottom: 5vh;
+}
+
+.visible{
+    height: 70vh;
+    border-radius: 0%;
+    border-top-left-radius: 30%;
+    border-top-right-radius: 30%;
+
+    transform: translateX(-50%) translateY(0%);
+}
+
+.hiding {
+    height: 15vh;
+    transform: translateX(-50%) translateY(50%);
+}
+
+
+.footerbody{
+    margin-left: 7vw;
+    margin-right: 7vw;
+    font-size: 32px;
+    display: flex;
+    flex-direction: column;
+}
+.footerbody h2{
+    all: unset;
+    font-size: 40px;
+    color: #D59F0A;
+
+    -webkit-text-stroke: 0.2px #480E0E;
+    text-shadow: 0px 4px 1px black;
+}
+
+.row{
+    all: unset;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 2rem;
+    margin-bottom: 1rem;
+}
+.row span{
+    width: fit-content;
+    padding: none;
+}
+.volSlider{
+    width: 30%;
+}
+.customDropdown{
+    background-color: #480E0E;
+    border: 1px solid #270707;
+    color: #D59F0A;
+    box-shadow: rgba(45, 35, 66, 0.4) 0 4px 0,rgba(45, 35, 66, 0.3) 0 7px 13px -3px inset;
+}
+.customDropdown:hover{
+    background-color: #480E0E;
+    border-color: #b18409;
+    color: #D59F0A;
+}
+.customDropdown:focus{
+    background-color: #480E0E;
+    color: #D59F0A;
+    border-color: #b18409;
+}
+.customdropdownmenu{
+    background-color: #480E0E;
+    border-color: #b18409;
+}
+
+.dropdown-item{
+    color: #D59F0A;
+}
+.dropdown-item:hover{
+    color: #D59F0A;
+    background-color: #A44141;
+}
+hr {
+    margin: 0;
+    padding: none;
+    height: 5px;
+    width: 100%;
+    background-color: #000; 
+    border: none;
+    border-radius: 5rem;
+}
+.playSection{
+    margin-top: 1rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+}
+
+.playSection input{
+    all: unset;
+    background-color: inherit;
+    color: white;
+    border: none;
+    border-bottom: 2px solid #b18409;
+    width: fit-content;
+    height: 5vh;
+    font-size: 2rem;
+}
+.playSection .circle-button{
+    width: fit-content;
+    border-radius: 5rem;
+    padding-left: 1rem;
+    padding-right: 1rem;
+    background-color: #b18409;
+}
+.nav-tabs .nav-link {
+    margin-top: 1rem;
+    width: fit-content;
+    font-size: 32px;
+    color: #D59F0A;      /* Inactive tab text color */
+    border: 0;
+}
+.nav-tabs .nav-link.active {
+    background-color: #732E2E;
+    color: white !important;     /* Force override Bootstrap's blue */
+    border-color: white;
+}
+.tab-content{
+    border: 0;
+    background-color: #732E2E;
+    height: 50vh;
+    width: 100%;
+}
+.profilepic{
+    height: 70px;
+    width: 95px;
+}
+
+.footerheader{
+    margin-bottom: 0.5rem;
+}
+.row .circle-button{margin-left: 22vw;
+    display: flex;
+    background-color: #D59F0A;
+    align-self: flex-end;
+    justify-self: end;
+}
+@media screen and (max-width: 900px) {
+    .nav-tabs .nav-link {
+        padding: 0.5rem 0.75rem;  /* Less vertical and horizontal padding */
+        line-height: 1.5;
+        font-size: 28px;
+        color: #D59F0A;      /* Inactive tab text color */
+        border: 0;
+    }
+    .tab-content{
+        font-size: 24px;
+    }
+    footer{
+        height: 20vh;
+        width: 110vw;
+    }
+    .circle-button{
+        width: 40px;
+        height: 40px;
+    }
+    
+    footer .circle-button img{
+        height: 40px;
+    }
+}   
+@media screen and (max-width: 450px) {
+    .playSection input{
+        font-size: 24px;
+    }
+    .nav-tabs .nav-link {
+        padding: 0.25rem 0.5rem;  /* Less vertical and horizontal padding */
+        line-height: 1.5;
+        font-size: 24px;
+        color: #D59F0A;      /* Inactive tab text color */
+        border: 0;
+    }
+    .tab-content{
+        font-size: 24px;
+    }
+}   
+
+@media screen and (max-height: 700px){
+    .playSection{
+        gap:0.5rem;
+    }
+    .playSection.circle-button{
+        width: fit-content;
+        height: 30px;
+        border-radius: 1rem;
+        padding: 0.5rem;
+        font-size: 16px !important;
+    }
+}
