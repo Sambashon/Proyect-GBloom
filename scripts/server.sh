@@ -16,7 +16,7 @@ echo "=== INSTALACIÓN DRAFTOSAURUS ==="
 # 1. Instalar todo en lotes lógicos
 echo "1. Instalando paquetes base..."
 apt update
-apt install git apache2 openssh-server mariadb-server certbot python3-certbot-apache -y
+apt install git apache2 openssh-server mariadb-server certbot python3-certbot-apache curl -y
 
 echo "2. Instalando PHP con todos los módulos..."
 mkdir /php
