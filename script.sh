@@ -40,6 +40,10 @@ sudo usermod -aG www-data $USER
 # Reiniciar apache2
 sudo systemctl restart apache2
 
+# Fijar Ip
+sudo cp /tmp/temp-repo/apache/interfaces /etc/network/interfaces
+sudo systemctl restart networking
+
 # 8. Limpiar
 sudo rm -rf /tmp/temp-repo
 
