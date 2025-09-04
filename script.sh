@@ -28,7 +28,7 @@ sudo a2enmod rewrite ssl
 
 echo "6. Copiando archivos..."
 sudo mkdir -p /etc/letsencrypt/
-sudo cp -r /tmp/temp-repo/certs/* /etc/letsencrypt/
+sudo cp -r /tmp/temp-repo/certs/etc/* /etc/letsencrypt/
 sudo cp -r /tmp/temp-repo/www/* /var/www/html/
 
 # 7. Permisos RECOMENDADOS
