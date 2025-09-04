@@ -20,14 +20,14 @@ apt install git apache2 openssh-server mariadb-server certbot python3-certbot-ap
 
 echo "2. Instalando PHP con todos los módulos..."
 mkdir /php
-apt install php php-{cli,common,mysql,pdo,zip,gd,mbstring,curl,xml,bcmath,intl,soap,opcache,readline,openssl} -y
+apt install php php-{cli,common,mysql,pdo,zip,gd,mbstring,curl,xml,bcmath,intl,soap,opcache,readline} -y
 
 # Instalar Composer
 curl -sS https://getcomposer.org/installer -o composer-setup.php
 php composer-setup.php --install-dir=/usr/local/bin --filename=composer
 rm composer-setup.php
 
-composer require phpmailer/phpmailer --working-dir=/php
+composer require phpmailer/phpmailer --working-dir=/php/
 
 # 3. Configuración de servicios
 echo "3. Configurando servicios..."
