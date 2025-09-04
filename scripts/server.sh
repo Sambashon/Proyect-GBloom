@@ -19,7 +19,15 @@ apt update
 apt install git apache2 openssh-server mariadb-server certbot python3-certbot-apache -y
 
 echo "2. Instalando PHP con todos los módulos..."
-apt install php php-{cli,common,mysql,pdo,zip,gd,mbstring,curl,xml,bcmath,intl,soap,opcache,readline} -y
+mkdir /php
+apt install php php-{cli,common,mysql,pdo,zip,gd,mbstring,curl,xml,bcmath,intl,soap,opcache,readline,openssl} -y
+
+# Instalar Composer
+curl -sS https://getcomposer.org/installer -o composer-setup.php
+php composer-setup.php --install-dir=/usr/local/bin --filename=composer
+rm composer-setup.php
+
+composer require phpmailer/phpmailer --working-dir=/php
 
 # 3. Configuración de servicios
 echo "3. Configurando servicios..."
@@ -59,6 +67,7 @@ systemctl restart networking
 mkdir -p /Draftosaurus/backups
 mkdir -p /Draftosaurus/scripts
 cp /tmp/temp-repo/scripts/backup.sh /Draftosaurus/scripts
+cp /tmp/temp-repo/scripts/server.sh /Draftosaurus/scripts
 echo "0 0 */14 * 1 /Draftosaurus/scripts/backup.sh" | crontab -
 
 # 8. Limpiar
