@@ -25,12 +25,12 @@ button {
 body{
     height: 100vh;
     width: 100vw;
-    font-family: "Bayon", sans-serif;
-    font-weight: bolder;
+    font-family: "Oswald", sans-serif;
+    font-weight: 500;
     line-height: 65px;
     color: #D59F0A;
 
-    -webkit-text-stroke: 0.2px #480E0E;
+    -webkit-text-stroke: 1px #480E0E;
     text-shadow: 0px 4px 1px black;
 }
 main{
@@ -89,6 +89,7 @@ header:not(footer header){
     transition: box-shadow .15s,transform .15s;
     user-select: none;
     -webkit-user-select: none;
+    -webkit-text-stroke: 0px #480E0E;
     touch-action: manipulation;
     white-space: nowrap;
     will-change: box-shadow,transform; /*le avisa al buscador que las propiedades  cambiarán, hace queel componente se renderice en una capa propia y permite animaciones mas fluidas*/
@@ -144,17 +145,18 @@ footer {
     
 }
 
-.footer-container{
+.footer-buttonRow{
     display: flex;
     margin: none;
     padding: none;
     flex-direction: row;
     position: relative;
     bottom: 5vh;
+    height: 13vh;
     justify-content: space-evenly;
     align-items: center;
 }
-.footer-container .circle-button{
+.footer-buttonRow .circle-button{
     box-shadow: rgba(45, 35, 66, 0.4) 0 2px 4px,rgba(45, 35, 66, 0.3) 0 7px 13px -3px,#270707 0 -3px 0 inset;
     background-color: #480E0E;
     height: 70px;
@@ -171,7 +173,7 @@ footer .circle-button:active {
 }
 
 .visible{
-    height: 70vh;
+    height: 80vh;
     border-radius: 0%;
     border-top-left-radius: 30%;
     border-top-right-radius: 30%;
@@ -184,7 +186,7 @@ footer .circle-button:active {
     transform: translateX(-50%) translateY(50%);
 }
 .hidden{
-    display: none;
+    display: none !important;
 }
 
 .footerbody{
@@ -193,28 +195,26 @@ footer .circle-button:active {
     font-size: 32px;
     display: flex;
     flex-direction: column;
+    flex: 1;
 }
 .footerTitle{
     all: unset;
     font-size: 40px;
     color: #D59F0A;
-
-    -webkit-text-stroke: 0.2px #480E0E;
     text-shadow: 0px 4px 1px black;
 }
 
 .row{
-    all: unset;
     display: flex;
     flex-direction: row;
     align-items: center;
-    justify-content: flex-start;
-    gap: 2rem;
-    margin-bottom: 1rem;
 }
-.row span{
+#PROFILE .circle-button{
+    width: 50px;
+    height: 50px;
+}
+.row > *{
     width: fit-content;
-    padding: none;
 }
 .volSlider{
     width: 30%;
@@ -302,13 +302,14 @@ hr {
 }
 .profilepic{
     height: 70px;
-    width: 95px;
+    width: 70px;
 }
-.row .circle-button{margin-left: 22vw;
+
+.space-between{
+    width: 100%;
+    height: fit-content;
     display: flex;
-    background-color: #D59F0A;
-    align-self: flex-end;
-    justify-self: end;
+    justify-content: space-between;
 }
 
 
