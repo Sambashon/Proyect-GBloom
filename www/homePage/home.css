@@ -144,6 +144,16 @@ footer {
     
 }
 
+.footer-container{
+    display: flex;
+    margin: none;
+    padding: none;
+    flex-direction: row;
+    position: relative;
+    bottom: 5vh;
+    justify-content: space-evenly;
+    align-items: center;
+}
 .footer-container .circle-button{
     box-shadow: rgba(45, 35, 66, 0.4) 0 2px 4px,rgba(45, 35, 66, 0.3) 0 7px 13px -3px,#270707 0 -3px 0 inset;
     background-color: #480E0E;
@@ -155,16 +165,7 @@ footer .circle-button:active {
     transform: translateY(2px);
 }
 
-.footer-container{
-    display: flex;
-    margin: none;
-    padding: none;
-    flex-direction: row;
-    position: relative;
-    bottom: 5vh;
-    justify-content: space-evenly;
-    align-items: center;
-}
+
 #PLAYbtn{
     margin-bottom: 5vh;
 }
@@ -182,7 +183,9 @@ footer .circle-button:active {
     height: 15vh;
     transform: translateX(-50%) translateY(50%);
 }
-
+.hidden{
+    display: none;
+}
 
 .footerbody{
     margin-left: 7vw;
@@ -191,7 +194,7 @@ footer .circle-button:active {
     display: flex;
     flex-direction: column;
 }
-.footerbody h2{
+.footerTitle{
     all: unset;
     font-size: 40px;
     color: #D59F0A;
@@ -301,16 +304,14 @@ hr {
     height: 70px;
     width: 95px;
 }
-
-.footerheader{
-    margin-bottom: 0.5rem;
-}
 .row .circle-button{margin-left: 22vw;
     display: flex;
     background-color: #D59F0A;
     align-self: flex-end;
     justify-self: end;
 }
+
+
 @media screen and (max-width: 900px) {
     .nav-tabs .nav-link {
         padding: 0.5rem 0.75rem;  /* Less vertical and horizontal padding */
