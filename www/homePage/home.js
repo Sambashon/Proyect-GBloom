@@ -36,3 +36,9 @@ function togglePanel(panelName, panelElement) {
 settingsBtn.addEventListener("click", () => togglePanel("Settings", settingsSection));
 playBtn.addEventListener("click", () => togglePanel("Play", playSection));
 profileBtn.addEventListener("click", () => togglePanel("Profile", profileSection));
+
+
+const profileSettingsBtn = document.getElementById("profileSettingsBtn");
+profileSettingsBtn.addEventListener("click", () =>{
+    window.location.href = '../profileSettings/settings.html';
+})

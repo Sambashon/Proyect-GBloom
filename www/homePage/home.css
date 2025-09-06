@@ -1,3 +1,7 @@
+*{
+    margin: 0;
+    padding: 0;
+}
 #register{
     cursor: pointer;
     background-color: #000;
@@ -13,10 +17,7 @@
     background-color: #D59F0A;
     padding: 1rem;
 }
-*{
-    margin: 0;
-    padding: 0;
-}
+
 
 button {
     color: white;
@@ -223,6 +224,8 @@ footer .circle-button:active {
     background-color: #480E0E;
     border: 1px solid #270707;
     color: #D59F0A;
+    -webkit-text-stroke: 0px black;
+    text-shadow: 0px black;
     box-shadow: rgba(45, 35, 66, 0.4) 0 4px 0,rgba(45, 35, 66, 0.3) 0 7px 13px -3px inset;
 }
 .customDropdown:hover{
@@ -242,6 +245,8 @@ footer .circle-button:active {
 
 .dropdown-item{
     color: #D59F0A;
+    -webkit-text-stroke: 0px black;
+    text-shadow: 0px black;
 }
 .dropdown-item:hover{
     color: #D59F0A;
@@ -338,6 +343,14 @@ hr {
     }
 }   
 @media screen and (max-width: 450px) {
+    .footer-buttonRow .circle-button{
+        height: 55px;
+        width: 55px;
+    }
+    .footer-buttonRow .circle-button img{
+        height: 30px;
+        width: 30px;
+    }
     .playSection input{
         font-size: 24px;
     }
