@@ -1,0 +1,17 @@
+.form-container{
+    width: 70vw;
+    height: fit-content;
+    background-color: #480E0E;
+    padding: 10px;
+    border-radius: 10px;
+}
+.checkBox-label{
+    color: white;
+}
+.center{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+}

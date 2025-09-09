@@ -1,129 +1,38 @@
-#register{
-    cursor: pointer;
-    background-color: #000;
-}
-.buttonsTopRow{
-    display: flex;
-    flex-direction: row;
-    gap: 1rem;
-}
-#register.circle-button{
-    width: fit-content !important;
-    border-radius: 10px;
-    background-color: #D59F0A;
-    padding: 1rem;
-}
 *{
     margin: 0;
     padding: 0;
 }
 
-button {
-    color: white;
+.buttonsTopRow{
+    display: flex;
+    flex-direction: row;
+    gap: 1rem;
 }
-
 body{
     height: 100vh;
     width: 100vw;
-    font-family: "Bayon", sans-serif;
-    font-weight: bolder;
+    font-family: "Oswald", sans-serif;
+    font-weight: 500;
     line-height: 65px;
     color: #D59F0A;
-
-    -webkit-text-stroke: 0.2px #480E0E;
-    text-shadow: 0px 4px 1px black;
+    display: flex;
+    flex-direction: column;
 }
-main{
-    all: unset;
-    position: fixed;
+.main-container{
     background-image: url(../Resources/Backgrounds/background.png);
     background-position: center;
     background-repeat: no-repeat;
     background-size: cover;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    height: 100vh; /* So it pushes logo to middle and footer to bottom */
-    width: 100vw;
-    flex-direction: column;
+    width: 100%;
+    height: 100%;
 }
 .gamelogo img {
     width: 30vw;
     height: auto;
 }
 
-header:not(footer header){
-    all: unset;
-    user-select: none;
-    height: 5vh;
-    padding: 10px 16px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    flex-direction: row;
-    background-color: #480E0E;
-}
-.logo{
-    height: 100%;
-    width: fit-content;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-.logo img{
-    width: 100%;
-    height: 100%;
 
-}
-.circle-button {
-    align-items: center;
-    appearance: none;
-    box-shadow: rgba(45, 35, 66, 0.4) 0 2px 4px,rgba(45, 35, 66, 0.3) 0 7px 13px -3px,#b18409 0 -3px 0 inset;
-    box-sizing: border-box;
-    display: inline-flex;
-    justify-content: center;
-    line-height: 1;
-    list-style: none;
-    overflow: hidden;
-
-    transition: box-shadow .15s,transform .15s;
-    user-select: none;
-    -webkit-user-select: none;
-    touch-action: manipulation;
-    white-space: nowrap;
-    will-change: box-shadow,transform; /*le avisa al buscador que las propiedades  cambiarán, hace queel componente se renderice en una capa propia y permite animaciones mas fluidas*/
-
-    background-color: #D59F0A;
-    border: none;
-    border-radius: 50%;
-    width: 40px;
-    height: 40px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    margin-left: 1rem;
-    margin-right: 1rem;
-}
-
-/*button anims*/
-.circle-button:hover {
-    transform: translateY(-2px);
-}
-
-.circle-button:active {
-    box-shadow: #b18409 0 3px 7px inset;
-    transform: translateY(2px);
-}
-
-
-.circle-button img {
-    height: 30px;
-    width: auto;
-}
-
-
-footer {
+.footer-menu {
     z-index: 2;
     position: fixed;
     bottom: 0;
@@ -141,10 +50,20 @@ footer {
         opacity 0.6s ease,
         height 0.6s ease,
         border-radius 0.6s ease;
-    
 }
 
-.footer-container .circle-button{
+.footer-buttonRow{
+    display: flex;
+    margin: none;
+    padding: none;
+    flex-direction: row;
+    position: relative;
+    bottom: 5vh;
+    height: 13vh;
+    justify-content: space-evenly;
+    align-items: center;
+}
+.footer-buttonRow .circle-button{
     box-shadow: rgba(45, 35, 66, 0.4) 0 2px 4px,rgba(45, 35, 66, 0.3) 0 7px 13px -3px,#270707 0 -3px 0 inset;
     background-color: #480E0E;
     height: 70px;
@@ -155,22 +74,13 @@ footer .circle-button:active {
     transform: translateY(2px);
 }
 
-.footer-container{
-    display: flex;
-    margin: none;
-    padding: none;
-    flex-direction: row;
-    position: relative;
-    bottom: 5vh;
-    justify-content: space-evenly;
-    align-items: center;
-}
+
 #PLAYbtn{
     margin-bottom: 5vh;
 }
 
 .visible{
-    height: 70vh;
+    height: 80vh;
     border-radius: 0%;
     border-top-left-radius: 30%;
     border-top-right-radius: 30%;
@@ -182,7 +92,9 @@ footer .circle-button:active {
     height: 15vh;
     transform: translateX(-50%) translateY(50%);
 }
-
+.hidden{
+    display: none !important;
+}
 
 .footerbody{
     margin-left: 7vw;
@@ -190,28 +102,26 @@ footer .circle-button:active {
     font-size: 32px;
     display: flex;
     flex-direction: column;
+    flex: 1;
 }
-.footerbody h2{
+.footerTitle{
     all: unset;
     font-size: 40px;
     color: #D59F0A;
-
-    -webkit-text-stroke: 0.2px #480E0E;
     text-shadow: 0px 4px 1px black;
 }
 
 .row{
-    all: unset;
     display: flex;
     flex-direction: row;
     align-items: center;
-    justify-content: flex-start;
-    gap: 2rem;
-    margin-bottom: 1rem;
 }
-.row span{
+#PROFILE .circle-button{
+    width: 50px;
+    height: 50px;
+}
+.row > *{
     width: fit-content;
-    padding: none;
 }
 .volSlider{
     width: 30%;
@@ -220,6 +130,8 @@ footer .circle-button:active {
     background-color: #480E0E;
     border: 1px solid #270707;
     color: #D59F0A;
+    -webkit-text-stroke: 0px black;
+    text-shadow: 0px black;
     box-shadow: rgba(45, 35, 66, 0.4) 0 4px 0,rgba(45, 35, 66, 0.3) 0 7px 13px -3px inset;
 }
 .customDropdown:hover{
@@ -239,6 +151,8 @@ footer .circle-button:active {
 
 .dropdown-item{
     color: #D59F0A;
+    -webkit-text-stroke: 0px black;
+    text-shadow: 0px black;
 }
 .dropdown-item:hover{
     color: #D59F0A;
@@ -299,18 +213,20 @@ hr {
 }
 .profilepic{
     height: 70px;
-    width: 95px;
+    width: 70px;
 }
 
-.footerheader{
-    margin-bottom: 0.5rem;
-}
-.row .circle-button{margin-left: 22vw;
+.space-between{
+    width: 100%;
+    height: fit-content;
     display: flex;
-    background-color: #D59F0A;
-    align-self: flex-end;
-    justify-self: end;
+    justify-content: space-between;
 }
+.playSection .custom-button{
+    font-size: 24px;
+}
+
+
 @media screen and (max-width: 900px) {
     .nav-tabs .nav-link {
         padding: 0.5rem 0.75rem;  /* Less vertical and horizontal padding */
@@ -336,6 +252,14 @@ hr {
     }
 }   
 @media screen and (max-width: 450px) {
+    .footer-buttonRow .circle-button{
+        height: 55px;
+        width: 55px;
+    }
+    .footer-buttonRow .circle-button img{
+        height: 30px;
+        width: 30px;
+    }
     .playSection input{
         font-size: 24px;
     }
