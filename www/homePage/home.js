@@ -52,6 +52,16 @@ const profileSettingsBtn = document.getElementById("profileSettingsBtn");
 profileSettingsBtn.addEventListener("click", () =>{
     window.location.href = '../profileSettings/settings.html';
 })
+//-------SETTINGS SECTION
+//dropdowns
+document.querySelectorAll(".dropdown-item").forEach(item => {
+  item.addEventListener("click", () => {
+    const dropdown = item.closest(".dropdown");
+    const button = dropdown.querySelector(".dropdown-toggle");
+    button.innerText = item.innerText;
+    console.log("Selected:", item.innerText);
+  });
+});
 
 //----------------PLAY SECTION
 const joinBtn = document.getElementById("joinBtn");

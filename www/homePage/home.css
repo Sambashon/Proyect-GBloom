@@ -59,9 +59,13 @@ body{
     flex-direction: row;
     position: relative;
     bottom: 5vh;
-    height: 13vh;
+    height: fit-content;
     justify-content: space-evenly;
     align-items: center;
+}
+.visible .footer-buttonRow{
+    bottom: 5vh;
+    height: fit-content;
 }
 .footer-buttonRow .circle-button{
     box-shadow: rgba(45, 35, 66, 0.4) 0 2px 4px,rgba(45, 35, 66, 0.3) 0 7px 13px -3px,#270707 0 -3px 0 inset;
@@ -96,13 +100,17 @@ footer .circle-button:active {
     display: none !important;
 }
 
-.footerbody{
+.footerbody{ 
     margin-left: 7vw;
     margin-right: 7vw;
     font-size: 32px;
     display: flex;
     flex-direction: column;
-    flex: 1;
+    
+}
+.visible .footerbody{
+    position: relative;
+    bottom: 7vh;
 }
 .footerTitle{
     all: unset;
@@ -238,8 +246,7 @@ hr {
     .tab-content{
         font-size: 24px;
     }
-    footer{
-        height: 20vh;
+    .footer-menu{
         width: 110vw;
     }
     .circle-button{
@@ -251,7 +258,9 @@ hr {
         height: 40px;
     }
 }   
+
 @media screen and (max-width: 450px) {
+    
     .footer-buttonRow .circle-button{
         height: 55px;
         width: 55px;

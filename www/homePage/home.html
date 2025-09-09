@@ -63,30 +63,51 @@
             <!--Settings_Section-->
         <section class="footerbody hidden" id="SETTINGS"><!--Hidden-->    
             <header class="mb-2 text-center">
-                <h1 class="footerTitle text-outline">Settings</h1>
+                <h1 class="footerTitle text-outline responsive-title">Settings</h1>
                 <hr>
             </header>
             <section>
                 <!-- Volume control -->
                 <div class="row">
-                    <span class="text-outline">Volume:</span>
+                    <span class="text-outline responsive-subtitle">Volume:</span>
                     <input type="range" min="0" max="100" step="1" value="100" class="volSlider" id="volSlider">
-                    <span class="text-outline" id="volValue">100</span>
+                    <span class="text-outline responsive-subtitle" id="volValue">100</span>
                 </div>
                 <!-- Graphics dropdown -->
-                <div class="row">
-                    <span class="text-outline">Graphics:</span>
+                <div class="custom-row-space-between">
+                    <span class="text-outline responsive-subtitle">Graphics:</span>
                     <div class="dropdown">
-                        <button class="btn btn-secondary dropdown-toggle customDropdown" type="button" id="graphicsDropdownButton" data-bs-toggle="dropdown" aria-expanded="false">
+                        <button class="btn btn-secondary dropdown-toggle customDropdown" type="button" id="graphicsDropdownBtn" data-bs-toggle="dropdown" aria-expanded="false">
                             Select
                         </button>
-                        <ul class="dropdown-menu customdropdownmenu" aria-labelledby="graphicsDropdownButton">
-                            <li><a class="dropdown-item" href="#">Low</a></li>
-                            <li><a class="dropdown-item" href="#">Medium</a></li>
-                            <li><a class="dropdown-item" href="#">High</a></li>
+                        <ul class="dropdown-menu customdropdownmenu" aria-labelledby="graphicsDropdownBtn">
+                            <li class="dropdown-item">LOW</li>
+                            <li class="dropdown-item">MEDIUM</li>
+                            <li class="dropdown-item">HIGH</li>
                         </ul>
                     </div>
                 </div>
+               <div class="custom-row-space-between">
+                    <span class="text-outline responsive-subtitle">Game resolution</span>
+                    <div class="dropdown">
+                        <button class="btn btn-secondary dropdown-toggle customDropdown" type="button" id="gameResDropdownBtn" data-bs-toggle="dropdown" aria-expanded="false">Select</button>
+                         <ul class="dropdown-menu customdropdownmenu" aria-labelledby="gameResDropdownBtn">
+                            <li class="dropdown-item">LOW</li>
+                            <li class="dropdown-item">MEDIUM</li>
+                            <li class="dropdown-item">HIGH</li>
+                        </ul>
+                    </div>
+               </div>
+               <div class="custom-row-space-between">
+                    <span class="text-outline responsive-subtitle">Language</span>
+                    <div class="dropdown">
+                        <button class="btn btn-secondary dropdown-toggle customDropdown" type="button" id="antiAliDropdownBtn" data-bs-toggle="dropdown" aria-expanded="false">ENGLISH</button>
+                         <ul class="dropdown-menu customdropdownmenu" aria-labelledby="antiAliDropdownBtn">
+                            <li class="dropdown-item">ENGLISH</li>
+                            <li class="dropdown-item">ESPAÑOL</li>
+                        </ul>
+                    </div>
+               </div>
             </section>
         </section>
         <!--Play_Section-->

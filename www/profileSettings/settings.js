@@ -19,3 +19,8 @@ const leaveBtn = document.getElementById("leaveBtn");
 leaveBtn.addEventListener("click", () =>{
     window.location.href = '../homePage/home.html';
 })
+const logoutBtn = document.getElementById("logoutBtn");
+logoutBtn.addEventListener("click", () =>{
+    alert("Session closed!");
+    window.location.href = '../homePage/home.html';
+})
