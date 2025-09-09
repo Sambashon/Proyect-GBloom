@@ -14,6 +14,14 @@ const state = {
     selectedGraphics: null
 }
 
+const volumeSlider = document.getElementById("volSlider");
+const volValue = document.getElementById("volValue");
+volumeSlider.addEventListener("input", (e) =>{
+    const volume = e.target.value;
+    volValue.textContent = volume;
+})
+
+
 function closePanels(){
     [settingsSection, playSection, profileSection].forEach(section => {
         section.classList.add("hidden");
