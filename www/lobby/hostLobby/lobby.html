@@ -3,27 +3,46 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>HostLobby</title>
     <link rel="icon" href="../../Resources/Logo/GbloomClassic.svg">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Bayon&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@200..700&display=swap" rel="stylesheet">
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="lobby.css">
+    <link rel="stylesheet" href="../../src/css/general.css">
+    <link rel="stylesheet" href="../../src/css/modal.css">
+    <link rel="stylesheet" href="../lobby.css">
 </head>
 <body>
-    <header>
-        <aside class="logo"><img src="../../Resources/Logo/GBloomHorizontal.svg" alt="GBLOOM"></aside>
-        <section>
-            <button type="button" class="circle-button" data-bs-toggle="modal" data-bs-target="#exampleModal"><img src="../../Resources/Icons/leave-svgrepo-com.svg" alt="back" height="30px" width="30px" id="backBtn"></button>
-        </section>
+    <div class="modal fade" id="hostModal" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+            <div class="modal-header centered-modal-header">
+                <h1 class="modal-title responsive-title text-outline" id="modalLabel">You're the host</h1>
+            </div>
+            <div class="modal-body">
+                <section class="modal-group">
+                    <h1 class="responsive-subtitle text-outline">Are you sure you want to end the game session?</h1>
+                </section>                
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="custom-button dark-red" id="backBtn">Leave</button>
+                <button type="button" class="custom-button" data-bs-dismiss="modal">Cancel</button>
+            </div>    
+            </div>
+        </div>
+        </div>
+    <header class="topHeader">
+        <div class="logo-container"><img src="../../Resources/Logo/GBloomHorizontal.svg" alt="GBLOOM" class="img-fluid"></div>
+        <button class="custom-button circle-button"><img src="../../Resources/Icons/leave-svgrepo-com.svg" data-bs-toggle="modal" data-bs-target="#hostModal"></button>
     </header>
-    <main>
-        <header class="text-center fluid">
-            <h1>Player 1's party</h1>
-            <h3>code: xxx xxx xxx</h3>
+    <main class="main-container">
+    
+        <header class="pageTitle">
+            <h1 class="text-outline responsive-title">Your party</h1>
+            <h3 class=" text-center text-outline responsive-subtitle">XXX XXX XXX</h3>
         </header>
 
         <article class="container text-center" id="players">
@@ -54,27 +73,10 @@
             </section>
         </article>
 
-        
-
-        <h2>2/5 Players</h2>
-        <button class="circle-button" id="startBtn">Start</button>
-        
+        <h2 class="responsive-text text-outline">2/5 Players</h2>
+        <button class="custom-button" id="startBtn">Start</button>
+        <script src="../lobby.js"></script>
     </main>
-    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-            <section class="modal-dialog">
-                <div class="modal-content">
-                    <header class="modal-header">
-                        <h1 class="modal-title fs-5" id="exampleModalLabel">You are currently hosting this game, you can choose to</h1>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </header>
-                    <footer class="modal-footer">
-                        <button type="button" class="circle-button" data-bs-dismiss="modal" id="endSession">End session</button>
-                        <button type="button" class="circle-button" id="LEAVEBtn">leave</button>
-                    </footer>
-                </div>
-            </section>
-        </div>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="lobby.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
 </body>
 </html>

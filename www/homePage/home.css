@@ -115,8 +115,6 @@ footer .circle-button:active {
 .footerTitle{
     all: unset;
     font-size: 40px;
-    color: #D59F0A;
-    text-shadow: 0px 4px 1px black;
 }
 
 .row{
@@ -184,15 +182,21 @@ hr {
     gap: 1rem;
 }
 
-.playSection input{
+.custom-input{
     all: unset;
-    background-color: inherit;
+    background-color: #480E0E;
+    border-radius: 10px;
+    border: 2px #270707 inset solid;
     color: white;
-    border: none;
     border-bottom: 2px solid #b18409;
+    box-shadow: 0px 0px 10px 2px inset #270707;
+    padding: 0.5rem;
     width: fit-content;
     height: 5vh;
     font-size: 2rem;
+}
+.custom-input::placeholder{
+    color: #A44141;
 }
 .playSection .circle-button{
     width: fit-content;
@@ -233,8 +237,12 @@ hr {
 .playSection .custom-button{
     font-size: 24px;
 }
-
-
+.modal-group{
+    gap: 10px;
+}
+.modal-header{
+    border-bottom: 3px  #480E0E solid!important;
+}
 @media screen and (max-width: 900px) {
     .nav-tabs .nav-link {
         padding: 0.5rem 0.75rem;  /* Less vertical and horizontal padding */

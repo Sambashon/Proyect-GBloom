@@ -92,6 +92,9 @@ body{
 }
 .circle-button{
     border-radius: 50% !important;
+    height: 50px;
+    width: 50px;
+    padding: 5px !important;
 }
 .circle-button img {
     height: 30px;
@@ -142,6 +145,13 @@ body{
 .circle-button img {
     height: 30px;
     width: auto;
+}
+.dark-red{
+    background-color: #480E0E;
+    box-shadow: rgba(45, 35, 66, 0.4) 0 2px 4px,rgba(45, 35, 66, 0.3) 0 7px 13px -3px,#290808 0 -3px 0 inset;
+}
+.dark-red:active{
+    box-shadow: #290808 0 3px 7px inset !important;
 }
 
 /*button anims*/
