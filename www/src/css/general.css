@@ -20,6 +20,7 @@ body{
     display: flex;
     align-items: center;
     justify-content: center;
+    flex-direction: column;
 }
 .topHeader{
     display: flex;
@@ -37,6 +38,13 @@ body{
     display: flex;
     align-items: center;
     justify-content: center;
+}
+.custom-row-space-between{
+    border-top: 1px solid #480E0E;
+    display: flex;
+    flex-direction: row !important;
+    align-items: center;
+    justify-content: space-between;
 }
 @media screen and (max-height: 512px){
     .logo-container{
@@ -146,8 +154,11 @@ body{
     transform: translateY(2px);
 }
 .responsive-title {
-    font-size: clamp(1rem, 2vw + 1rem, 3rem) !important;
+    font-size: clamp(2rem, 2vw + 1rem, 4rem) !important;
 }
-.resposnive-text{
+.responsive-subtitle{
+    font-size: clamp(1.5rem, 1vw + 1rem, 3rem) !important;
+}
+.responsive-text{
     font-size: clamp(1rem, 1vw + 1rem, 2rem) !important;
 }

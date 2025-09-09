@@ -24,7 +24,7 @@
                 <h1 class="modal-title responsive-text text-outline">Wait you've got unsaved changes, are you sure you want to leave?</h1>
             </div>
             <div class="modal-footer">
-                <button type="button" class="custom-button dark-red" id="leaveBtn">Leave</button>
+                <button type="button" class="custom-button dark-red" id="modalleaveBtn">Leave</button>
                 <button type="button" class="custom-button" data-bs-dismiss="modal">Close</button>
             </div>    
             </div>
@@ -47,7 +47,7 @@
     <div class="settings-main-container">
         <section class="avatar-section">
             <header class="profile-header">
-                    <button class="custom-button circle-button" data-bs-toggle="modal" data-bs-target="#unsavedModal"><img src="../Resources/Icons/leave-svgrepo-com.svg" alt=""></button>
+                    <button class="custom-button circle-button" id="leaveBtn"><img src="../Resources/Icons/leave-svgrepo-com.svg" alt=""></button>
             </header>
              <div class="picture-container">
                 <img src="../Resources/Icons/defautlprofilepic.png" alt="profilepic" class="img-fluid">
@@ -83,7 +83,7 @@
                 </div>
                 <hr>
                 <div class="form-footer">
-                    <input type="submit" class="custom-button" value="Save changes">
+                    <input type="submit" class="custom-button" value="Save changes" id="saveSubmit">
                     <button class="custom-button dark-red" type="button" data-bs-toggle="modal" data-bs-target="#logoutModal">Logout</button>
                 </div>
                 
