@@ -9,7 +9,7 @@ class GBloomDB {
             PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC
         ];
 
-        $this->pdo = new PDO("mysql:host=$thost;dbname=$dbname;port=$port;charset=utf8mb4",
+        $this->pdo = new PDO("mysql:host=$host;dbname=$dbname;port=$port;charset=utf8mb4",
             $username,
             $password,
             $options
@@ -42,7 +42,7 @@ class GBloomDB {
             }
 
             $solicitud = $this->pdo->prepare("select * from usuario where username = :username;");
-            $solicitud->execute(["username" => $username["username"]]);
+            $solicitud->execute(["username" => $userinfo["username"]]);
             $usuario = $solicitud->fetch();
 
             if ($usuario !== false) {
@@ -213,10 +213,10 @@ class GBloomDB {
 
         $utlimaPartida = $partidas[0];
 
-        for ($i = 0; i < count($partidas); $i++) {
-            if (new DateTime($partidas[i]["fecha"]) < new DateTime($utlimaPartida["fecha"])) {
-                if (new DateTime($partidas[i]["horaInicio"] < new DateTime($utlimaPartida["horaInicio"]))) {
-                    $utlimaPartida = $partidas[i];
+        for ($i = 0; $i < count($partidas); $i++) {
+            if (new DateTime($partidas[$i]["fecha"]) < new DateTime($utlimaPartida["fecha"])) {
+                if (new DateTime($partidas[$i]["horaInicio"] < new DateTime($utlimaPartida["horaInicio"]))) {
+                    $utlimaPartida = $partidas[$i];
                 }
             }
         }
@@ -256,7 +256,7 @@ class GBloomDB {
 
     public function crearLobby(string $nombre, string $host): array {
         do {
-            $codigo = generarCodigoAcceso();
+            $codigo = $this->generarCodigoAcceso();
 
             $solicitud = $this->pdo->prepare("select codigo from lobby where codigo = :codigo;");
             $solicitud->execute(["codigo" => $codigo]);
@@ -285,7 +285,7 @@ class GBloomDB {
     // Nota: Luego tengo que considerar si es mejpr y practico utilizar el id de partda nada mas.
 
     public function conectaLobby(string $token, string $codigo): array {
-        $credentials = getUserCredentials($token);
+        $credentials = $this->getUserCredentials($token);
         if ($credentials["state"] == "success") {
             $solicitud = $this->pdo->prepare("select cantidadJugadores from lobby where codigo = :codigo");
             $solicitud->execute(["codigo" => $codigo]);
@@ -316,7 +316,7 @@ class GBloomDB {
     }
 
     public function desconectaLobby(string $token, string $codigo): array {
-        $credentials = getUserCredentials($token);
+        $credentials = $this->getUserCredentials($token);
         if ($credentials["state"] == "success") {
             $username = $credentials["result"]["username"];
             $solicitud = $this->pdo->prepare("select codigo from lobby where codigo = :codigo");
@@ -369,8 +369,8 @@ class GBloomDB {
             $partidaId = $solicitud->fetch();
 
             if ($partidaId === false) {
-                for ($i = 0; i < count($usuarios); $i++) {
-                    $username = $usuarios[i]["username"];
+                for ($i = 0; $i < count($usuarios); $i++) {
+                    $username = $usuarios[$i]["username"];
 
                     $actualizar = $this->pdo->prepare("update juega set jugando = false where username = :username;");
                     $actualizar->execute(["username" => $username]);
