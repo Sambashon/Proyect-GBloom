@@ -13,14 +13,16 @@ body{
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
-}
-.main-container{
+        justify-content: center;
+    }
+    .main-container{
     flex: 1;
     display: flex;
     align-items: center;
     justify-content: center;
     flex-direction: column;
+
+    width: 100%;
 }
 .topHeader{
     display: flex;
@@ -92,6 +94,9 @@ body{
 }
 .circle-button{
     border-radius: 50% !important;
+    height: 50px;
+    width: 50px;
+    padding: 5px !important;
 }
 .circle-button img {
     height: 30px;
@@ -102,7 +107,22 @@ body{
 .custom-button:hover {
     transform: translateY(-2px);
 }
-
+.custom-input{
+    all: unset;
+    background-color: #480E0E;
+    border-radius: 10px;
+    border: 2px #270707 inset solid;
+    color: white;
+    border-bottom: 2px solid #b18409;
+    box-shadow: 0px 0px 10px 2px inset #270707;
+    padding: 0.5rem;
+    width: fit-content;
+    height: 5vh;
+    font-size: 2rem;
+}
+.custom-input::placeholder{
+    color: #A44141;
+}
 .custom-button:active {
     box-shadow: #b18409 0 3px 7px inset;
     transform: translateY(2px);
@@ -142,6 +162,13 @@ body{
 .circle-button img {
     height: 30px;
     width: auto;
+}
+.dark-red{
+    background-color: #480E0E;
+    box-shadow: rgba(45, 35, 66, 0.4) 0 2px 4px,rgba(45, 35, 66, 0.3) 0 7px 13px -3px,#290808 0 -3px 0 inset;
+}
+.dark-red:active{
+    box-shadow: #290808 0 3px 7px inset !important;
 }
 
 /*button anims*/

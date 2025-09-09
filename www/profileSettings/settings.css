@@ -69,11 +69,14 @@ body{
     box-shadow: 0px 0px 10px 10px rgba(0, 0, 0, 0.2);
 }
 .editBtn{
+    display: flex;
+    align-items: center;
+    justify-content: center;
     font-size: 30px !important;
     position: absolute;
     z-index: 1;
-    bottom: 10px;
-    right: 10px;
+    bottom: -15px;
+    right: -15px;
     background: #4CAF50;
     border: none;
     border-radius: 50%;
@@ -154,64 +157,6 @@ hr{
     border-radius: 5px; 
 }
 
-.custom-button {
-    align-items: center;
-    appearance: none;
-    box-shadow: rgba(45, 35, 66, 0.4) 0 2px 4px,rgba(45, 35, 66, 0.3) 0 7px 13px -3px,#b18409 0 -3px 0 inset;
-    box-sizing: border-box;
-    display: inline-flex;
-    justify-content: center;
-    line-height: 1;
-    list-style: none;
-    overflow: hidden;
-
-    transition: box-shadow .15s,transform .15s;
-    user-select: none;
-    -webkit-user-select: none;
-    touch-action: manipulation;
-    white-space: nowrap;
-    will-change: box-shadow,transform;
-
-    color: white;
-    font-weight: 700;
-
-    background-color: #D59F0A;
-    border: none;
-    border-radius: 5px;
-    width: fit-content;
-    padding: 5px 20px;
-    height: 40px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-}
-.circle-button img {
-    height: 30px;
-    width: auto;
-}
-
-/*button anims*/
-.custom-button:hover {
-    transform: translateY(-2px);
-}
-
-.custom-button:active {
-    box-shadow: #b18409 0 3px 7px inset;
-    transform: translateY(2px);
-}
-.circle-button{
-    border-radius: 50%;
-    height: 50px;
-    width: 50px;
-}
-.dark-red{
-    background-color: #480E0E;
-    box-shadow: rgba(45, 35, 66, 0.4) 0 2px 4px,rgba(45, 35, 66, 0.3) 0 7px 13px -3px,#290808 0 -3px 0 inset;
-}
-.dark-red:active{
-    box-shadow: #290808 0 3px 7px inset;
-}
 .form-group label, .form-text-area label{
     width: 80px;
 }
@@ -219,6 +164,12 @@ hr{
     display: flex;
     flex-direction: row;
     justify-content: space-between;
+}
+.responsive-text{
+    margin-right: 10px;
+}
+.custom-button{
+    margin-left: 10px;
 }
 @media screen and (max-width: 600px) {
     .settings-main-container{
@@ -228,6 +179,9 @@ hr{
     }
 }
 @media screen and (max-width: 512px){
+    .custom-text-area{
+        width: 230px !important;
+    }
     .settings-main-container{
         flex-direction: column;
         gap: 10px;
@@ -235,24 +189,24 @@ hr{
     }
     .avatar-section{
         width: 100%;
-        height: 30%;
+        height: 27%;
     }
-    .avatar-section .picture-container{
+    
+    .avatar-section .picture-container{    .profile-header{
+        padding: 0 !important;
+    }
         height: 100px;
         width: 100px;
     }
     .profile-header{
-        padding: 0 !important;
+        padding: 10px 10px 0px 10px !important;
     }
     .editBtn{
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        height: 35px;
-        width: 35px;
-        bottom: 5px;
-        right: 5px;
-        font-size: 30px !important;
+        height: 25px;
+        width: 25px;
+        bottom: -25px;
+        right: -25px;
+        font-size: 25px !important;
     }
     .header{
         display: none;

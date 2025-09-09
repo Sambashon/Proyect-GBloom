@@ -1,6 +1,4 @@
-
 .profileContainer{
-    
     height: fit-content;
     width: fit-content;
     min-width: 105px;
@@ -14,13 +12,10 @@
     align-items: center;
     justify-content: center;
 }
-
 .col{
     margin: 0;
     width: fit-content;
 }
-
-
 @media (max-width: 768px) {
     .profileContainer img{
         height: 70px;
