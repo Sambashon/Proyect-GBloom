@@ -8,7 +8,3 @@ xOut.forEach(button => {
   });
 });
 
-const doneBtn = document.querySelector("#doneBtn");
-doneBtn.addEventListener("click", () =>{
-    window.location = "../../homePage/home.html";
-})

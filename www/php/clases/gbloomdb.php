@@ -35,7 +35,7 @@ class GBloomDB {
                 $desde = $ahora->diff(new DateTime($userinfo["fecha"]));
                 $expira = new DateTime();
                 $expira->modify("+1 months")->format("Y-m-d H:i:s");
-                if ($desde->weeks > 1) {
+                if ($desde->days > 1) {
                     $actualizar = $this->pdo->prepare("update sesion set expira = :expira where token = :token;");
                     $actualizar->execute(["expira" => $expira, "token" => $token]);
                 }
@@ -65,108 +65,6 @@ class GBloomDB {
         }
     }
 
-    // Metodos para register y login
-
-    public function registrarUsuario(string $username, string $contraseña, string $correo, DateTime $fechaNacimiento): array {
-        $solicitud = $this->pdo->prepare("select username from usuario where username = :username;");
-        $solicitud->execute(["username" => $username]);
-        $existe = $solicitud->fetch();
-
-        // Un dia quisiera agregar reestriccion de edad para las cuentas CUIDADIIITO
-        if ($existe === false) {
-            if (!filter_var($correo, FILTER_VALIDATE_EMAIL)) {
-                return [
-                    "state" => "forbidden",
-                    "ErrMessage" => "El formato del correo electronico no es valido"
-                ];
-            }
-
-            if (strlen($username) > 32) {
-                return [
-                    "state" => "forbidden",
-                    "ErrMessage" => "El nombre de usuario brindado es demasiado largo"
-                ];
-            }
-
-            if (strlen($contraseña) >= 8) {
-                if (strlen($contraseña) <= 100) {
-                    $contraseña = password_hash($contraseña, PASSWORD_DEFAULT);
-                    $fechaNacimiento = $fechaNacimiento->format("Y-m-d");
-
-                    $insertar = $this->pdo->prepare("insert into usuario(username, correo, contraseña, fechaNacimiento) values (:username, :correo, :contraseña, :fechaNacimiento);");
-                    $insertar->execute(["username" => $username, "correo" => $correo, "contraseña" => $contraseña, "fechaNacimiento" => $fechaNacimiento]);
-
-                    return [
-                        "state" => "success"
-                    ];
-                } else {
-                    return [
-                        "state" => "forbidden",
-                        "ErrMessage" => "La contraseña brindada es demasiado larga"
-                    ];
-                }
-            } else {
-                return [
-                    "state" => "forbidden",
-                    "ErrMessage" => "La contraseña brindada debe contener como minimo 8 caracteres"
-                ];
-            }
-        } else {
-            return [
-                "state" => "forbidden",
-                "ErrMessage" => "El nombre de usuario no se puede registrar porque ya existe"
-            ];
-        }
-    }
-
-    public function generarToken(): string {
-        do {
-            $token = bin2hex(random_bytes(64));
-            $solicitud = $this->pdo->prepare("select token from sesion where token = :token");
-            $solicitud->execute(["token" => $token]);
-            $existe = $solicitud->fetch() !== false;
-        } while ($existe);
-
-        return $token;
-    }
-
-    public function accederUsuario(string $username, string $contraseña, bool $mantener): array {
-        $solicitud = $this->pdo->prepare("select username, contraseña from usuario where username = :username;");
-        $solicitud->execute(["username" => $username]);
-        $usuario = $solicitud->fetch();
-
-        if ($usuario !== false) {
-            if (password_verify($contraseña, $usuario["contraseña"])) {
-                $token = $this->generarToken();
-                $ahora = new DateTime();
-                $ahora = $ahora->format("Y-m-d H:i:s");
-                $expira = new DateTime();
-
-                if ($mantener) {
-                    $expira->modify("+1 months")->format("Y-m-d H:i:s");   
-                } else {
-                    $expira->modify("+1 days")->format("Y-m-d H:i:s");
-                }
-
-                $insertar = $this->pdo->prepare("insert into sesion(token, username, expira, fecha, mantener) values (:token, :username, :expira, :fecha, :mantener);");
-                $insertar->execute(["username" => $username, "token" => $token, "expira" => $expira, "mantener" => $mantener, "fecha" => $ahora]);
-
-                return [
-                    "state" => "success"
-                ];
-            } else {
-                return [
-                    "state" => "forbidden",
-                    "ErrMessage" => "La contraseña o el usuario ingresados no son validos"
-                ];
-            }
-        } else {
-            return [
-                "state" => "forbidden",
-                "ErrMessage" => "La contraseña o el usuario ingresados no son validos"
-            ];
-        }
-    }
 
     // Metodos para comenzar una partida de Draftosaurus
 

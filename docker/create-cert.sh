@@ -4,4 +4,4 @@ rm -f certs/etc/*
 
 rm -f certs/var/*
 
-docker compose -f docker/docker-compose.yaml run --rm certbot
+docker compose -f docker-compose.yaml run --rm certbot

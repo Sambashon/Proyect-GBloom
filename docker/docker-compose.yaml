@@ -20,10 +20,12 @@ services:
       MYSQL_DATABASE: gbloom_db
       MYSQL_USER: gbloomer
       MYSQL_PASSWORD: goldenblosser
+      MYSQL_INITDB_SKIP_TZINFO: 1
     ports:
       - "3306:3306"
     volumes:
       - ../mariadb/data:/var/lib/mysql
+      - ../mariadb/init:/docker-entrypoint-initdb.d
     restart: unless-stopped
 
   certbot:
