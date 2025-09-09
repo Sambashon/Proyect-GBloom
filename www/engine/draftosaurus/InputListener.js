@@ -9,11 +9,12 @@ class InputListener {
     }
 
     canvas;
+    slots;
     radio;
 
     constructor(canvas, slots, radio) {
         this.canvas = canvas;
-        this.slots = [];
+        this.slots = slots;
         this.radio = radio;
 
         canvas.addEventListener("mousedown", (evt) => {
@@ -58,7 +59,7 @@ class InputListener {
             });
         }
     }
-
+    
     // Detecta si el mouse está sobre un dinoasaurio
     onDinosaurio(dinosaurio, mouseMundo) {
         const offset = 10;
@@ -76,52 +77,77 @@ class InputListener {
     }
 
     // Mueve al dinosaurio si el mouse está presionado y sobre el canvas o un slot
-    dragDinosaurio(dinosaurio, map) {
+    dragDinosaurio(dinosaurio, map, move) {
         let posMundo;
         switch (this.mouse.focus) {
             case "slot0":
                 dinosaurio.model = map.getModelById("amarillo").model;
+                dinosaurio.id = "amarillo";
+                dinosaurio.position = [0, -100, 0];
                 
-                posMundo = this.mouseToWorld(map.matViewProj, map.cameras[0]);
-                dinosaurio.position = posMundo || dinosaurio.position;
+                if (move) {
+                    posMundo = this.mouseToWorld(map.matViewProj, map.cameras[0]);
+                    dinosaurio.position = posMundo || dinosaurio.position;
+                }
                 break;
             case "slot1":
                 dinosaurio.model = map.getModelById("azul").model;
+                dinosaurio.id = "azul";
+                dinosaurio.position = [0, -100, 0];
                 
-                posMundo = this.mouseToWorld(map.matViewProj, map.cameras[0]);
-                dinosaurio.position = posMundo || dinosaurio.position;
+                if (move) {
+                    posMundo = this.mouseToWorld(map.matViewProj, map.cameras[0]);
+                    dinosaurio.position = posMundo || dinosaurio.position;
+                }
                 break;
             case "slot2": 
                 dinosaurio.model = map.getModelById("rojo").model;
+                dinosaurio.id = "rojo";
+                dinosaurio.position = [0, -100, 0];
                 
-                posMundo = this.mouseToWorld(map.matViewProj, map.cameras[0]);
-                dinosaurio.position = posMundo || dinosaurio.position;
+                if (move) {
+                    posMundo = this.mouseToWorld(map.matViewProj, map.cameras[0]);
+                    dinosaurio.position = posMundo || dinosaurio.position;
+                }
                 break;
             case "slot3":
                 dinosaurio.model = map.getModelById("morado").model;
+                dinosaurio.id = "morado";
+                dinosaurio.position = [0, -100, 0];
                 
-                posMundo = this.mouseToWorld(map.matViewProj, map.cameras[0]);
-                dinosaurio.position = posMundo || dinosaurio.position;
+                if (move) {
+                    posMundo = this.mouseToWorld(map.matViewProj, map.cameras[0]);
+                    dinosaurio.position = posMundo || dinosaurio.position;
+                }
                 break;
             case "slot4":
                 dinosaurio.model = map.getModelById("verde").model;
+                dinosaurio.id = "verde";
+                dinosaurio.position = [0, -100, 0];
                 
-                posMundo = this.mouseToWorld(map.matViewProj, map.cameras[0]);
-                dinosaurio.position = posMundo || dinosaurio.position;
+                if (move) {
+                    posMundo = this.mouseToWorld(map.matViewProj, map.cameras[0]);
+                    dinosaurio.position = posMundo || dinosaurio.position;
+                }
                 break;
             case "slot5":
                 dinosaurio.model = map.getModelById("naranja").model;
+                dinosaurio.id = "naranja";
+                dinosaurio.position = [0, -100, 0];
                 
-                posMundo = this.mouseToWorld(map.matViewProj, map.cameras[0]);
-                dinosaurio.position = posMundo || dinosaurio.position;
+                if (move) {
+                    posMundo = this.mouseToWorld(map.matViewProj, map.cameras[0]);
+                    dinosaurio.position = posMundo || dinosaurio.position;
+                }
                 break;
             case "canvas":
                 this.onDinosaurio(dinosaurio, this.mouse.world);
                 return "colocado";
-                break;
             default:
-                posMundo = this.mouseToWorld(map.matViewProj, map.cameras[0]);
-                dinosaurio.position = posMundo || dinosaurio.position;
+                if (move) {
+                    posMundo = this.mouseToWorld(map.matViewProj, map.cameras[0]);
+                    dinosaurio.position = posMundo || dinosaurio.position;
+                }
                 break;
         }
 

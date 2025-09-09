@@ -75,7 +75,7 @@ class GBloomEngine {
 
     spawnDino(id, name) {
       let model = this.map.getModelById(id);
-      let dinosaurus = this.jgl.newObject({id: name, model: model.model, position: [0, 100, 0], size: [0.8, 0.8, 0.8], rotation: [0, 0, 0]});
+      let dinosaurus = this.jgl.newObject({id: name, model: model.model, position: [0, 0, 0], size: [0.8, 0.8, 0.8], rotation: [0, 0, 0]});
       this.map.push(dinosaurus);
 
       return this.map.objects.at(-1);
