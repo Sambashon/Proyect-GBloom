@@ -1,21 +1,36 @@
-let changesSaved = false;
-const saveBtn = document.getElementById("saveSubmit");
-const leaveBtn = document.getElementById("leaveBtn");
-const unsavedModalEl = document.getElementById("unsavedModal");
+let changesSaved = true;
+let username;
+let email;
+let aboutme;
+let birthdate;
+let password;
+
+const usernameInput = document.querySelector("input#username");
+const emailInput = document.querySelector("input#email");
+const aboutmeInput = document.querySelector("textarea#about");
+const passwordInput = document.querySelector("input#password");
+
+const save = document.querySelector("form");
+const leaveBtn = document.querySelector("#leaveBtn");
+const unsavedModalEl = document.querySelector("#unsavedModal");
 const unsavedModal = new bootstrap.Modal(unsavedModalEl);
 
-saveBtn.addEventListener("click", (e) =>{
+save.addEventListener("submit", (e) =>{
     e.preventDefault();
+    const action = fetch("/php/scripts/auth/modify.php", {
+        method: "POST",
+        body: JSON.stringify({username: usernameInput.value, correo: emailInput.value, contraseña: passwordInput.value, descripcion: aboutmeInput.value})
+    });
+    requestUserData();
     alert("Changes saved!");
     changesSaved = true;
 })
 leaveBtn.addEventListener("click", () => {
-    if (!changesSaved) {
-        unsavedModal.show();
-        
-    } else {
+    if (username == usernameInput.value && email == emailInput.value && password == passwordInput.value && aboutme == aboutmeInput.value) {
         console.log("No unsaved changes, proceed with leaving.");
-        window.location.href = '../homePage/home.html';
+        window.location.href = '../homePage/home.html';  
+    } else {
+        unsavedModal.show();
     }
 });
 
@@ -36,12 +51,34 @@ const inputs = form.querySelectorAll("input, textarea");
     })
 });
 
-const modalleaveBtn = document.getElementById("modalleaveBtn");
+const modalleaveBtn = document.querySelector("#modalleaveBtn");
 modalleaveBtn.addEventListener("click", () =>{
     window.location.href = '../homePage/home.html';
 })
-const logoutBtn = document.getElementById("logoutBtn");
+const logoutBtn = document.querySelector("#logoutBtn");
 logoutBtn.addEventListener("click", () =>{
-    alert("Session closed!");
+    const action = fetch("/php/scripts/auth/logout.php");
     window.location.href = '../homePage/home.html';
 })
+
+async function requestUserData() {
+    const response = await fetch("/php/scripts/utilities/credentials.php").then(function (response) {
+        return response.json();
+    });
+
+    if (response.state == "success") {
+        const usuario = response.result;
+        username = usuario.username;
+        email = usuario.correo;
+        aboutme = usuario.descripcion;
+        password = usuario.contraseña;
+        birthdate = new Date(usuario.fechaNacimiento);
+
+        usernameInput.value = username;
+        emailInput.value = email;
+        passwordInput.value = password;
+        aboutmeInput.value = aboutme;
+    }
+}
+
+document.addEventListener("DOMContentLoaded", requestUserData);

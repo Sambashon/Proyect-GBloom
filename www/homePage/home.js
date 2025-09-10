@@ -1,4 +1,9 @@
 //-----------MAINPAGE
+let username;
+let email;
+let birthdate;
+let aboutme;
+
 const footerMenu = document.querySelector(".footer-menu");
 const settingsBtn = document.getElementById("SETTINGSbtn");
 const playBtn = document.getElementById("PLAYbtn");
@@ -42,10 +47,6 @@ function togglePanel(panelName, panelElement) {
     panelElement.classList.remove("hidden");
     state.currentPanel = panelName;
 }
-settingsBtn.addEventListener("click", () => togglePanel("Settings", settingsSection));
-playBtn.addEventListener("click", () => togglePanel("Play", playSection));
-//IF USER LOGGED THEN
-profileBtn.addEventListener("click", () => togglePanel("Profile", profileSection));
 
 //--------PROFILE SECTION
 const profileSettingsBtn = document.getElementById("profileSettingsBtn");
@@ -68,7 +69,7 @@ const joinBtn = document.getElementById("joinBtn");
 const hostBtn = document.getElementById("hostBtn");
 
 joinBtn.addEventListener("click", () =>{
-    window.location.href = '../lobby/guestLobby/lobby.html';
+    connectLobby(document.querySelector("input#gamecode").value);
 })
 hostBtn.addEventListener("click" ,() =>{
     window.location.href = '../lobby/hostLobby/config.html';
@@ -83,3 +84,47 @@ loginBtn.addEventListener("click", () =>{
 registerBtn.addEventListener("click", () =>{
     window.location.href = '../auth/register.html'
 })
+
+async function connectLobby(code) {
+    const response = await fetch("/php/scripts/utilities/credentials.php", {
+        method: "POST",
+        body: JSON.stringify({codigo: code})
+    }).then(function (response) {
+        return response.json();
+    });
+
+    if (response.state == "success") {
+        alert("Partida Unida");
+        window.location.href = '../lobby/guestLobby/lobby.html';
+    } else {
+        alert(response.ErrMessage);
+    }
+} 
+
+async function requestUserData() {
+    const response = await fetch("/php/scripts/utilities/credentials.php").then(function (response) {
+        return response.json();
+    });
+
+    settingsBtn.addEventListener("click", () => togglePanel("Settings", settingsSection));
+    playBtn.addEventListener("click", () => togglePanel("Play", playSection));
+
+
+    if (response.state == "success") {
+        const usuario = response.result;
+        username = usuario.username;
+        email = usuario.correo;
+        aboutme = usuario.descripcion;
+        birthdate = new Date(usuario.fechaNacimiento);
+
+        const today = new Date();
+
+        document.querySelector("span#playername").textContent = username;
+        document.querySelector("h2#age").textContent = today.getFullYear() - birthdate.getFullYear();
+        document.querySelector("h2#aboutme").textContent = aboutme;
+
+        profileBtn.addEventListener("click", () => togglePanel("Profile", profileSection));
+    }
+}
+
+document.addEventListener("DOMContentLoaded", requestUserData);

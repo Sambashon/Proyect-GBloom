@@ -18,6 +18,8 @@ switch ($request) {
             $contraseña = $body["contraseña"];
             $mantener = $body["mantener"];
 
+            $username = trim($username);
+
             if (isset($_COOKIE["golden-token"])) {
                 $token = $_COOKIE["golden-token"];
                 $credentials = $perfil->getUserCredentials($token);
@@ -25,6 +27,8 @@ switch ($request) {
                     if ($credentials["result"]["username"] == $username) {
                         echo json_encode(["state" => "forbidden", "ErrMessage" => "Ya existe una sesion activa para el nombre usuario brindado"]);
                         break;
+                    } else {
+                        $perfil->cerrarSesion($token);
                     }
                 }
             }
