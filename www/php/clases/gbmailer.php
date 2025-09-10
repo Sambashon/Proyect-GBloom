@@ -123,4 +123,95 @@ class GBMailer {
 
         $this->enviarCorreo("Te damos la bienvenida a Draftosaurus!!!", $correo, $contenido);
     }
+
+    public function cambiosCuenta($correo, $usuario) {
+        $contenido = <<<EOF
+            <!DOCTYPE html>
+            <html lang="es">
+            <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>Alerta de cambios en tu cuenta - Draftosaurus</title>
+            <style>
+                body {
+                font-family: Arial, sans-serif;
+                background-color: #f0f4f8;
+                margin: 0;
+                padding: 0;
+                color: #333;
+                }
+                .container {
+                max-width: 600px;
+                margin: 30px auto;
+                background-color: #ffffff;
+                border-radius: 12px;
+                box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+                overflow: hidden;
+                }
+                .header {
+                background-color: #D59F0A;
+                color: white;
+                padding: 20px;
+                text-align: center;
+                font-size: 24px;
+                font-weight: bold;
+                }
+                .content {
+                padding: 20px;
+                line-height: 1.6;
+                }
+                .alert {
+                background-color: #ffe4b3;
+                border-left: 6px solid #D59F0A;
+                padding: 15px;
+                margin: 20px 0;
+                border-radius: 6px;
+                }
+                .button {
+                display: inline-block;
+                margin: 20px 0;
+                padding: 12px 25px;
+                background-color: #D59F0A;
+                color: white;
+                text-decoration: none;
+                border-radius: 6px;
+                font-weight: bold;
+                }
+                .footer {
+                background-color: #f0f4f8;
+                color: #666;
+                text-align: center;
+                padding: 15px;
+                font-size: 12px;
+                }
+            </style>
+            </head>
+            <body>
+            <div class="container">
+                <div class="header">
+                ⚠️ Cambios detectados en tu cuenta
+                </div>
+                <div class="content">
+                <p>Hola <strong>$usuario</strong>,</p>
+                <p>Queremos informarte que recientemente se han realizado <strong>cambios en los datos de tu cuenta</strong> de Draftosaurus.</p>
+                <div class="alert">
+                    Si fuiste tú quien realizó estos cambios, no necesitas hacer nada más.<br>
+                    Pero si <strong>no reconoces esta actividad</strong>, te recomendamos que revises tu cuenta de inmediato.
+                </div>
+                <p>Puedes acceder a tu cuenta desde el siguiente enlace seguro:</p>
+                <a href="https://goldenblossom.ddns.net/" class="button">Revisar mi cuenta</a>
+                <p>Por tu seguridad, nunca compartas tu contraseña y asegúrate de usar una clave única y segura.</p>
+                <p>El equipo de GBloom</p>
+                </div>
+                <div class="footer">
+                Este correo es automático, por favor no respondas. <br>
+                © 2025 Golden Blossom. Todos los derechos reservados.
+                </div>
+            </div>
+            </body>
+            </html>
+            EOF;
+        
+        $this->enviarCorreo("Cambios en su cuenta de Draftosaurus", $correo, $contenido);
+    }
 }

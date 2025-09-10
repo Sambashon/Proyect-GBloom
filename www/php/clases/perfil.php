@@ -1,5 +1,7 @@
 <?php
 include "gbloomdb.php";
+include "gbmailer.php";
+
 class Perfil extends GBloomDB {
 
     public function __construct() {
@@ -13,50 +15,45 @@ class Perfil extends GBloomDB {
 
         // Un dia quisiera agregar reestriccion de edad para las cuentas CUIDADIIITO
         if ($existe === false) {
+            $errMessages = [];
+            $error = false;
+
             if (!filter_var($correo, FILTER_VALIDATE_EMAIL)) {
-                return [
-                    "state" => "forbidden",
-                    "ErrMessage" => "El formato del correo electronico no es valido"
-                ];
+                $errMessages[] = "El formato del correo electronico no es valido";
+                $error = true;
             }
-
             if (strlen($username) > 32) {
-                return [
-                    "state" => "forbidden",
-                    "ErrMessage" => "El nombre de usuario brindado es demasiado largo"
-                ];
+                $errMessages[] = "El nombre de usuario brindado es demasiado largo";
+                $error = true;
             }
-
             if (strpos($username, ' ') !== false) {
+                $errMessages[] = "El nombre de usuario brindado no puede contener espacios";
+                $error = true;
+            }
+            if (strlen($contraseña) < 8) {
+                $error = true;
+                $errMessages[] = "La contraseña brindada debe contener como minimo 8 caracteres";
+            }
+            if (strlen($contraseña) > 100) {
+                $error = true;
+                $errMessages[] = "La contraseña brindada es demasiado larga";
+            }
+            if ($error) {
                 return [
                     "state" => "forbidden",
-                    "ErrMessage" => "El nombre de usuario brindado no puede contener espacios"
+                    "ErrMessage" => $errMessages
                 ];
             }
 
-            if (strlen($contraseña) >= 8) {
-                if (strlen($contraseña) <= 100) {
-                    $contraseña = password_hash($contraseña, PASSWORD_DEFAULT);
-                    $fechaNacimiento = $fechaNacimiento->format("Y-m-d");
+            $contraseña = password_hash($contraseña, PASSWORD_DEFAULT);
+            $fechaNacimiento = $fechaNacimiento->format("Y-m-d");
 
-                    $insertar = $this->pdo->prepare("insert into usuario(username, correo, contraseña, fechaNacimiento) values (:username, :correo, :contrasena, :fechaNacimiento);");
-                    $insertar->execute(["username" => $username, "correo" => $correo, "contrasena" => $contraseña, "fechaNacimiento" => $fechaNacimiento]);
+            $insertar = $this->pdo->prepare("insert into usuario(username, correo, contraseña, fechaNacimiento) values (:username, :correo, :contrasena, :fechaNacimiento);");
+            $insertar->execute(["username" => $username, "correo" => $correo, "contrasena" => $contraseña, "fechaNacimiento" => $fechaNacimiento]);
 
-                    return [
-                        "state" => "success"
-                    ];
-                } else {
-                    return [
-                        "state" => "forbidden",
-                        "ErrMessage" => "La contraseña brindada es demasiado larga"
-                    ];
-                }
-            } else {
-                return [
-                    "state" => "forbidden",
-                    "ErrMessage" => "La contraseña brindada debe contener como minimo 8 caracteres"
-                ];
-            }
+            return [
+                "state" => "success"
+            ];
         } else {
             return [
                 "state" => "forbidden",
@@ -77,11 +74,24 @@ class Perfil extends GBloomDB {
     }
 
     public function accederUsuario(string $username, string $contraseña, bool $mantener): array {
+        if ($mantener === false) {
+            $mantener = 0;
+        } else {
+            $mantener = 1;
+        }
+
         $solicitud = $this->pdo->prepare("select username, contraseña from usuario where username = :username;");
         $solicitud->execute(["username" => $username]);
         $usuario = $solicitud->fetch();
 
         if ($usuario !== false) {
+            if (strpos($username, ' ') !== false) {
+                return [
+                    "state" => "forbidden",
+                    "ErrMessage" => "El nombre de usuario brindado no puede contener espacios"
+                ];
+            }
+
             if (password_verify($contraseña, $usuario["contraseña"])) {
                 $token = $this->generarToken();
                 $ahora = new DateTime();
@@ -153,15 +163,114 @@ class Perfil extends GBloomDB {
         $eliminar = $this->pdo->prepare("delete from sesion where token = :token");
         $eliminar->execute(["token" => $token]);
 
+        setcookie("golden-token", "", time() - 3600);
+
         return [
             "state" => "success"
         ];
     }
+    public function editarUsuario(string $token, array $cambios): array {
+        $credentials = $this->getUserCredentials($token);
+        $mailer = new GBMailer();
+        if ($credentials["state"] == "success") {
+            $username = $credentials["result"]["username"];
+            $correo = $credentials["result"]["correo"];
+            $newname = $cambios["username"];
+            $newcorreo = $cambios["correo"];
+            $contraseña = $cambios["contraseña"];
+            $descripcion = $cambios["descripcion"];
 
-    public function editarUsuario(string $token, string $username): array {
-        return [
-            "state" => "success"
-        ];
+            $contraseña = password_hash($contraseña, PASSWORD_DEFAULT);
+
+            $errMessages = [];
+            $error = false;
+
+            
+            if (!filter_var($newcorreo, FILTER_VALIDATE_EMAIL)) {
+                $error = true;
+                $errMessages[] = "El formato del correo electronico no es valido";
+            }
+            if (strlen($newname) > 32) {
+                $error = true;
+                $errMessages[] = "El nombre de usuario brindado es demasiado largo";
+            }
+            if (strpos($newname, ' ') !== false) {
+                $error = true;
+                $errMessages[] = "El nombre de usuario brindado no puede contener espacios";
+            }
+            if (strlen($contraseña) < 8) {
+                $error = true;
+                $errMessages[] = "La contraseña brindada debe contener como minimo 8 caracteres";
+            }
+            if (strlen($contraseña) > 100) {
+                $error = true;
+                $errMessages[] = "La contraseña brindada es demasiado larga";
+            }
+            if (strlen($descripcion) > 200) {
+                $error = true;
+                $errMessages[] = "La descripcion brindada es demasiado larga";
+            }
+            if ($error) {
+                return [
+                    "state" => "forbidden",
+                    "ErrMessage" => $errMessages
+                ];
+            } 
+            
+            // Desactiva los chequeos de la clave foranea
+            $solicitud = $this->pdo->query("set foreign_key_checks = 0");
+
+            // Actualiza la tabla usuario
+            $actualizar = $this->pdo->prepare("update usuario set username = :newname where username = :username");
+            $actualizar->execute(["newname" => $newname, "username" => $username]);
+
+            // Actualiza la tabla partida
+            $actualizar = $this->pdo->prepare("update partida set host = :newname where host = :username");
+            $actualizar->execute(["newname" => $newname, "username" => $username]);
+
+            // Actualiza la tabla juega
+            $actualizar = $this->pdo->prepare("update juega set username = :newname where username = :username");
+            $actualizar->execute(["newname" => $newname, "username" => $username]);
+
+            // Actualiza la tabla conecta
+            $actualizar = $this->pdo->prepare("update conecta set username = :newname where username = :username");
+            $actualizar->execute(["newname" => $newname, "username" => $username]);
+
+            // Actualiza la tabla inventario
+            $actualizar = $this->pdo->prepare("update inventario set username = :newname where username = :username");
+            $actualizar->execute(["newname" => $newname, "username" => $username]);
+
+            // Actualiza la tabla tablero
+            $actualizar = $this->pdo->prepare("update tablero set username = :newname where username = :username");
+            $actualizar->execute(["newname" => $newname, "username" => $username]);
+
+            // Actualiza la contraseña
+            $actualizar = $this->pdo->prepare("update usuario set contraseña = :contrasena where username = :username");
+            $actualizar->execute(["contrasena" => $contraseña, "username" => $username]);
+
+            // Actualiza el correo
+            $actualizar = $this->pdo->prepare("update usuario set correo = :correo where username = :username");
+            $actualizar->execute(["correo" => $newcorreo, "username" => $username]);
+
+            // Actualiza la descripcion
+            $actualizar = $this->pdo->prepare("update usuario set descripcion = :descripcion where username = :username");
+            $actualizar->execute(["descripcion" => $descripcion, "username" => $username]);
+
+            $solicitud = $this->pdo->query("set foreign_key_checks = 1");
+
+            // Notifica de los cambios a la cuenta de correo electronico actual y antigua
+            if ($correo == $newcorreo) {
+                $mailer->cambiosCuenta($correo, $username);
+            } else {
+                $mailer->cambiosCuenta($newcorreo, $username);
+            }
+
+            return [
+                "state" => "success"
+            ];
+        } else {
+            return $credentials;
+        }
     }
     
 }

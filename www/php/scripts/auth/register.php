@@ -1,6 +1,5 @@
 <?php
 include "../../clases/perfil.php";
-include "../../clases/gbmailer.php";
 
 $perfil = new Perfil();
 $mailer = new GBMailer();

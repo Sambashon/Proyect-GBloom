@@ -8,13 +8,34 @@ backBtn.addEventListener("click", () =>{
 
 if(joinBtn){
     joinBtn.addEventListener("click", () =>{
-        window.location.href = "../../game/gameGuest/game.html";
+        joinMatch();
     })
 }
 
 if(startBtn){
     startBtn.addEventListener("click", () =>{
-        window.location.href = "../../game/gameHuest/game.html";
+        window.location.href = "../../game/gameGuest/game.html";
     })
+}
+
+async function joinMatch() {
+    let accion = await fetch("/php/scripts/game/joinLobby.php", {method: "POST"}).then(function (response) {
+        return response.json();
+    });
+
+    if (accion.state == "success") {
+        accion = await fetch("/php/scripts/game/iniciarPartida.php", {method: "POST"}).then(function (response) {
+            return response.json();
+        });
+
+        if (accion.state == "success") {
+            alert("Partida Unida e Iniciada");
+            window.location.href = "/game/gameGuest/game.html";
+        } else {
+            alert(accion.ErrMessage);
+        }
+    } else {
+        alert(accion.ErrMessage);
+    }
 }
 
