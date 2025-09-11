@@ -1,4 +1,4 @@
-let changesSaved = true;
+let changesSaved = false;
 let username;
 let email;
 let aboutme;
@@ -26,8 +26,8 @@ save.addEventListener("submit", (e) =>{
     changesSaved = true;
 })
 leaveBtn.addEventListener("click", () => {
-    if (username == usernameInput.value && email == emailInput.value && password == passwordInput.value && aboutme == aboutmeInput.value) {
-        console.log("No unsaved changes, proceed with leaving.");
+    if (username == usernameInput.value && email == emailInput.value && password == passwordInput.value && aboutme == aboutmeInput.value || changesSaved) {
+        console.log("No unsaved changes, proceed with leaving.");//ariel le meti un "|| changesSaved a la condicional de arriba"
         window.location.href = '../homePage/home.html';  
     } else {
         unsavedModal.show();
