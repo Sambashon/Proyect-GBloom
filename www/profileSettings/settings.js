@@ -78,6 +78,7 @@ async function requestUserData() {
         emailInput.value = email;
         passwordInput.value = password;
         aboutmeInput.value = aboutme;
+
     }
 }
 
