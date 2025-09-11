@@ -55,14 +55,22 @@ body{
 }
 .form-footer{
     display: flex;
-    flex: 1;
+    height: 15%;
+    width: 100%;
     align-items: center;
     justify-content: space-around;
+}
+.form-body{
+    padding-right: 10px;
+    overflow-y: auto;
+    flex: 1;
+    max-height: 60%;
 }
 
 .picture-container{
     position: relative;
     display: inline-block;
+    bottom: 10px;
     height: 150px;
     width: 150px;
     border-radius: 50%;
@@ -119,7 +127,7 @@ form{
     flex-direction: row;
     align-items: center;
     justify-content: space-between;
-    margin-bottom: 0.5rem;
+    margin-bottom: 1rem;
 }
 .clickable{
     max-height: 6em;
@@ -137,15 +145,15 @@ form{
     cursor: pointer;
 }
 /* For Webkit browsers (Chrome, Edge, Safari) */
-.clickable::-webkit-scrollbar {
+.clickable::-webkit-scrollbar, .form-body::-webkit-scrollbar {
     width: 6px;
 }
 
-.clickable::-webkit-scrollbar-track {
+.clickable::-webkit-scrollbar-track, .form-body::-webkit-scrollbar-track {
     background: transparent;
 }
 
-.clickable::-webkit-scrollbar-thumb {
+.clickable::-webkit-scrollbar-thumb, .form-body::-webkit-scrollbar-thumb {
     background-color: rgba(0, 0, 0, 0.3);
     border-radius: 10px;
     border: 1px solid transparent;
@@ -168,9 +176,7 @@ hr{
 .responsive-text{
     margin-right: 10px;
 }
-.custom-button{
-    margin-left: 10px;
-}
+
 @media screen and (max-width: 600px) {
     .settings-main-container{
         height: 100vh;
@@ -192,7 +198,8 @@ hr{
         height: 27%;
     }
     
-    .avatar-section .picture-container{    .profile-header{
+    .avatar-section .picture-container{    
+        .profile-header{
         padding: 0 !important;
     }
         height: 100px;
@@ -204,8 +211,8 @@ hr{
     .editBtn{
         height: 25px;
         width: 25px;
-        bottom: -25px;
-        right: -25px;
+        bottom: -10px;
+        right: -10px;
         font-size: 25px !important;
     }
     .header{
@@ -224,14 +231,15 @@ hr{
         font-size: 20px !important;
     }
     .form-group{
-        margin-bottom: 0;
+        margin-bottom: 0.5rem;
     }
     .form-group .clickable{
         height: 35px;
+        width: 100px;
     }
     .form-text-area .clickable{
         height: 100px;
-        width: 170px;
+        width: 150px !important;
     }
     .form-text-area label{
         width: 50px;

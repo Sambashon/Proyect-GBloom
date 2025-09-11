@@ -60,27 +60,31 @@
                 <h1 class="text-outline responsive-title fw-bold text-center">Profile Settings</h1>
                 <p class="text-outline responsive-subtitle fw-bold text-center">Manage your account information</p>
             </header>
-            
             <form action="">
-                <div class="form-group">
-                    <label for="username" class="responsive-text text-outline">Username</label>
-                    <input name="username" id="username" type="text" class="clickable fs-8">
-                    <button class="custom-button" type="button">Edit</button>
-                </div>
-                <div class="form-group">
-                    <label for="email" class="responsive-text text-outline">Email</label>
-                    <input type="text" name="email" id="email" class="clickable fs-8">
-                    <button class="custom-button" type="button">Edit</button>
-                </div>
-                <div class="form-group">
-                    <label for="password" class="responsive-text text-outline">Password</label>
-                    <input  type="password" name="password"  id="password" class="clickable fs-8">
-                    <button class="custom-button" type="button">Edit</button>
-                </div>
-                <div class="form-text-area">
-                    <label for="about" class="responsive-text text-outline">About me</label>
-                    <textarea type="text" name="about" id="about" class="fs-8 clickable custom-text-area">Lorem, ipsum dolor sit amet consectetur adipisicing elit. Ut veritatis alias maiores. Minus reiciendis itaque vero. Quia reiciendis culpa doloribus sequi, libero maxime, quod ipsa, ipsam eligendi cupiditate incidunt voluptatum!</textarea>
-                    <button class="custom-button" type="button">Edit</button>
+                <div class="form-body">
+                    <div class="form-group">
+                        <label for="username" class="responsive-text text-outline">Username</label>
+                        <input name="username" id="username" type="text" class="clickable fs-8">
+                        <button class="custom-button" type="button">Edit</button>
+                    </div>
+                    <div class="form-group">
+                        <label for="email" class="responsive-text text-outline">Email</label>
+                        <input type="text" name="email" id="email" class="clickable fs-8">
+                        <button class="custom-button" type="button">Edit</button>
+                    </div>
+                    <div class="form-group">
+                        <label for="password" class="responsive-text text-outline">Password</label>
+                        <input  type="password" name="password"  id="password" class="clickable fs-8">
+                        <button class="custom-button" type="button">Edit</button>
+                    </div>
+                    <div class="form-text-area" style="margin-bottom: 100px;">
+                        <label for="about" class="responsive-text text-outline">About me</label>
+                        <textarea type="text" name="about" id="about" class="fs-8 clickable custom-text-area">Lorem, ipsum dolor sit amet consectetur adipisicing elit. Ut veritatis alias maiores. Minus reiciendis itaque vero. Quia reiciendis culpa doloribus sequi, libero maxime, quod ipsa, ipsam eligendi cupiditate incidunt voluptatum!</textarea>
+                        <button class="custom-button" type="button">Edit</button>
+                    </div>
+                    <div class="form-group" style="display: flex; align-items: center; justify-content: center;">
+                        <button class="custom-button red" type="button" data-bs-toggle="modal" data-bs-target="#logoutModal">Delete account</button>
+                    </div>
                 </div>
                 <hr>
                 <div class="form-footer">
