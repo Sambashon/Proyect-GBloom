@@ -25,29 +25,30 @@
     <main class="main-container">
         <div class="form-container">
             <h1 class="text-outline responsive-title text-center">Register</h1>
+            <div id="registerError" class="text-outline" style="color: #f1c232; margin-bottom: 0.5rem; display: none;"></div>
             <form action="">
                 <div class="form-group">
                     <label for="username" class="responsive-subtitle text-outline">Username</label>
-                    <input type="text" name="username" id="username" class="custom-input responsive-text" required>
+                    <input type="text" name="username" id="username" class="custom-input responsive-text">
                 </div>
                 <div class="form-group">
                     <label for="email" class="responsive-subtitle text-outline">Email</label>
-                    <input type="email" name="email" id="email" class="custom-input responsive-text" required>
+                    <input type="email" name="email" id="email" class="custom-input responsive-text">
                 </div>
                 <div class="form-group">
                     <label for="password" class="responsive-subtitle text-outline">Password</label>
-                    <input type="password" name="password" id="password" class="custom-input responsive-text" required>
+                    <input type="password" name="password" id="password" class="custom-input responsive-text">
                 </div>
                 <div class="form-group">
                     <label for="confirmpassword" class="responsive-subtitle text-outline">Confirm password</label>
-                    <input type="password" name="confirmpassword" id="confirmpassword" class="custom-input responsive-text" required>
+                    <input type="password" name="confirmpassword" id="confirmpassword" class="custom-input responsive-text">
                 </div>
                 <div class="form-group">
                     <label for="birthdate" class="responsive-subtitle text-outline">Birthdate</label>
-                    <input type="date" name="birthdate" id="birthdate" class="custom-input" required>
+                    <input type="date" name="birthdate" id="birthdate" class="custom-input">
                 </div>
                 <div class="form-footer">
-                    <input type="checkbox" class="form-check-input" id="checkBox" required>
+                    <input type="checkbox" class="form-check-input" id="checkBox">
                     <label class="text-outline form-check-lable" for="checkBox">
                         I have read and agree with 
                         <a href="terms-and-conditions.jpg" target="_blank">

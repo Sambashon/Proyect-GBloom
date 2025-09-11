@@ -19,3 +19,47 @@ login.addEventListener("submit", async function ($e) {
         alert(acceder.ErrMessage);
     }
 });
+
+//VALIDATION
+const loginForm = document.querySelector("form");
+const usernameInput = document.getElementById("username");
+const passwordInput = document.getElementById("password");
+const stayLoggedIn = document.getElementById("checkBox");
+const loginError = document.getElementById("loginError");
+
+loginForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    loginError.style.display = "none";
+    loginError.textContent = "";
+
+    const username = usernameInput.value.trim();
+    const password = passwordInput.value.trim();
+    const mantener = stayLoggedIn.checked;
+
+    if (!username || !password) {
+        loginError.textContent = "Please enter both username and password.";
+        loginError.style.display = "block";
+        return;
+    }
+
+    try {
+        const response = await fetch("/php/scripts/auth/login.php", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ username, contraseña: password, mantener })
+        });
+
+        const data = await response.json();
+
+        if (data.state === "success") {
+            window.location.href = "/homePage/home.html";
+        } else {
+            loginError.textContent = data.ErrMessage || "Invalid username or password.";
+            loginError.style.display = "block";
+        }
+    } catch (err) {
+        console.error(err);
+        loginError.textContent = "Server error. Please try again later.";
+        loginError.style.display = "block";
+    }
+});
