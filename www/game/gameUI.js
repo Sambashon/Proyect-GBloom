@@ -6,7 +6,11 @@ document.querySelectorAll(".dropdown-item").forEach(item => {
     console.log("Selected:", item.innerText);
   });
 });
-
+const leaveBtn = document.getElementById("LEAVEBtn");
+leaveBtn.addEventListener("click", () =>{
+  console.log()
+  window.location.href = "../../homePage/home.html";
+})
 const volumeSlider = document.getElementById("volSlider");
 const volValue = document.getElementById("volValue");
 volumeSlider.addEventListener("input", (e) =>{
