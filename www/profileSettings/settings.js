@@ -9,7 +9,7 @@ const usernameInput = document.querySelector("input#username");
 const emailInput = document.querySelector("input#email");
 const aboutmeInput = document.querySelector("textarea#about");
 const passwordInput = document.querySelector("input#password");
-
+const birthdayInput = document.getElementById("birthdate");
 const save = document.querySelector("form");
 const leaveBtn = document.querySelector("#leaveBtn");
 const unsavedModalEl = document.querySelector("#unsavedModal");
@@ -19,7 +19,7 @@ save.addEventListener("submit", (e) =>{
     e.preventDefault();
     const action = fetch("/php/scripts/auth/modify.php", {
         method: "POST",
-        body: JSON.stringify({username: usernameInput.value, correo: emailInput.value, contraseña: passwordInput.value, descripcion: aboutmeInput.value})
+        body: JSON.stringify({username: usernameInput.value, correo: emailInput.value, contraseña: passwordInput.value, fechaNacimiento: birthdayInput.value, descripcion: aboutmeInput.value})
     });
     requestUserData();
     alert("Changes saved!");
@@ -72,11 +72,12 @@ async function requestUserData() {
         email = usuario.correo;
         aboutme = usuario.descripcion;
         password = usuario.contraseña;
-        birthdate = new Date(usuario.fechaNacimiento);
+        birthdate = usuario.fechaNacimiento;
 
         usernameInput.value = username;
         emailInput.value = email;
         passwordInput.value = password;
+        birthdayInput.value = birthdate;
         aboutmeInput.value = aboutme;
 
     }
