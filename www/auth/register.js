@@ -61,8 +61,8 @@ form.addEventListener("submit", async (e) => {
         return;
     }
 
-    if (!password || password.length < 6) {
-        errorContainer.textContent = "Password must be at least 6 characters long.";
+    if (!password || password.length > 8 && password.length < 100) {
+        errorContainer.textContent = "Password must be at least 8 characters long.";
         errorContainer.style.display = "block";
         return;
     }
