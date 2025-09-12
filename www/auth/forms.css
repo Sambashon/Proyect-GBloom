@@ -28,10 +28,19 @@
     flex-direction: column;
     margin-bottom: 1rem;
 }
-
+.custom-row{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    
+}
+.custom-button.icon{
+    padding: 0px 13px !important;
+}
 .custom-input {
     margin: 0px 10px 0px 12px;
-    width: 90%;
+    width: 70%;
     height: 1.5rem;
     font-size: 0.9rem;
     padding: 0.25rem 0.5rem;
@@ -47,6 +56,10 @@ form {
     flex-direction: row;
 }
 @media screen and (max-width:512px) {
+    .form-footer{
+        margin-bottom: 1rem;
+        gap: 1rem;
+    }
     h1{
         margin: 0;
     }
