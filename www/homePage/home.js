@@ -85,6 +85,39 @@ registerBtn.addEventListener("click", () =>{
     window.location.href = '../auth/register.html'
 })
 
+//-----------SWIPE FUNCTIONALITY
+if(footerMenu.classList.contains("visible")){
+    let touchStartY = 0;
+    let touchEndY = 0;
+    let touchStartX = 0;
+    let touchEndX = 0;
+
+    document.addEventListener("touchstart", (e) => {
+    touchStartY = e.changedTouches[0].screenY;
+    touchStartX = e.changedTouches[0].screenX;
+    });
+
+    document.addEventListener("touchend", (e) => {
+    touchEndY = e.changedTouches[0].screenY;
+    touchEndX = e.changedTouches[0].screenX;
+
+    handleSwipe();
+    });
+
+    function handleSwipe() {
+        const deltaY = touchEndY - touchStartY;
+        const deltaX = touchEndX - touchStartX;
+
+        // detect mainly vertical movement
+        if (Math.abs(deltaY) > Math.abs(deltaX) && deltaY > 50) {
+            console.log("Swipe down detected!");
+            footerMenu.classList.remove("visible");
+            closePanels();
+        }
+    }
+}
+
+
 async function connectLobby(code) {
     const response = await fetch("/php/scripts/utilities/credentials.php", {
         method: "POST",
