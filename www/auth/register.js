@@ -44,8 +44,6 @@ form.addEventListener("submit", async (e) => {
     const username = document.querySelector("#username").value.trim();
     const email = document.querySelector("#email").value.trim();
     const password = document.querySelector("#password").value;
-    const confirmPassword = document.querySelector("#confirmpassword").value;
-    const birthdate = document.querySelector("#birthdate").value;
     const tosChecked = document.querySelector("#checkBox").checked;
 
     // --- Validation ---
@@ -67,18 +65,6 @@ form.addEventListener("submit", async (e) => {
         return;
     }
 
-    if (password !== confirmPassword) {
-        errorContainer.textContent = "Passwords do not match.";
-        errorContainer.style.display = "block";
-        return;
-    }
-
-    if (!birthdate) {
-        errorContainer.textContent = "Please select your birthdate.";
-        errorContainer.style.display = "block";
-        return;
-    }
-
     if (!tosChecked) {
         errorContainer.textContent = "You must agree to the terms and conditions.";
         errorContainer.style.display = "block";
@@ -94,7 +80,6 @@ form.addEventListener("submit", async (e) => {
                 username,
                 correo: email,
                 contraseña: password,
-                fechaNacimiento: birthdate
             })
         });
 
@@ -102,7 +87,7 @@ form.addEventListener("submit", async (e) => {
 
         if (data.state === "success") {
             alert("Registration successful!");
-            window.location.href = "../login.html";
+            window.location.href = "/auth/login.html";
         } else {
             errorContainer.textContent = data.ErrMessage || "Registration failed.";
             errorContainer.style.display = "block";

@@ -36,6 +36,19 @@ loginForm.addEventListener("submit", async (e) => {
     const password = passwordInput.value.trim();
     const mantener = stayLoggedIn.checked;
 
+    // --- Validation ---
+    if (!username || username.length < 3) {
+        errorContainer.textContent = "Username must be at least 3 characters long.";
+        errorContainer.style.display = "block";
+        return;
+    }
+
+    if (!password || password.length > 8 && password.length < 100) {
+        errorContainer.textContent = "Password must be at least 8 characters long.";
+        errorContainer.style.display = "block";
+        return;
+    }
+    
     if (!username || !password) {
         loginError.textContent = "Please enter both username and password.";
         loginError.style.display = "block";
