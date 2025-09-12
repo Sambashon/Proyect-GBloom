@@ -15,16 +15,8 @@ const leaveBtn = document.querySelector("#leaveBtn");
 const unsavedModalEl = document.querySelector("#unsavedModal");
 const unsavedModal = new bootstrap.Modal(unsavedModalEl);
 
-save.addEventListener("submit", (e) =>{
-    e.preventDefault();
-    const action = fetch("/php/scripts/auth/modify.php", {
-        method: "POST",
-        body: JSON.stringify({username: usernameInput.value, correo: emailInput.value, contraseña: passwordInput.value, fechaNacimiento: birthdayInput.value, descripcion: aboutmeInput.value})
-    });
-    requestUserData();
-    alert("Changes saved!");
-    changesSaved = true;
-})
+
+
 leaveBtn.addEventListener("click", () => {
     if (username == usernameInput.value && email == emailInput.value && password == passwordInput.value && aboutme == aboutmeInput.value || changesSaved) {
         console.log("No unsaved changes, proceed with leaving.");//ariel le meti un "|| changesSaved a la condicional de arriba"
@@ -61,6 +53,88 @@ logoutBtn.addEventListener("click", () =>{
     window.location.href = '../homePage/home.html';
 })
 
+function showError(input, message) {
+    let errorEl = input.parentElement.querySelector(".error-message");
+    if (!errorEl) {
+        errorEl = document.createElement("div");
+        errorEl.className = "error-message text-danger small mt-1";
+        input.parentElement.appendChild(errorEl);
+    }
+    errorEl.textContent = message;
+}
+
+function clearError(input) {
+    const errorEl = input.parentElement.querySelector(".error-message");
+    if (errorEl) errorEl.remove();
+}
+
+function validateProfileForm() {
+    let valid = true;
+
+    if (usernameInput.value.trim().length === 0 || usernameInput.value.trim().length > 32) {
+        showError(usernameInput, "Username is required (max 32 characters).");
+        valid = false;
+    } else {
+        clearError(usernameInput);
+    }
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(emailInput.value.trim())) {
+        showError(emailInput, "Please enter a valid email address.");
+        valid = false;
+    } else {
+        clearError(emailInput);
+    }
+
+    if (passwordInput.value.length < 8 || passwordInput.value.length > 100) {
+        showError(passwordInput, "Password must be between 8 and 100 characters.");
+        valid = false;
+    } else {
+        clearError(passwordInput);
+    }
+
+    if (aboutmeInput.value.trim().length > 200) {
+        showError(aboutmeInput, "Description cannot exceed 200 characters.");
+        valid = false;
+    } else {
+        clearError(aboutmeInput);
+    }
+
+    return valid;
+}
+
+save.addEventListener("submit", async (e) =>{
+    e.preventDefault();
+    if(!validateProfileForm()){
+        return;
+    }
+    try{
+        const action = await fetch("/php/scripts/auth/modify.php", {
+        method: "POST",
+         body: JSON.stringify({
+                username: usernameInput.value,
+                correo: emailInput.value,
+                contraseña: passwordInput.value,
+                fechaNacimiento: birthdayInput.value,
+                descripcion: aboutmeInput.value
+            })
+        });
+        requestUserData();
+        alert("Changes saved!");
+        changesSaved = true;
+        const data = await action.json();
+        if (data.state === "success") {
+            await requestUserData();
+            alert("Changes saved!");
+            changesSaved = true;
+        } else {
+            alert("Error saving changes: " + (data.message || "Unknown error"));
+        }
+    } catch (err) {
+        alert("Network error. Please try again later.");
+    }
+});
+
 async function requestUserData() {
     const response = await fetch("/php/scripts/utilities/credentials.php").then(function (response) {
         return response.json();
@@ -76,7 +150,7 @@ async function requestUserData() {
 
         usernameInput.value = username;
         emailInput.value = email;
-        passwordInput.value = password;
+        passwordInput.value = "";
         birthdayInput.value = birthdate;
         aboutmeInput.value = aboutme;
 
