@@ -1,134 +1,37 @@
-*{
-    margin: 0;
-    padding: 0;
-}
-body,html{
-    overflow: hidden;
-}
-body{
-    height: 100vh;
-    width: 100vw;
-    font-family: "Bayon", sans-serif;
-    font-weight: bolder;
-    line-height: 65px;
-    color: #D59F0A;
-
-    -webkit-text-stroke: 0.2px #480E0E;
-    text-shadow: 0px 4px 1px black;
-}
-
-canvas {
-    position:absolute;
-    top: 0;
-    width: 100dvw;
-    height: 100dvh;
-    z-index: 1;
-}
-
-header:not(footer header){
-    all: unset;
-    user-select: none;
-    height: 10vh;
-    padding: 10px 16px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    flex-direction: row;
-    background-color: #480E0E;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100dvw;
-    z-index: 2;
-}
-header section{
+.nav-buttons{
     display: flex;
     flex-direction: row;
     align-items: center;
     justify-content: center;
-    gap: 0.5rem;
+    gap: 1rem;
 }
-
-.logo{
-    height: 100%;
-    width: fit-content;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-.logo img{
-    width: 100%;
-    height: 100%;
-}
-
-#curtain {
-    position: absolute;
-    width: 100dvw;
-    height: 100dvh;
-    background-color: rgba(0, 0, 0, 0.3);
-    z-index: -1;
-    left: 0px;
-    top: 0px;
-}
-
-.circle-button {
-    align-items: center;
-    appearance: none;
-    box-shadow: rgba(45, 35, 66, 0.4) 0 2px 4px,rgba(45, 35, 66, 0.3) 0 7px 13px -3px,#b18409 0 -3px 0 inset;
-    box-sizing: border-box;
-    display: inline-flex;
-    justify-content: center;
-    line-height: 1;
-    list-style: none;
-    overflow: hidden;
-
-    transition: box-shadow .15s,transform .15s;
-    user-select: none;
-    -webkit-user-select: none;
-    touch-action: manipulation;
-    white-space: nowrap;
-    will-change: box-shadow,transform; /*le avisa al buscador que las propiedades  cambiarán, hace queel componente se renderice en una capa propia y permite animaciones mas fluidas*/
-
-    background-color: #D59F0A;
-    border: none;
-    border-radius: 50%;
-    width: 40px;
-    height: 40px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-}
-
-/*button anims*/
-.circle-button:hover {
-    transform: translateY(-2px);
-}
-
-.circle-button:active {
-    box-shadow: #b18409 0 3px 7px inset;
-    transform: translateY(2px);
-}
-
-
-.circle-button img {
-    height: 30px;
-    width: auto;
-}
-
-main{
-    all: unset;
-    display: flex;
-    background-color: #A44141;
-    height: 95vh;
-    width: 100vw;
+#diceBtn{
+    padding: 5px 10px;
 }
 
 #score{
     margin-top: 1rem;
     margin-left: 1rem;
 }
-
+.main-container{
+    overflow: hidden;
+}
+.modal-group{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+}
+.dark-red{
+    height: 70px;
+    width: 70px;
+}
+canvas{
+    width: 70%;
+    height: 400px;
+    background-color: #000;
+}
 main img{
     position: fixed;
     top: 47%;
@@ -137,9 +40,9 @@ main img{
     height: 50vh;
     width: auto;
 }
-footer{
-    z-index: 1;
-    position: fixed;
+.dock{
+    margin-top: 1rem;
+    position: relative;
     bottom: 0;
     left: 50%;
     transform: translate(-50%);
@@ -154,16 +57,16 @@ footer{
     
     gap: 1rem;
 }
-footer .circle-button{
+.dock .circle-button{
     width: fit-content;
     padding: 0 5px;
     border-radius: 5px;
 }
-footer img{
+.dock img{
     height: 50px;
     width: auto;
 }
-footer span{
+.dock span{
     font-size: 24px;
     display: flex;
     align-self: flex-end;
@@ -217,58 +120,7 @@ footer span{
     gap: 1rem;
 }
 
-.buttonMenu {
-    all: unset;
-    display: block;
-    background-color: #A44141;
-    border: 5px solid #480E0E; 
-    color: #D59F0A;
-    padding: 1rem;
-    border-radius: 10px;
-
-    height: 500px;
-    width: 500px;
-    overflow-y: auto; /* enables scroll */
-    overflow-x: hidden;
-    z-index: 2;
-    position: fixed;
-    top: 47%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-}
-.buttonMenu header{
-    border-radius: 1rem;
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: space-between;
-    width: calc(fit-content +2vw);
-    height: 7vh;
-}
-.buttonMenu h2, .buttonMenu p{
-    margin: 0;
-    height: fit-content;
-    width: fit-content;
-}
-.BUTTONS-WRAPPER{
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: space-around;
-    margin-top: 30%;
-    height: calc(inherit -100px);
-}
-.BUTTONS-WRAPPER .circle-button{
-    padding: 3rem;
-}
-.BUTTONS-WRAPPER img{
-    height: 60px;
-    width: auto;
-}
-.BUTTONS-WRAPPER #PLAY{
-    margin-bottom: 100px;
-}
-article hr{
+.modal-column hr{
     margin: 0;
     padding: none;
     height: 5px;
@@ -298,7 +150,76 @@ a{
 a:hover{
     background-color: #A44141;
 }
+.leaderboard-container {
+  width: 100%;
+  margin: auto;
+}
 
+.table-wrapper {
+  max-height: 200px;
+  overflow-y: auto;
+  padding: 0px;
+  border: 5px solid #480E0E;
+  border-radius: 8px;
+}
+
+.leaderboard-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: center;
+  color: #fff;
+}
+
+.leaderboard-table thead {
+  background-color: #480E0E;
+  position: sticky;  /* keeps header fixed while scrolling */
+  top: 0;
+}
+
+.leaderboard-table th, 
+.leaderboard-table td {
+  padding: 8px;
+  border-bottom: 1px solid #ddd;
+}
+
+.leaderboard-table tbody tr:nth-child(even) {
+  background-color: #c44646;
+}
+
+.leaderboard-table tbody tr:nth-child(odd) {
+  background-color: #a44141;
+}
+/* Scrollbar styling for WebKit browsers (Chrome, Edge, Safari) */
+.table-wrapper::-webkit-scrollbar {
+  width: 8px;              /* slim scrollbar */
+}
+
+.table-wrapper::-webkit-scrollbar-track {
+  background: #480E0E;     /* dark background track */
+  border-radius: 10px;
+}
+
+.table-wrapper::-webkit-scrollbar-thumb {
+  background: #D59F0A;     /* gold scrollbar thumb */
+  border-radius: 10px;
+}
+
+.table-wrapper::-webkit-scrollbar-thumb:hover {
+  background: #f1c232;     /* lighter gold on hover */
+}
+
+/* Firefox scrollbar */
+.table-wrapper {
+  scrollbar-width: thin;              /* slim scrollbar */
+  scrollbar-color: #D59F0A #480E0E;   /* thumb + track */
+}
+
+.row-custom{
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
 @media screen and (max-width: 550px){
     a{
         display: none;
@@ -325,14 +246,14 @@ a:hover{
         height: 400px;
         width: 400px;
     }
-    footer{
+    .dock{
         height: 30vh;
         width: 100vw;
         background-color: #480E0E;
         border-radius: 0;
         gap: 0;
     }
-    footer h4{
+    .dock h4{
         font-size: 24px;
     }
     .BUTTONS-WRAPPER .circle-button{
@@ -358,7 +279,7 @@ a:hover{
         max-width: 600px; /* optional: constrain size */
         margin: auto;
     }
-    footer img{
+    .dock img{
         height: 60px;
         width: auto;
     }
@@ -419,7 +340,7 @@ a:hover{
         margin: auto;     /* center the grid */
     }
     
-    footer img{
+    .dock img{
         height: auto;
         width: 10vw;
     }

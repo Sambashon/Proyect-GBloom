@@ -9,96 +9,191 @@
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Bayon&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@200..700&display=swap" rel="stylesheet">
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="../../src/css/general.css">
+    <link rel="stylesheet" href="../../src/css/modal.css">
     <link rel="stylesheet" href="../game.css">
     
 </head>
 <body>
-    <header>
-        <aside class="logo"><img src="../../Resources/Logo/GBloomHorizontal.svg" alt="GBLOOM"></aside>
-        <section>
-            <button class="circle-button"><img src="../../Resources/Icons/pause-svgrepo-com.svg" alt="pause" height="30px" width="30px" id="pauseBtn"></button>
-            <button class="circle-button"><img src="../../Resources/Icons/stats-svgrepo-com.svg" alt="leaderboard" height="30px" width="30px" id="statsBtn"></button>
-
-            <a href="../../winorlose/lose/lose.html">Simulate Loss</a>
-            <a href="../../winorlose/win/win.html">Simulate Win</a>
+    <!--
+    <a href="../../winorlose/lose/lose.html" class="fs-6">Simulate Loss</a>
+    <a href="../../winorlose/win/win.html" class="fs-6">Simulate Win</a>
+    -->    
+    <header class="topHeader">
+        <div class="logo-container"><img src="../../Resources/Logo/GBloomHorizontal.svg" alt="GBLOOM" class="img-fluid"></div>
+        <section class="nav-buttons">
+            <button class="custom-button circle-button"><img src="../../Resources/Icons/pause-svgrepo-com.svg" id="pauseBtn" data-bs-toggle="modal" data-bs-target="#pauseMenu"></button>
+            <button class="custom-button circle-button"><img src="../../Resources/Icons/stats-svgrepo-com.svg" id="statsBtn" data-bs-toggle="modal" data-bs-target="#leaderboardMenu"></button>
         </section>
     </header>
-    <main>
-        <H1 id="score">Score: 10pts</H1>
-        <img src="../../Resources/Backgrounds/image.png" alt="draftosaurusLogo">
-
-        <article class="buttonMenu d-none" id="pausedMenu">
-            <header>
-                <h2>Game Paused</h2> <button class="circle-button" id="xOut">x</button>
-            </header>
-            <div class="BUTTONS-WRAPPER">
-                <button class="circle-button" id="SETTINGSBtn"><img src="../../Resources/Icons/settings-svgrepo-com.svg" alt="settings"></button>
-                <button class="circle-button" id="PLAYBtn"><img src="../../Resources/Icons/play-1003-svgrepo-com.svg" alt="play"></button>
-                <button class="circle-button" id="LEAVEBtn"><img src="../../Resources/Icons/leave-svgrepo-com.svg" alt="leave"></button>
+    <!--Pause Menu-->
+    <div class="modal fade" id="pauseMenu" tabindex="-1" aria-labelledby="pauseMenu" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title responsive-title text-outline" id="pauseMenu">PAUSE</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-
-        </article>
-        <article class="buttonMenu d-none" id="statsMenu">
-            <header>
-                <h2>leaderboard</h2> <button class="circle-button" id="xOut">x</button>
-            </header>
-            <p>You _______ 10pts</p>
-            <hr>
-            <p>Player2 _______ 2pts</p>
-            <hr>
-            <p>Player3 _______ 1pt</p>
-
-        </article>
-
-        <article class="buttonMenu d-none" id="leaveMenu">
-            <header>
-                <h3>You are currently hosting this game you can choose to:</h3> <button class="circle-button" id="xOut">x</button>
-            </header>
-            <div class="BUTTONS-WRAPPER">
-                <button class="circle-button" id="endGameBtn">EndGame</button>
-                <button class="circle-button" id="tohomeBtn">Leave</button>
+            <div class="modal-body">
+                <section class="modal-group">
+                    <button class="custom-button circle-button dark-red" id="SETTINGSBtn"  data-bs-toggle="modal" data-bs-target="#settingsMenu"><img src="../../Resources/Icons/settings-svgrepo-com.svg" alt="settings"></button>
+                    <button class="custom-button circle-button dark-red" id="PLAYBtn" style="margin-bottom: 30px;"><img src="../../Resources/Icons/play-1003-svgrepo-com.svg" alt="play"></button>
+                    <button class="custom-button circle-button dark-red" id="LEAVEBtn"><img src="../../Resources/Icons/leave-svgrepo-com.svg" alt="leave"></button>
+                </section>
             </div>
-            
-        </article>
+            </div>
+        </div>
+    </div>
+
+        <!--LeaderBoard-->
+    <div class="modal fade" id="leaderboardMenu" tabindex="-1" aria-labelledby="leaderboardMenu" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title responsive-title text-outline" id="leaderboardMenu">LEADERBOARD</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <section class="modal-column">
+                    <div class="leaderboard-container">
+                        <div class="table-wrapper">
+                            <table class="leaderboard-table">
+                            <thead>
+                                <tr>
+                                <th>Player</th>
+                                <th>Score</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                <td>You</td>
+                                <td>10 pts</td>
+                                </tr>
+                                <tr>
+                                <td>Player2</td>
+                                <td>2 pts</td>
+                                </tr>
+                                <tr>
+                                <td>Player3</td>
+                                <td>1 pt</td>
+                                </tr>
+                                <tr>
+                                <td>Player4</td>
+                                <td>5 pts</td>
+                                </tr>
+                                <tr>
+                                <td>Player5</td>
+                                <td>8 pts</td>
+                                </tr>
+                                <tr>
+                                <td>Player6</td>
+                                <td>7 pts</td>
+                                </tr>
+                            </tbody>
+                            </table>
+                        </div>
+                        </div>
+                </section>
+            </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="settingsMenu" tabindex="-1" aria-labelledby="settingsMenu" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header centered-modal-header">
+                    <h1 class="modal-title responsive-title text-outline" id="settingsMenu">Settings</h1>
+                </div>
+                <div class="modal-body">
+                    <div class="modal-column" style="gap:10px;">
+                        <div class="row-custom">
+                            <span class="text-outline responsive-subtitle">Volume:</span>
+                            <input type="range" min="0" max="100" step="1" value="100" class="volSlider" id="volSlider">
+                            <span class="text-outline responsive-subtitle" id="volValue" style="width: 30px;">100</span>
+                        </div>
+                        <div class="row-custom">
+                            <span class="text-outline responsive-subtitle">Music:</span>
+                            <input type="range" min="0" max="100" step="1" value="100" class="mscSlider" id="mscSlider">
+                            <span class="text-outline responsive-subtitle" id="mscValue" style="width: 30px;">100</span>
+                        </div>
+                        <div class="row-custom">
+                            <span class="text-outline responsive-subtitle">Sound Effects:</span>
+                            <input type="range" min="0" max="100" step="1" value="100" class="sfxSlider" id="sfxSlider">
+                            <span class="text-outline responsive-subtitle" id="sfxValue" style="width: 30px;">100</span>
+                        </div>
+                        <div class="row-custom">
+                            <span class="text-outline responsive-subtitle">Graphics:</span>
+                            <div class="dropdown">
+                                <button class="btn btn-secondary dropdown-toggle customDropdown" type="button" id="graphicsDropdownBtn" data-bs-toggle="dropdown" aria-expanded="false">
+                                    Select
+                                </button>
+                                <ul class="dropdown-menu customdropdownmenu" aria-labelledby="graphicsDropdownBtn">
+                                    <li class="dropdown-item">LOW</li>
+                                    <li class="dropdown-item">MEDIUM</li>
+                                    <li class="dropdown-item">HIGH</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="row-custom">
+                            <span class="text-outline responsive-subtitle">Game resolution:</span>
+                            <div class="dropdown">
+                                <button class="btn btn-secondary dropdown-toggle customDropdown" type="button" id="gameResDropdownBtn" data-bs-toggle="dropdown" aria-expanded="false">Select</button>
+                                <ul class="dropdown-menu customdropdownmenu" aria-labelledby="gameResDropdownBtn">
+                                    <li class="dropdown-item">LOW</li>
+                                    <li class="dropdown-item">MEDIUM</li>
+                                    <li class="dropdown-item">HIGH</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            </div>
+        </div>
+    </div>
+    <main class="main-container">
+        <h1 id="score" class="text-outline" >Score: 10pts</h1>
+        <canvas></canvas>
     </main>
-    <footer>
+    
+    <footer class="dock">
             <aside class="DICE-CONTAINER">
                 <section>
                     <img src="../../Resources/dado/dado1.svg" alt="Dado 1" class="mx-auto d-block" id="dice">
                 </section>
-                <button class="circle-button" id="diceBtn">RollDice</button>
+                <button class="custom-button" id="diceBtn">RollDice</button>
             </aside>
             <section class="INVENTORY-WRAPPER">
                 <header class="title-row">
-                    <h4>Dino Inventory</h4>
+                    <h4 class="responsive-subtitle text-outline">Dino Inventory</h4>
                 </header>
                 <section class="INVENTORY">
                     <section>
                         <img src="../../Resources/dinosaurios/dinoAmarillo.svg" alt="DinoAmarillo">
-                        <span>10x</span>
+                        <span class="text-outline">2x</span>
                     </section>
                     <section>
                         <img src="../../Resources/dinosaurios/dinoAzul.svg" alt="DinoAmarillo" class="mx-auto d-block">
-                        <span>10x</span>
+                        <span class="text-outline">2x</span>
                     </section>
                     <section>
                         <img src="../../Resources/dinosaurios/dinoRojo.svg" alt="DinoAmarillo" class="mx-auto d-block">
-                        <span>10x</span>
+                        <span class="text-outline">2x</span>
                     </section>
                     <section>
                         <img src="../../Resources/dinosaurios/dinoMorado.svg" alt="DinoAmarillo" class="mx-auto d-block">
-                        <span>10x</span>
+                        <span class="text-outline">2x</span>
                     </section>
                     <section>
                         <img src="../../Resources/dinosaurios/dinoVerde.svg" alt="DinoAmarillo" class="mx-auto d-block">
-                        <span>10x</span>
+                        <span class="text-outline">2x</span>
                     </section>
                     <section>
                         <img src="../../Resources/dinosaurios/dinoNaranja.svg" alt="DinoAmarillo" class="mx-auto d-block">
-                        <span>10x</span>
+                        <span class="text-outline">2x</span>
                     </section>
                 </section>
                 
@@ -106,9 +201,29 @@
         </footer>
         <section id="curtain">
         </section>
+    
+    <script src="/engine/utilities/engine.js" defer></script>
+    <script defer>
+        let body = document.querySelector("body");
+        let utilities = document.createElement("script");
 
-    <script src="dice.js"></script>
-    <script src="gameUI.js"></script>
+        if (navigator.gpu) {
+            utilities.src = "/engine/utilities/JSCGL.js";
+        } else {
+            utilities.src = "/engine/utilities/JSCGL1.js";
+        }
+
+        body.appendChild(utilities);
+    </script>
+    <script src="/engine/draftosaurus/InputListener.js" defer></script>
+    <script src="/engine/draftosaurus/Tablero.js" defer></script>
+    <script src="/engine/draftosaurus/Sounds.js" defer></script>
+    <script src="/engine/draftosaurus/Inventario.js" defer></script>
+    <script src="../index.js" defer></script>
+    <script src="../dice.js"></script>
+    <script src="../gameUI.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/eruda"></script>
+<script>eruda.init();</script>
 </body>
 </html>

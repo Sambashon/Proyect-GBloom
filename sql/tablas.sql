@@ -22,6 +22,7 @@ create table sesion (
     mantener boolean default false, -- Agregado
     primary key (token),
     foreign key (username) references usuario(username)
+    foreign key (username) references usuario(username)
 );
 
 create table dado (
@@ -99,6 +100,7 @@ create table juega (
 create table inventario (
     username varchar(32) not null,
     partidaId int not null,
+    dinosaurioId varchar(9) not null,
     dinosaurioId varchar(9) not null,
     cantidad int not null,
     primary key (username, partidaId, dinosaurioId),
