@@ -4,11 +4,13 @@
 -- También faltaría agregar todo lo que serían estadisticas
 create table usuario (
     username varchar(32) not null,
-    correo varchar(320),
-    contraseña varchar(100),
-    fechaNacimiento date,
+    correo varchar(320) not null,
+    contraseña varchar(100) not null,
+    fechaCreacion date not null, -- Agregado
+    fechaNacimiento date not null,
     descripcion varchar(200),
-    admin boolean, -- Agregado
+    verificado boolean default false, -- Agregado
+    admin boolean default false, -- Agregado
     primary key (username)
 );
 
@@ -19,11 +21,11 @@ create table sesion (
     fecha datetime not null, -- Agregado
     mantener boolean default false, -- Agregado
     primary key (token),
-    foreign key (username)
+    foreign key (username) references usuario(username)
 );
 
 create table dado (
-    id int not null,
+    id varchar(9) not null,
     descripcion varchar(50),
     primary key (id)
 );
@@ -38,7 +40,7 @@ create table partida (
     id int not null auto_increment,
     nombre varchar(32) not null, -- Agregado
     host varchar(32) not null, -- Agregado
-    fecha date not null,
+    fecha datetime not null,
     horaInicio time,
     horaFinal time,
     cantidadJugadores int not null,
@@ -46,13 +48,21 @@ create table partida (
     turnoActual int,
     faseActual int,
     dadoId int,
-    numJugador int,
+    -- numJugador int, Eliminado
     primary key (id),
     foreign key (dadoId) references dado(id),
-    foreign key (host) references usuario(id)
+    foreign key (host) references usuario(username)
 );
 
 -- NUEVAS TABLAS
+
+create table codigo_temporal ( -- Nueva Tabla!!!
+    codigo varchar(64) not null,
+    username varchar(32) not null,
+    expira datetime not null,
+    primary key (codigo),
+    foreign key (username) references usuario(username)
+);
 
 create table lobby ( -- Nueva Tabla!!!
     codigo varchar(9) not null,
@@ -89,7 +99,7 @@ create table juega (
 create table inventario (
     username varchar(32) not null,
     partidaId int not null,
-    dinosaurioId int not null,
+    dinosaurioId varchar(9) not null,
     cantidad int not null,
     primary key (username, partidaId, dinosaurioId),
     foreign key (username, partidaId) references juega(username, partidaId),
@@ -99,8 +109,8 @@ create table inventario (
 create table tablero (
     username varchar(32) not null,
     partidaId int not null,
-    dinosaurioId int not null,
-    seccion varchar(10),
+    dinosaurioId varchar(9) not null,
+    recinto varchar(10),
     cantidad int not null,
     primary key (username, partidaId, dinosaurioId, seccion),
     foreign key (username, partidaId) references juega(username, partidaId),
@@ -111,4 +121,3 @@ create table tablero (
 -- Aunque sería correcto, conceptualmente entra en un conflicto: No puedo tener un dinosaurio en el tablero si no está
 -- registrado en el inventario. Esto al inicio suena coherente, la verdad es que el enfoque es que inventario y tablero,
 -- dependen del usuario jugando una partida y luego las reestricciones se realizan en php
-

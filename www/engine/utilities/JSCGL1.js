@@ -14,16 +14,16 @@ class Matrix3D {
     }
 
     static multiplyMatrixVector(matrix, vector) {
-    let result = [];
-    for (let row = 0; row < 4; row++) {
-        let sum = 0;
-        for (let i = 0; i < 4; i++) {
-            sum += matrix[i + row * 4] * vector[i];
+        let result = [];
+        for (let row = 0; row < 4; row++) {
+            let sum = 0;
+            for (let i = 0; i < 4; i++) {
+                sum += matrix[row + i * 4] * vector[i];
+            }
+            result.push(sum);
         }
-        result.push(sum);
+        return result;
     }
-    return result;
-}
 
     static invertMatrix(m) {
         const inv = new Float32Array(16);
@@ -237,6 +237,7 @@ class Matrix3D {
 class Object3D {
     static camera;
 
+    id;
     position;
     velocity;
     indices;
@@ -248,7 +249,8 @@ class Object3D {
     vao;
     texture;
 
-    constructor (position, velocity, size, rotation, indices, vao, texture, program, matFromEyeWorldUniform, matWorldUniform, invertNormalsUniform, cameraViewUniform, numPointLightsUniform) {
+    constructor (id, position, velocity, size, rotation, indices, vao, texture, program, matFromEyeWorldUniform, matWorldUniform, invertNormalsUniform, cameraViewUniform, numPointLightsUniform) {
+        this.id = id;
         this.position = position;
         this.velocity = velocity;
         this.indices = indices;
@@ -388,6 +390,8 @@ class Scene {
     cameras;
     actualCamera;
     pointLights;
+    models;
+    textures;
 
     constructor(scene) {
         this.sceneData = scene;
@@ -395,7 +399,13 @@ class Scene {
         this.actualCamera = "camera00"
         this.pointLights = [];
         this.cameras = [];
+        this.models = [];
+        this.textures = [];
         this.invertedObjects = [];
+        this.matView = Matrix3D.lookAt(
+        Matrix3D.vec3fromValues(0, 0, 0),
+        Matrix3D.vec3fromValues(0, 0, -1),
+        Matrix3D.vec3fromValues(0, 1, 0));
     }
 
     async loadScene(jgl) {
@@ -412,17 +422,21 @@ class Scene {
                 let actualModel = this.sceneData.src.models[i];
                 tempImage = await this.loadImageAsync(this.sceneData.src.images[actualModel.image]);
 
-                modelData.push(new Model(await this.fetchModel(actualModel.model, tempImage)));
+                modelData.push({id: actualModel.id, model: new Model(await this.fetchModel(actualModel.model, tempImage))});
             }
             
             for (let i = 0; i < modelData.length; i++) {
-                models.push(jgl.loadModel(modelData[i]));
+                //console.log(modelData[i].model.indices.length);
+                this.models.push({id: modelData[i].id, model: jgl.loadModel(modelData[i].model)});
             }
 
             for (let i = 0; i < this.sceneData.data.objects.length; i++) {
                 let actualObject = this.sceneData.data.objects[i];
-                objects.push(jgl.newObject(models[actualObject.model], actualObject.position, actualObject.scale, actualObject.velocity, actualObject.rotation));
-                invertedObjects.push(actualObject.inverted);
+                objects.push(jgl.newObject({id: actualObject.id, model: this.models[actualObject.model].model, position: actualObject.position, size: actualObject.scale, velocity: actualObject.velocity, rotation: actualObject.rotation, inverted: actualObject.inverted}));
+            }
+
+            for (let i = 0; i < objects.length; i++) {
+                invertedObjects.push(objects[i].inverted);
             }
         }
 
@@ -476,15 +490,17 @@ class Scene {
                         width / height,
                         0.1, 1000.0
                     );
-                    let matViewProj = Matrix3D.multiplyMatrices(matProj, JSCGL.matView);
+                    this.matViewProj = Matrix3D.multiplyMatrices(matProj, this.matView);
             
-                    JSCGL.gl.uniformMatrix4fv(JSCGL.matViewProjUnifrom, false, matViewProj);
+                    JSCGL.gl.uniformMatrix4fv(JSCGL.matViewProjUnifrom, false, this.matViewProj);
                     Object3D.setCamera(this.cameras[i].position, this.cameras[i].rotation);
                     break;
                 }
             }
         }
 
+        JSCGL.gl.enable(JSCGL.gl.BLEND);
+        JSCGL.gl.blendFunc(JSCGL.gl.SRC_ALPHA, JSCGL.gl.ONE_MINUS_SRC_ALPHA);
         JSCGL.gl.clearColor(BACKGROUND_COLOR[0], BACKGROUND_COLOR[1], BACKGROUND_COLOR[2], BACKGROUND_COLOR[3]);
         JSCGL.gl.clear(JSCGL.gl.COLOR_BUFFER_BIT | JSCGL.gl.DEPTH_BUFFER_BIT);
 
@@ -529,6 +545,28 @@ class Scene {
 
     shift() {
         this.objects.shift();
+    }
+
+    getObjectById(id) {
+        let searchedObject;
+        this.objects.forEach(object => {
+            if (object.id == id) {
+                searchedObject = object
+            }
+        });
+
+        return searchedObject;
+    }
+
+    getModelById(id) {
+        let searchedModel;
+        this.models.forEach(model => {
+            if (model.id == id) {
+                searchedModel = model;
+            }
+        })
+
+        return searchedModel;
     }
 
     objToArray(obj) {
@@ -700,7 +738,7 @@ void main() {
     float red = (textureRed * 0.6) + (textureRed * brightness[0]);
     float green = (textureGreen * 0.6) + (textureGreen * brightness[1]);
     float blue = (textureBlue * 0.6) + (textureBlue * brightness[2]);
-    color = vec4(red, green, blue, 1.0);
+    color = vec4(red, green, blue, textureColor.a);
 }`;
 
         this.program = this.createGraphicsProgram(this.vertexShaderText, this.fragmentShaderText);
@@ -906,7 +944,7 @@ void main() {
         return [shapeVao[0], shape.indices, shapeVao[1]];
     }
 
-    newObject(shape, shapePosition, shapeSize, shapeVelocity, shapeRotation) {
+    newObject({id: id, model: shape, position: shapePosition, size: shapeSize, velocity: shapeVelocity, rotation: shapeRotation}) {
         let position = [0, 0, 0];
         let velocity = [0, 0, 0];
         let size = [1, 1, 1];
@@ -928,7 +966,7 @@ void main() {
             rotation = shapeRotation;
         }
 
-        return new Object3D(position, velocity, size, rotation, shape[1], shape[0], shape[2], this.program, JSCGL.matFromEyeWorldUniform, JSCGL.matWorldUniform, JSCGL.invertNormalsUniform, JSCGL.cameraViewUniform, JSCGL.numPointLightsUniform);
+        return new Object3D(id, position, velocity, size, rotation, shape[1], shape[0], shape[2], this.program, JSCGL.matFromEyeWorldUniform, JSCGL.matWorldUniform, JSCGL.invertNormalsUniform, JSCGL.cameraViewUniform, JSCGL.numPointLightsUniform);
     }
 
     static setLightPosition(x, y, z) {

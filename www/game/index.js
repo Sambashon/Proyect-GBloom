@@ -8,7 +8,7 @@ let inventario = new Inventario();
 let state;
 let recinto;
 
-function setup(map, canvas) {
+async function setup(map, canvas) {
   dino = ENGINE.spawnDino("rojo", "");
   dino.position = [0, -100, 0];
   dino.rotation[1] = Matrix3D.convertToRad(-90);
@@ -21,6 +21,18 @@ function setup(map, canvas) {
   let overlayModel = map.getModelById("overlay");
   overlay = ENGINE.jgl.newObject({id: "overlay", model: overlayModel.model, position: [0, 10, 3], size: [2, 2, 2]});
   map.push(overlay);
+
+  // Set Up Tablero e Inventario
+  let solicitud = await fetch("/php/scripts/game/getInventario.php").then(function (response) {
+    return response.json();
+  });
+  
+  if (solicitud.state == "success") {
+    inventario.importarInventario(solicitud.result);
+    inventario.actualizarSlots(listener.slots);
+  } else {
+    alert(solicitud.ErrMessage);
+  }
 
   tablero = new Tablero(inventario);
 }

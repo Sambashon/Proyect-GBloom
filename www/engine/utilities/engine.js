@@ -17,7 +17,7 @@ class GBloomEngine {
       this.canvas.width = this.width;
       this.canvas.height = this.height;
 
-      if (navigator.gpu) {
+      if (!navigator.gpu) {
         let context = this.canvas.getContext("webgpu");
         let canvasFormat = navigator.gpu.getPreferredCanvasFormat();
 
@@ -56,7 +56,7 @@ class GBloomEngine {
 
       this.lastFrameTime = performance.now();
       
-      setup(this.map, this.canvas);
+      await setup(this.map, this.canvas);
       requestAnimationFrame(this.frame.bind(this));
     }
 

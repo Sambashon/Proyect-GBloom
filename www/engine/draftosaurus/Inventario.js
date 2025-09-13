@@ -15,6 +15,32 @@ class Inventario {
         this.naranja = 2;
     }
 
+    importarInventario(inventario) {
+        for (let i = 0; i < inventario.length; i++) {
+            const slot = inventario[i];
+            switch (slot.dinosaurioId) {
+                case "amarillo":
+                    this.amarillo = slot.cantidad;
+                    break;
+                case "azul":
+                    this.azul = slot.cantidad;
+                    break;
+                case "rojo":
+                    this.rojo = slot.cantidad;
+                    break;
+                case "morado":
+                    this.morado = slot.cantidad;
+                    break;
+                case "verde":
+                    this.verde = slot.cantidad;
+                    break;
+                case "naranja":
+                    this.naranja = slot.cantidad;
+                    break;
+            }
+        }
+    }
+
     setInventario(inventario) {
         this.amarillo = inventario.amarillo;
         this.azul = inventario.azul;

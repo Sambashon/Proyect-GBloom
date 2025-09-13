@@ -1,6 +1,5 @@
 <?php
 include "../../clases/perfil.php";
-include "../../clases/gbmailer.php";
 
 $perfil = new Perfil();
 $mailer = new GBMailer();
@@ -15,16 +14,16 @@ switch ($request) {
             break;
         }
 
-        if (isset($body["username"]) && isset($body["correo"]) && isset($body["fechaNacimiento"]) && isset($body["contraseña"])) {
+        if (isset($body["username"]) && isset($body["correo"]) && isset($body["contraseña"])) {
             $username = $body["username"];
             $contraseña = $body["contraseña"];
             $correo = $body["correo"];
-            $fechaNacimiento = new DateTime($body["fechaNacimiento"]);
 
-            $register = $perfil->registrarUsuario($username, $contraseña, $correo, $fechaNacimiento);
+            $register = $perfil->registrarUsuario($username, $contraseña, $correo);
             
             if ($register["state"] == "success") {
-                $mailer->correoBienvenida($correo, $username);
+                $codigo = $register["result"];
+                $mailer->correoBienvenida($correo, $username, $codigo);
                 echo json_encode(["state" => "success"]);
                 break;
             } else {
