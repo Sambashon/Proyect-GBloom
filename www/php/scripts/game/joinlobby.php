@@ -8,21 +8,14 @@ switch ($request) {
     case "POST":
         if (isset($_COOKIE["golden-token"])) {
             $token = $_COOKIE["golden-token"];
-
-            try {
-                $body = json_decode(file_get_contents('php://input'), true);
-            } catch (Exception $e) {
-                echo json_encode(["state" => "forbidden", "ErrMessage" => "El formato de entrada no es valido"]);
-                break;
-            }
             
-            if (isset($body["codigo"])) {
-                $codigo = $body["codigo"];
+            if (isset($_COOKIE["golden-code"])) {
+                $codigo = $_COOKIE["golden-code"];
                 $accion = $draft->conectaLobby($token, $codigo);
 
                 echo json_encode($accion);
             } else {
-                echo json_encode(["state" => "notFound", "ErrMessage" => "No se han encontrado los parametros necesarios para la accion solicitada"]);
+                echo json_encode(["state" => "notFound", "ErrMessage" => "No se ha encontrado el codigo de acceso de la partida"]);
             }
 
         } else {

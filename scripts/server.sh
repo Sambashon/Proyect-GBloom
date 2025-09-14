@@ -70,7 +70,11 @@ cp /tmp/temp-repo/scripts/backup.sh /Draftosaurus/scripts
 cp /tmp/temp-repo/scripts/server.sh /Draftosaurus/scripts
 echo "0 0 */14 * 1 /Draftosaurus/scripts/backup.sh" | crontab -
 
-# 8. Limpiar
+# 8. Crear BD
+mysql -u root -e "CREATE DATABASE gbloom_db;"
+mysql -u root gbloom_db < /tmp/tmp-repo/sql/tablas.sql
+
+# 9. Limpiar
 rm -rf /tmp/temp-repo
 
 echo "=== INSTALACIÓN COMPLETADA ==="

@@ -47,7 +47,7 @@ create table partida (
     modoJuego varchar(15) not null, -- Agregado (Modo de juego virual o seguimiento)
     turnoActual int,
     faseActual int,
-    dadoId int,
+    dadoId varchar(9),
     -- numJugador int, Eliminado
     primary key (id),
     foreign key (dadoId) references dado(id),
@@ -99,7 +99,6 @@ create table juega (
 create table inventario (
     username varchar(32) not null,
     partidaId int not null,
-    dinosaurioId varchar(9) not null,
     dinosaurioId varchar(9) not null,
     cantidad int not null,
     primary key (username, partidaId, dinosaurioId),
