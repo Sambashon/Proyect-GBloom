@@ -207,7 +207,7 @@
         let body = document.querySelector("body");
         let utilities = document.createElement("script");
 
-        if (!navigator.gpu) {
+        if (navigator.gpu) {
             utilities.src = "/engine/utilities/JSCGL.js";
         } else {
             utilities.src = "/engine/utilities/JSCGL1.js";
@@ -215,10 +215,10 @@
 
         body.appendChild(utilities);
     </script>
-    <script src="/engine/draftosaurus/InputListener.js" defer></script>
-    <script src="/engine/draftosaurus/Tablero.js" defer></script>
-    <script src="/engine/draftosaurus/Sounds.js" defer></script>
-    <script src="/engine/draftosaurus/Inventario.js" defer></script>
+    <script src="/engine/draftosaurus/clases/InputListener.js" defer></script>
+    <script src="/engine/draftosaurus/clases/Tablero.js" defer></script>
+    <script src="/engine/draftosaurus/clases/Sounds.js" defer></script>
+    <script src="/engine/draftosaurus/clases/Inventario.js" defer></script>
     <script src="../index.js" defer></script>
     <script src="../dice.js"></script>
     <script src="../gameUI.js"></script>

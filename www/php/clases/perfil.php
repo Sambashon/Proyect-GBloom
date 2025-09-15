@@ -2,8 +2,6 @@
 include "gbloomdb.php";
 include "gbmailer.php";
 
-include "gbmailer.php";
-
 class Perfil extends GBloomDB {
 
     public function __construct() {

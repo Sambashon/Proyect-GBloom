@@ -23,11 +23,9 @@ async function setup(map, canvas) {
   map.push(overlay);
 
   // Set Up Tablero e Inventario
-  let solicitud = await fetch("/php/scripts/game/getInventario.php").then(function (response) {
-    return response.json();
-  });
+  let solicitud = await executeScript("getInventario.php");
   
-  if (solicitud.state == "success") {
+  if (solicitud.success) {
     inventario.importarInventario(solicitud.result);
     inventario.actualizarSlots(listener.slots);
   } else {
@@ -65,3 +63,28 @@ function update(map, dt) {
 }
 
 init();
+
+async function executeScript(script, body) {
+  let action;
+  if (body) {
+    action = await fetch("/php/scripts/game/" + script, {
+      method: "POST",
+      body: body
+    }).then(function (response) {
+      return response.json();
+    });
+  } else {
+    action = await fetch("/php/scripts/game/" + script).then(function (response) {
+      return response.json();
+    });
+  }
+
+    if (action.result) {
+      return {success: true, result: action.result};
+    } else if (action.ErrMessage) {
+      return {success: false, ErrMessage: action.ErrMessage}
+    } else {
+      return {success: true};
+    }
+
+}
