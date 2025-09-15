@@ -110,7 +110,7 @@ create table tablero (
     username varchar(32) not null,
     partidaId int not null,
     dinosaurioId varchar(9) not null,
-    recinto varchar(10),
+    recinto varchar(11),
     cantidad int not null,
     primary key (username, partidaId, dinosaurioId, recinto),
     foreign key (username, partidaId) references juega(username, partidaId),

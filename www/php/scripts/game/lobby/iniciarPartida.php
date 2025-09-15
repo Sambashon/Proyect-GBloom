@@ -1,5 +1,5 @@
 <?php
-include "../../clases/draftosaurus.php";
+include "../../../clases/draftosaurus.php";
 
 $draft = new Draftosaurus();
 $request = $_SERVER["REQUEST_METHOD"];
@@ -11,9 +11,21 @@ switch ($request) {
             
             if (isset($_COOKIE["golden-code"])) {
                 $codigo = $_COOKIE["golden-code"];
-                $accion = $draft->conectaLobby($token, $codigo);
+                $accion = $draft->iniciarPartida($token, $codigo);
 
-                echo json_encode($accion);
+                if ($accion["state"] == "success") {
+                    $accion = $draft->setupInventarios($token);
+                    
+                    if ($accion["state"] == "success") {
+                        $accion = $draft->setupOrdenJugadores($token);
+
+                        echo json_encode($accion);
+                    } else {
+                        echo json_encode($accion);
+                    }
+                } else {
+                    echo json_encode($accion);
+                }
             } else {
                 echo json_encode(["state" => "notFound", "ErrMessage" => "No se ha encontrado el codigo de acceso de la partida"]);
             }

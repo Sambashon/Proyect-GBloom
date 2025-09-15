@@ -2,6 +2,10 @@ let radio = new Sounds();
 let listener = new InputListener(document.querySelector("canvas"), document.querySelectorAll(".INVENTORY>section"), radio);
 let dino;
 let utlimoSlot;
+let turnoActual;
+let faseActual;
+let isTurnoTirarDado;
+let dado;
 let overlay;
 let tablero;
 let inventario = new Inventario();
@@ -13,6 +17,8 @@ async function setup(map, canvas) {
   dino.position = [0, -100, 0];
   dino.rotation[1] = Matrix3D.convertToRad(-90);
 
+  await empezarTurno();
+
   /* El overlay es un plano que tiene una textura con areas transparentes (png). El motor 3d implementado todavía
   no maneja este tipo de objetos de forma particular a otros (como sería apropiado),
   es por eso que para evitar que el renderizado de los dinosaurios lleve sopresas, siempre hay que mantener estos 
@@ -23,21 +29,10 @@ async function setup(map, canvas) {
   map.push(overlay);
 
   // Set Up Tablero e Inventario
-  let solicitud = await fetch("/php/scripts/game/getInventario.php").then(function (response) {
-    return response.json();
-  });
-  
-  if (solicitud.state == "success") {
-    inventario.importarInventario(solicitud.result);
-    inventario.actualizarSlots(listener.slots);
-  } else {
-    alert(solicitud.ErrMessage);
-  }
 
-  tablero = new Tablero(inventario);
 }
 
-function update(map, dt) {
+async function update(map, dt) {
   if (listener.mouse.focus.slice(0, 4) == "slot") {
     utlimoSlot = listener.mouse.focus;
   }
@@ -48,6 +43,16 @@ function update(map, dt) {
   if (state === "colocado") {  
     if (recinto) {
       if (tablero.agregarDinosaurio(dino, recinto)) {
+        DRAW = false;
+        action = await executeScript("partida/colocarDinosaurio.php", {dinosaurioId: dino.id, recinto: recinto});
+        if (!action.success) {
+          alert(action.ErrMessage);
+        }
+
+        action = await executeScript("partida/colocarDinosaurioNulls.php", {dinosaurioId: dino.id, recinto: recinto});
+        if (!action.success) {
+          alert(action.ErrMessage);
+        }
         dino = ENGINE.spawnDino("rojo", "rojo");
         ENGINE.moveOverlayToLast(overlay);
         inventario.quitarDinosaurio(utlimoSlot);
@@ -55,6 +60,8 @@ function update(map, dt) {
         radio.playEffect("place");
         dino.position = [0, -100, 0];
         dino.rotation[1] = Matrix3D.convertToRad(-90);
+        action = await executeScript("partida/terminarTurno.php", true);
+        DRAW = false;
       } else {
         dino.position = [0, -100, 0];
       }
@@ -65,3 +72,62 @@ function update(map, dt) {
 }
 
 init();
+
+async function executeScript(script, body) {
+  let action;
+  if (body) {
+      action = await fetch("/php/scripts/game/" + script, {
+        method: "POST",
+        body: JSON.stringify(body)
+      }).then(function (response) {
+        return response.json();
+      });
+  } else {
+    action = await fetch("/php/scripts/game/" + script).then(function (response) {
+      return response.json();
+    });
+  }
+
+    if (action.result) {
+      return {success: true, result: action.result};
+    } else if (action.ErrMessage) {
+      return {success: false, ErrMessage: action.ErrMessage}
+    } else {
+      return {success: true};
+    }
+
+}
+
+async function empezarTurno() {
+  let solicitud = await executeScript("getters/getInventario.php");
+  
+  if (solicitud.success) {
+    inventario.importarInventario(solicitud.result);
+    inventario.actualizarSlots(listener.slots);
+  } else {
+    alert(solicitud.ErrMessage);
+  }
+
+  tablero = new Tablero(inventario);
+
+  solicitud = await executeScript("getters/getTablero.php");
+  if (solicitud.success) {
+    console.log(solicitud.result)
+    tablero.importarTablero(solicitud.result);
+  }
+
+  action = await executeScript("partida/empezarTurno.php", true);
+
+  solicitud = await executeScript("getters/isTurnoTirarDado.php");
+  if (solicitud.result) {
+    isTurnoTirarDado = solicitud.result;
+    action = await executeScript("partida/tirarDado.php", true);
+  } else {
+    action = await executeScript("partida/tirarDadoNulls.php", true);
+  }
+
+  solicitud = await executeScript("getters/getDado.php");
+  if (solicitud.success) {
+    dado = solicitud.result;
+  }
+}

@@ -4,11 +4,6 @@ let email;
 let birthdate;
 let aboutme;
 
-let username;
-let email;
-let birthdate;
-let aboutme;
-
 const footerMenu = document.querySelector(".footer-menu");
 const settingsBtn = document.getElementById("SETTINGSbtn");
 const playBtn = document.getElementById("PLAYbtn");
@@ -120,7 +115,7 @@ function handleSwipe() {
 }
 async function connectLobby(code) {
     // Logica temporal para jugar un jugador en la segunda entrega
-    const accion = await fetch("/php/scripts/game/crearPartida.php", {
+    const accion = await fetch("/php/scripts/game/lobby/crearPartida.php", {
         method: "POST",
         body: JSON.stringify({nombre: "Golden Match", cantidadJugadores: 5, modo: "virtual", codigo: code})
     }).then(function (response) {
@@ -129,7 +124,7 @@ async function connectLobby(code) {
     
 
     if (accion.state == "success") {
-        const solicitud = await fetch("/php/scripts/game/verificarCodigo.php", {
+        const solicitud = await fetch("/php/scripts/game/lobby/verificarCodigo.php", {
             method: "POST",
             body: JSON.stringify({codigo: code})
         }).then(function (response) {

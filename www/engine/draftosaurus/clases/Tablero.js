@@ -7,10 +7,10 @@ class Tablero {
     tres;
     rio;
 
-    inventario;
+    tablero;
 
-    constructor(inventario) {
-        this.inventario = inventario;
+    constructor(tablero) {
+        this.tablero = tablero;
         this.soledad = {dinosaurios: [], cupos: 1};
         this.romance = {dinosaurios: [], cupos: 6};
         this.igualdad = {dinosaurios: [], cupos: 6};
@@ -32,6 +32,39 @@ class Tablero {
         this.monarquia = tablero.monarquia;
         this.tres = tablero.tres;
         this.rio = tablero.rio;
+    }
+
+    importarTablero(tablero) {
+        for (let i = 0; i < tablero.length; i++) {
+            const recinto = tablero[i];
+            const dinosaurio = ENGINE.spawnDino(recinto.dinosaurioId);
+            dinosaurio.rotation[1] = Matrix3D.convertToRad(-90);
+            this.colocarDinosaurioRecinto(dinosaurio, recinto.recinto);
+            console.log(dinosaurio);
+            switch (recinto.recinto) {
+                case "soledad":
+                    this.soledad.dinosaurios.push(dinosaurio);
+                    break;
+                case "romance":
+                    this.romance.dinosaurios.push(dinosaurio);
+                    break;
+                case "igualdad":
+                    this.igualdad.dinosaurios.push(dinosaurio);
+                    break;
+                case "desigualdad":
+                    this.desigualdad.dinosaurios.push(dinosaurio);
+                    break;
+                case "monarquia":
+                    this.monarquia.dinosaurios.push(dinosaurio);
+                    break;
+                case "tres":
+                    this.tres.dinosaurios.push(dinosaurio);
+                    break;
+                case "rio":
+                    this.rio.dinosaurios.push(dinosaurio);
+                    break;
+            }
+        }
     }
 
     fijarDinosaurioRecinto(dinosaurio) {
@@ -165,7 +198,7 @@ class Tablero {
     }
 
     agregarDinosaurio(dinosaurio, recinto) {
-        if (this.inventario.getDinosaurioById(dinosaurio.id) <= 0) return false;
+        if (this.tablero.getDinosaurioById(dinosaurio.id) <= 0) return false;
 
         switch (recinto) {
             case "igualdad":
@@ -251,6 +284,134 @@ class Tablero {
             
             default:
                 return false;
+        }
+    }
+
+    colocarDinosaurioRecinto(dinosaurio, recinto) {
+        switch (recinto) {
+            case "igualdad":
+                switch (this.igualdad.dinosaurios.length) {
+                    case 0:
+                        dinosaurio.position = [-78, 15, -60];
+                        break;
+                    case 1:
+                        dinosaurio.position = [-70, 15, -60];
+                        break;
+                    case 2:
+                        dinosaurio.position = [-59, 15, -60];
+                        break;
+                    case 3:
+                        dinosaurio.position = [-49, 15, -60];
+                        break;
+                    case 4:
+                        dinosaurio.position = [-38, 15, -60];
+                        break;
+                    case 5:
+                        dinosaurio.position = [-29, 15, -60];
+                        break;
+                    default:
+                        break;
+                }
+                break;
+            case "tres":
+                switch (this.tres.dinosaurios.length) {
+                    case 0:
+                        dinosaurio.position = [-70, 15, 8];
+                        break;
+                    case 1:
+                        dinosaurio.position = [-62, 15, -7];
+                        break;
+                    case 2:
+                        dinosaurio.position = [-53, 15, 9];
+                        break;
+                    default:
+                        break;
+                }
+                break;
+            case "romance":
+                console.log(this.romance.dinosaurios.length)
+                switch (this.romance.dinosaurios.length) {
+                    case 0:
+                        dinosaurio.position = [-62, 15, 68];
+                        console.log(86728)
+                        break;
+                    case 1:
+                        dinosaurio.position = [-52, 15, 68];
+                        break;
+                    case 2:
+                        dinosaurio.position = [-42, 15, 68];
+                        break;
+                    case 3:
+                        dinosaurio.position = [-62, 15, 48];
+                        break;
+                    case 4:
+                        dinosaurio.position = [-52, 15, 48];
+                        break;
+                    case 5:
+                        dinosaurio.position = [-42, 15, 48];
+                        break;
+                    default:
+                        break;
+                }
+                break;
+            case "monarquia":
+                if (this.monarquia.dinosaurios.length < this.monarquia.cupos) {
+                    dinosaurio.position = [44, 15, -62];
+                }
+                break;
+            case "desigualdad":
+                switch (this.desigualdad.dinosaurios.length) {
+                    case 0:
+                        dinosaurio.position = [24, 15, 8];
+                        break;
+                    case 1:
+                        dinosaurio.position = [33, 15, 8];
+                        break;
+                    case 2:
+                        dinosaurio.position = [45, 15, 8];
+                        break;
+                    case 3:
+                        dinosaurio.position = [55, 15, 8];
+                        break;
+                    case 4:
+                        dinosaurio.position = [66, 15, 8];
+                        break;
+                    case 5:
+                        dinosaurio.position = [76, 15, 8];
+                        break;
+                    default:
+                        break;
+                }
+                break;
+            case "soledad":
+                if (this.soledad.dinosaurios.length < this.soledad.cupos) {
+                    dinosaurio.position = [66, 15, 52];
+                }
+                break;
+            case "rio":
+                switch (this.rio.dinosaurios.length) {
+                    case 0:
+                        dinosaurio.position = [-2, 15, 91];
+                        break;
+                    case 1:
+                        dinosaurio.position = [13, 15, 91];
+                        break;
+                    case 2:
+                        dinosaurio.position = [26, 15, 91];
+                        break;
+                    case 3:
+                        dinosaurio.position = [-2, 15, 71];
+                        break;
+                    case 4:
+                        dinosaurio.position = [13, 15, 71];
+                        break;
+                    case 5:
+                        dinosaurio.position = [26, 15, 71];
+                        break;
+                    default:
+                        break;
+                }
+                break;
         }
     }
 }

@@ -17,7 +17,7 @@ class GBloomEngine {
       this.canvas.width = this.width;
       this.canvas.height = this.height;
 
-      if (!navigator.gpu) {
+      if (navigator.gpu) {
         let context = this.canvas.getContext("webgpu");
         let canvasFormat = navigator.gpu.getPreferredCanvasFormat();
 
@@ -88,7 +88,7 @@ class GBloomEngine {
 }
 
 // Aqui se definen variables globales usadas en todo el juego
-let DRAW = false;
+let DRAW = true;
 let ENGINE;
 let BACKGROUND_COLOR = [0.643, 0.255, 0.255,1];
 
