@@ -96,12 +96,17 @@ rm tempcron
 # 8. Crear BD
 mysql -u root -e "CREATE DATABASE gbloom_db;"
 mysql -u root gbloom_db < /tmp/temp-repo/sql/tablas.sql
-
+mysql -u root -e "
+CREATE USER IF NOT EXISTS 'gbloomer'@'%' IDENTIFIED BY 'goldenblosser';
+GRANT SELECT, INSERT, UPDATE, DELETE ON gbloom_db.* TO 'gbloomer'@'%';
+GRANT ALL PRIVILEGES ON gbloom_db.* TO 'gbloomer'@'localhost';
+FLUSH PRIVILEGES;
+"
 # 9. Limpiar
 rm -rf /tmp/temp-repo
 
 echo "=== INSTALACIÓN COMPLETADA ==="
-echo "La contraseña del usuario admin por defecto es 'Drafto123'"
+echo "La contraseña del usuario admin por defecto es 'Drafto123!'"
 ;;
 
 2)

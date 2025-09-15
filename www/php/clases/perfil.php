@@ -5,7 +5,7 @@ include "gbmailer.php";
 class Perfil extends GBloomDB {
 
     public function __construct() {
-        parent::__construct("database", "gbloomer", "gbloom_db", "goldenblosser", 3306);
+        parent::__construct("localhost", "gbloomer", "gbloom_db", "goldenblosser", 3306);
     }
 
     public function registrarUsuario(string $username, string $contraseña, string $correo): array {

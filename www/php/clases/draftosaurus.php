@@ -2,7 +2,7 @@
 include "gbloomdb.php";
 class Draftosaurus extends GBloomDB {
     public function __construct() {
-        parent::__construct("database", "gbloomer", "gbloom_db", "goldenblosser", 3306);
+        parent::__construct("localhost", "gbloomer", "gbloom_db", "goldenblosser", 3306);
     }
 
     // Metodos para comenzar una partida de Draftosaurus

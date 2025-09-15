@@ -17,7 +17,7 @@ class GBloomDB {
     }
 
     public function getUserCredentials(string $token): array {
-        $solicitud = $this->pdo->prepare("select username, expira, fecha mantener from sesion where token = :token;");
+        $solicitud = $this->pdo->prepare("select username, expira, fecha, mantener from sesion where token = :token;");
         $solicitud->execute(["token" => $token]);
         $userinfo = $solicitud->fetch();
         if ($userinfo !== false) {
@@ -36,8 +36,7 @@ class GBloomDB {
             if ($userinfo["mantener"] == "1") {
                 $ahora = new DateTime();
                 $desde = $ahora->diff(new DateTime($userinfo["fecha"]));
-                $expira = new DateTime();
-                $expira->modify("+1 months")->format("Y-m-d H:i:s");
+                $expira = (new DateTime())->modify("+1 months")->format("Y-m-d H:i:s");
                 if ($desde->days > 1) {
                     $actualizar = $this->pdo->prepare("update sesion set expira = :expira where token = :token;");
                     $actualizar->execute(["expira" => $expira, "token" => $token]);
