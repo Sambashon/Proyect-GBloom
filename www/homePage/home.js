@@ -4,11 +4,6 @@ let email;
 let birthdate;
 let aboutme;
 
-let username;
-let email;
-let birthdate;
-let aboutme;
-
 const footerMenu = document.querySelector(".footer-menu");
 const settingsBtn = document.getElementById("SETTINGSbtn");
 const playBtn = document.getElementById("PLAYbtn");
