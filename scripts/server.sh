@@ -38,6 +38,19 @@ composer require phpmailer/phpmailer --working-dir=/php/
 # 3. Configuración de servicios
 echo "3. Configurando servicios..."
 ssh-keygen -t rsa -b 4096 -f /root/.ssh/id_rsa -N "" -q
+
+# 3.1 Preparamos el directorio ssh para goldenadmin
+mkdir -p /home/goldenadmin/.ssh
+chown goldenadmin:goldenadmin /home/goldenadmin/.ssh
+chmod 700 /home/goldenadmin/.ssh
+
+# 3.2 Generate goldenadmin SSH key
+ssh-keygen -t rsa -b 4096 -f /home/goldenadmin/.ssh/id_rsa -N "" -q
+
+# 3.3 Add public key to authorized_keys
+cat /home/goldenadmin/.ssh/id_rsa.pub >> /home/goldenadmin/.ssh/authorized_keys
+chown goldenadmin:goldenadmin /home/goldenadmin/.ssh/authorized_keys
+chmod 600 /home/goldenadmin/.ssh/authorized_keys
 systemctl enable apache2 ssh mariadb
 systemctl start apache2 ssh mariadb
 
