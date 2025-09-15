@@ -74,7 +74,12 @@ mkdir -p /Draftosaurus/backups
 mkdir -p /Draftosaurus/scripts
 cp /tmp/temp-repo/scripts/backup_db.sh /Draftosaurus/scripts
 cp /tmp/temp-repo/scripts/server.sh /Draftosaurus/scripts
-echo "0 0 *14/ * 1 /Draftosaurus/scripts/master_backup.sh" | crontab -
+#Tempcron para no sobreescribir otros cron y se lo mete al usuario admin
+sudo crontab -u goldenadmin -l > tempcron 2>/dev/null
+echo "0 0 */14 * 1 /Draftosaurus/scripts/master_backup.sh" >> tempcron
+sudo crontab -u goldenadmin tempcron
+rm tempcron
+
 # 8. Crear BD
 mysql -u root -e "CREATE DATABASE gbloom_db;"
 mysql -u root gbloom_db < /tmp/temp-repo/sql/tablas.sql
