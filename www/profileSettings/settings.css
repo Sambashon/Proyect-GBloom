@@ -55,7 +55,7 @@ body{
 }
 .form-footer{
     display: flex;
-    height: 15%;
+    height: 10%;
     width: 100%;
     align-items: center;
     justify-content: space-around;
@@ -64,7 +64,7 @@ body{
     padding-right: 10px;
     overflow-y: auto;
     flex: 1;
-    max-height: 65%;
+    max-height: 60%;
 }
 
 .picture-container{

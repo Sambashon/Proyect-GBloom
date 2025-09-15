@@ -22,7 +22,7 @@ echo "1.1 Creando usuario admin..."
 useradd -m -s /bin/bash goldenadmin
 echo "goldenadmin:Drafto123!" | chpasswd
 usermod -aG sudo goldenadmin
-
+usermod -aG www-data goldenadmin
 
 echo "2. Instalando PHP con todos los módulos..."
 mkdir /php
@@ -73,7 +73,6 @@ cp -r /tmp/temp-repo/www/* /var/www/html/
 echo "7. Configurando permisos..."
 chown -R www-data:www-data /var/www/html
 chmod -R 775 /var/www/html
-usermod -aG www-data $USER
 
 # Reiniciar apache2
 systemctl restart apache2

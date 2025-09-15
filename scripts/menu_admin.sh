@@ -13,6 +13,7 @@ while true; do
     echo "5. Ver uso de disco"
     echo "6. Estado de servicios (Apache/MariaDB/SSH)"
     echo "7. Ejecutar backup maestro ahora"
+    echo "8. Ver logs de accesos fallidos"
     echo "0. Salir"
     echo "======================================="
     read -p "Seleccione una opción: " opt
@@ -69,7 +70,10 @@ while true; do
             echo -e "\nPresione [ENTER] para continuar..."
             read
             ;;
-
+        8)
+            echo -e "\n=== EJECUTANDO MONITOREO DE SEGURIDAD ==="
+            /Draftosaurus/scripts/monitor_security.sh
+            ;;
         0)
             echo "Saliendo..."
             exit 0

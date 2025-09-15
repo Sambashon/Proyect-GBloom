@@ -54,25 +54,20 @@ logoutBtn.addEventListener("click", () =>{
 })
 
 function showError(input, message) {
-    let errorEl = input.parentElement.querySelector(".error-message");
-    if (!errorEl) {
-        errorEl = document.createElement("div");
-        errorEl.className = "error-message text-danger small mt-1";
-        input.parentElement.appendChild(errorEl);
-    }
+    const errorEl = document.querySelector(".error-message");
     errorEl.textContent = message;
 }
 
 function clearError(input) {
-    const errorEl = input.parentElement.querySelector(".error-message");
+    const errorEl = document.querySelector(".error-message");
     if (errorEl) errorEl.remove();
 }
 
 function validateProfileForm() {
     let valid = true;
 
-    if (usernameInput.value.trim().length === 0 || usernameInput.value.trim().length > 32) {
-        showError(usernameInput, "Username is required (max 32 characters).");
+    if (usernameInput.value.trim().length < 4 || usernameInput.value.trim().length > 32) {
+        showError(usernameInput, "Username must be between 4 and 32 characters long.");
         valid = false;
     } else {
         clearError(usernameInput);
@@ -85,14 +80,14 @@ function validateProfileForm() {
     } else {
         clearError(emailInput);
     }
-
+    /* se mueve esto a otra parte
     if (passwordInput.value.length < 8 || passwordInput.value.length > 100) {
         showError(passwordInput, "Password must be between 8 and 100 characters.");
         valid = false;
     } else {
         clearError(passwordInput);
     }
-
+    */
     if (aboutmeInput.value.trim().length > 200) {
         showError(aboutmeInput, "Description cannot exceed 200 characters.");
         valid = false;
@@ -106,6 +101,8 @@ function validateProfileForm() {
 save.addEventListener("submit", async (e) =>{
     e.preventDefault();
     if(!validateProfileForm()){
+        const errEl = document.querySelector(".error-message");
+        errEl.textContent = "No errors";
         return;
     }
     try{
