@@ -1,6 +1,9 @@
 <?php
 include "gbloomdb.php";
 class Draftosaurus extends GBloomDB {
+
+    private const SUCCESS = "success";
+
     public function __construct() {
         parent::__construct("localhost", "gbloomer", "gbloom_db", "goldenblosser", 3306);
     }
@@ -9,7 +12,7 @@ class Draftosaurus extends GBloomDB {
 
     public function verificarHost(int $partidaId, string $token): array {
         $credentials = $this->getUserCredentials($token);
-        if ($credentials["state"] == "success") {
+        if ($credentials["state"] == self::SUCCESS) {
             $usuario = $credentials["result"]["username"];
             $solicitud = $this->pdo->prepare("select host from partida where id = :id;");
             $solicitud->execute(["id" => $partidaId]);
@@ -142,10 +145,10 @@ class Draftosaurus extends GBloomDB {
     // Esta funcion es exlusivamente para la segunda entrega un jugador
     public function eliminarPartidaDefecto(): array {
         $eliminar = $this->pdo->prepare("delete from conecta where codigo = :codigo");
-        $eliminar->execute(["codigo" => "RSeXhuiDf"]);
+        $eliminar->execute(["codigo" => "GBloMatch"]);
 
         $eliminar = $this->pdo->prepare("delete from lobby where codigo = :codigo");
-        $eliminar->execute(["codigo" => "RSeXhuiDf"]);
+        $eliminar->execute(["codigo" => "GBloMatch"]);
 
         return [
             "state" => "success"
@@ -183,7 +186,7 @@ class Draftosaurus extends GBloomDB {
 
     // Esta funcion es exlusivamente para la segunda entrega un jugador
     private function generarCodigoAccesoFijo(): string {
-        return "RSeXhuiDf";
+        return "GBloMatch";
     }
 
     public function crearLobby(string $nombre, string $token): array {
@@ -742,6 +745,7 @@ class Draftosaurus extends GBloomDB {
                 $solicitud = $solicitud->fetch();
 
                 if ($solicitud !== false) {
+                    $cantidadDisponibles = $solicitud["cantidad"];
                     $cafeteria = false;
                     $baños = false;
                     $bosque = false;
@@ -790,21 +794,24 @@ class Draftosaurus extends GBloomDB {
 
                     $recintosProhibidos = [];
                     $tablero = $this->getTablero($token);
-                    foreach ($tablero as $tableroRecinto) {
-                        if ($tableroRecinto["dinosaurioId"] == "rojo" && $dadoId == "notrex" && !isset($recintosProhibidos[$tableroRecinto["recinto"]])) {
-                            $recintosProhibidos[$tableroRecinto["recinto"]] = true;
+
+                    if ($tablero["state"] == "success") {
+                        foreach ($tablero["result"] as $tableroRecinto) {
+                            if ($tableroRecinto["dinosaurioId"] == "rojo" && $dadoId == "notrex" && !isset($recintosProhibidos[$tableroRecinto["recinto"]])) {
+                                $recintosProhibidos[$tableroRecinto["recinto"]] = true;
+                            }
+
+                            if ($dadoId == "vacio" && !isset($recintosProhibidos[$tableroRecinto["recinto"]])) {
+                                $recintosProhibidos[$tableroRecinto["recinto"]] = true;
+                            }
                         }
 
-                        if ($dadoId == "vacio" && !isset($recintosProhibidos[$tableroRecinto["recinto"]])) {
-                            $recintosProhibidos[$tableroRecinto["recinto"]] = true;
+                        if (isset($recintosProhibidos[$recinto])) {
+                            return [
+                                "state" => "notFound",
+                                "ErrMessage" => "El usuario brindado no esta registrado en ninguna partida"
+                            ];
                         }
-                    }
-
-                    if (isset($recintosProhibidos[$recinto])) {
-                        return [
-                            "state" => "notFound",
-                            "ErrMessage" => "El usuario brindado no esta registrado en ninguna partida"
-                        ];
                     }
 
                     switch (true) {
@@ -817,6 +824,16 @@ class Draftosaurus extends GBloomDB {
                             if ($solicitud === false) {
                                 $insertar = $this->pdo->prepare("insert into tablero(username, partidaId, dinosaurioId, recinto, cantidad) values (:username, :partidaId, :dinosaurioId, :recinto, 1);");
                                 $insertar->execute(["username" => $username, "partidaId" => $partidaId, "dinosaurioId" => $dinosaurio, "recinto" => $recinto]);
+
+                                if ($cantidadDisponibles > 1) {
+                                    
+                                    $actualizar = $this->pdo->prepare("update inventario set cantidad = :cantidad where dinosaurioId = :dinosaurioId and username = :username and partidaId = :partidaId;");
+                                    $actualizar->execute(["username" => $username, "partidaId" => $partidaId, "dinosaurioId" => $dinosaurio, "cantidad" => $cantidadDisponibles-1]);
+                                } else {
+                                    
+                                    $eliminar = $this->pdo->prepare("delete from inventario where dinosaurioId = :dinosaurioId and username = :username and partidaId = :partidaId;");
+                                    $eliminar->execute(["username" => $username, "partidaId" => $partidaId, "dinosaurioId" => $dinosaurio]); 
+                                }
 
                                 return [
                                     "state" => "success"
@@ -837,6 +854,16 @@ class Draftosaurus extends GBloomDB {
                                     $actualizar = $this->pdo->prepare("update tablero set cantidad = :cantidad where dinosaurioId = :dinosaurioId and recinto = :recinto and username = :username and partidaId = :partidaId;");
                                     $actualizar->execute(["username" => $username, "partidaId" => $partidaId, "dinosaurioId" => $dinosaurio, "recinto" => $recinto, "cantidad" => $recinto]);
                                     
+                                    if ($cantidadDisponibles > 1) {
+                                        
+                                        $actualizar = $this->pdo->prepare("update inventario set cantidad = :cantidad where dinosaurioId = :dinosaurioId username = :username and partidaId = :partidaId;");
+                                        $actualizar->execute(["username" => $username, "partidaId" => $partidaId, "dinosaurioId" => $dinosaurio, "cantidad" => $cantidadDisponibles-1]);
+                                    } else {
+                                        
+                                        $eliminar = $this->pdo->prepare("delete inventario where dinosaurioId = :dinosaurioId username = :username and partidaId = :partidaId;");
+                                        $eliminar->execute(["username" => $username, "partidaId" => $partidaId, "dinosaurioId" => $dinosaurio]); 
+                                    }
+
                                     return [
                                         "state" => "success"
                                     ];
@@ -855,6 +882,16 @@ class Draftosaurus extends GBloomDB {
                             if (empty($solicitud)) {
                                 $insertar = $this->pdo->prepare("insert into tablero(username, partidaId, dinosaurioId, recinto, cantidad) values (:username, :partidaId, :dinosaurioId, :recinto, 1);");
                                 $insertar->execute(["username" => $username, "partidaId" => $partidaId, "dinosaurioId" => $dinosaurio, "recinto" => $recinto]);
+
+                                if ($cantidadDisponibles > 1) {
+                                    
+                                    $actualizar = $this->pdo->prepare("update inventario set cantidad = :cantidad where dinosaurioId = :dinosaurioId and username = :username and partidaId = :partidaId;");
+                                    $actualizar->execute(["username" => $username, "partidaId" => $partidaId, "dinosaurioId" => $dinosaurio, "cantidad" => $cantidadDisponibles-1]);
+                                } else {
+                                    
+                                    $eliminar = $this->pdo->prepare("delete from inventario where dinosaurioId = :dinosaurioId and username = :username and partidaId = :partidaId;");
+                                    $eliminar->execute(["username" => $username, "partidaId" => $partidaId, "dinosaurioId" => $dinosaurio]); 
+                                }
 
                                 return [
                                     "state" => "success"
@@ -881,6 +918,16 @@ class Draftosaurus extends GBloomDB {
                                 $insertar = $this->pdo->prepare("insert into tablero(username, partidaId, dinosaurioId, recinto, cantidad) values (:username, :partidaId, :dinosaurioId, :recinto, 1);");
                                 $insertar->execute(["username" => $username, "partidaId" => $partidaId, "dinosaurioId" => $dinosaurio, "recinto" => $recinto]);
                                 
+                                if ($cantidadDisponibles > 1) {
+                                    
+                                    $actualizar = $this->pdo->prepare("update inventario set cantidad = :cantidad where dinosaurioId = :dinosaurioId and username = :username and partidaId = :partidaId;");
+                                    $actualizar->execute(["username" => $username, "partidaId" => $partidaId, "dinosaurioId" => $dinosaurio, "cantidad" => $cantidadDisponibles-1]);
+                                } else {
+                                    
+                                    $eliminar = $this->pdo->prepare("delete from inventario where dinosaurioId = :dinosaurioId and username = :username and partidaId = :partidaId;");
+                                    $eliminar->execute(["username" => $username, "partidaId" => $partidaId, "dinosaurioId" => $dinosaurio]); 
+                                }
+
                                 return [
                                     "state" => "success"
                                 ];
@@ -894,6 +941,16 @@ class Draftosaurus extends GBloomDB {
                                 $insertar = $this->pdo->prepare("insert into tablero(username, partidaId, dinosaurioId, recinto, cantidad) values (:username, :partidaId, :dinosaurioId, :recinto, 1);");
                                 $insertar->execute(["username" => $username, "partidaId" => $partidaId, "dinosaurioId" => $dinosaurio, "recinto" => $recinto]);
                                 
+                                if ($cantidadDisponibles > 1) {
+                                    
+                                    $actualizar = $this->pdo->prepare("update inventario set cantidad = :cantidad where dinosaurioId = :dinosaurioId and username = :username and partidaId = :partidaId;");
+                                    $actualizar->execute(["username" => $username, "partidaId" => $partidaId, "dinosaurioId" => $dinosaurio, "cantidad" => $cantidadDisponibles-1]);
+                                } else {
+                                    
+                                    $eliminar = $this->pdo->prepare("delete from inventario where dinosaurioId = :dinosaurioId and username = :username and partidaId = :partidaId;");
+                                    $eliminar->execute(["username" => $username, "partidaId" => $partidaId, "dinosaurioId" => $dinosaurio]); 
+                                }
+
                                 return [
                                     "state" => "success"
                                 ];
@@ -913,6 +970,16 @@ class Draftosaurus extends GBloomDB {
                                 $insertar = $this->pdo->prepare("insert into tablero(username, partidaId, dinosaurioId, recinto, cantidad) values (:username, :partidaId, :dinosaurioId, :recinto, 1);");
                                 $insertar->execute(["username" => $username, "partidaId" => $partidaId, "dinosaurioId" => $dinosaurio, "recinto" => $recinto]);
                                 
+                                if ($cantidadDisponibles > 1) {
+                                    
+                                    $actualizar = $this->pdo->prepare("update inventario set cantidad = :cantidad where dinosaurioId = :dinosaurioId and username = :username and partidaId = :partidaId;");
+                                    $actualizar->execute(["username" => $username, "partidaId" => $partidaId, "dinosaurioId" => $dinosaurio, "cantidad" => $cantidadDisponibles-1]);
+                                } else {
+                                    
+                                    $eliminar = $this->pdo->prepare("delete from inventario where dinosaurioId = :dinosaurioId and username = :username and partidaId = :partidaId;");
+                                    $eliminar->execute(["username" => $username, "partidaId" => $partidaId, "dinosaurioId" => $dinosaurio]); 
+                                }
+
                                 return [
                                     "state" => "success"
                                 ];
@@ -926,6 +993,16 @@ class Draftosaurus extends GBloomDB {
                                 $insertar = $this->pdo->prepare("insert into tablero(username, partidaId, dinosaurioId, recinto, cantidad) values (:username, :partidaId, :dinosaurioId, :recinto, 1);");
                                 $insertar->execute(["username" => $username, "partidaId" => $partidaId, "dinosaurioId" => $dinosaurio, "recinto" => $recinto]);
                                 
+                                if ($cantidadDisponibles > 1) {
+                                    
+                                    $actualizar = $this->pdo->prepare("update inventario set cantidad = :cantidad where dinosaurioId = :dinosaurioId and username = :username and partidaId = :partidaId;");
+                                    $actualizar->execute(["username" => $username, "partidaId" => $partidaId, "dinosaurioId" => $dinosaurio, "cantidad" => $cantidadDisponibles-1]);
+                                } else {
+                                    
+                                    $eliminar = $this->pdo->prepare("delete from inventario where dinosaurioId = :dinosaurioId and username = :username and partidaId = :partidaId;");
+                                    $eliminar->execute(["username" => $username, "partidaId" => $partidaId, "dinosaurioId" => $dinosaurio]); 
+                                }
+
                                 return [
                                     "state" => "success"
                                 ];
@@ -948,12 +1025,22 @@ class Draftosaurus extends GBloomDB {
                                     $dinosaurios++;
                                 }
 
-                                if ($solicitud["dinosaurioId"] == $dinosaurio) {
+                                if ($dinosaurios > 1) {
                                     $actualizar = $this->pdo->prepare("update tablero set cantidad = :cantidad where dinosaurioId = :dinosaurioId and recinto = :recinto and username = :username and partidaId = :partidaId;");
                                     $actualizar->execute(["username" => $username, "partidaId" => $partidaId, "dinosaurioId" => $dinosaurio, "recinto" => $recinto, "cantidad" => $dinosaurios]);
                                 } else {
                                     $insertar = $this->pdo->prepare("insert into tablero(username, partidaId, dinosaurioId, recinto, cantidad) values (:username, :partidaId, :dinosaurioId, :recinto, 1);");
                                     $insertar->execute(["username" => $username, "partidaId" => $partidaId, "dinosaurioId" => $dinosaurio, "recinto" => $recinto]);
+                                }
+
+                                if ($cantidadDisponibles > 1) {
+                                    
+                                    $actualizar = $this->pdo->prepare("update inventario set cantidad = :cantidad where dinosaurioId = :dinosaurioId and username = :username and partidaId = :partidaId;");
+                                    $actualizar->execute(["username" => $username, "partidaId" => $partidaId, "dinosaurioId" => $dinosaurio, "cantidad" => $cantidadDisponibles-1]);
+                                } else {
+                                    
+                                    $eliminar = $this->pdo->prepare("delete from inventario where dinosaurioId = :dinosaurioId and username = :username and partidaId = :partidaId;");
+                                    $eliminar->execute(["username" => $username, "partidaId" => $partidaId, "dinosaurioId" => $dinosaurio]); 
                                 }
                                 
                                 return [
@@ -969,6 +1056,16 @@ class Draftosaurus extends GBloomDB {
                                 $insertar = $this->pdo->prepare("insert into tablero(username, partidaId, dinosaurioId, recinto, cantidad) values (:username, :partidaId, :dinosaurioId, :recinto, 1);");
                                 $insertar->execute(["username" => $username, "partidaId" => $partidaId, "dinosaurioId" => $dinosaurio, "recinto" => $recinto]);
                                 
+                                if ($cantidadDisponibles > 1) {
+                                    
+                                    $actualizar = $this->pdo->prepare("update inventario set cantidad = :cantidad where dinosaurioId = :dinosaurioId and username = :username and partidaId = :partidaId;");
+                                    $actualizar->execute(["username" => $username, "partidaId" => $partidaId, "dinosaurioId" => $dinosaurio, "cantidad" => $cantidadDisponibles-1]);
+                                } else {
+                                    
+                                    $eliminar = $this->pdo->prepare("delete from inventario where dinosaurioId = :dinosaurioId and username = :username and partidaId = :partidaId;");
+                                    $eliminar->execute(["username" => $username, "partidaId" => $partidaId, "dinosaurioId" => $dinosaurio]); 
+                                }
+
                                 return [
                                     "state" => "success"
                                 ];
@@ -1009,7 +1106,7 @@ class Draftosaurus extends GBloomDB {
                                     $dinosaurios++;
                                 }
 
-                                if ($solicitud["dinosaurioId"] == $dinosaurio) {
+                                if ($dinosaurios > 1) {
                                     $actualizar = $this->pdo->prepare("update tablero set cantidad = :cantidad where dinosaurioId = :dinosaurioId and recinto = :recinto and username = :username and partidaId = :partidaId;");
                                     $actualizar->execute(["username" => $username, "partidaId" => $partidaId, "dinosaurioId" => $dinosaurio, "recinto" => $recinto, "cantidad" => $dinosaurios]);
                                 } else {
@@ -1017,6 +1114,16 @@ class Draftosaurus extends GBloomDB {
                                     $insertar->execute(["username" => $username, "partidaId" => $partidaId, "dinosaurioId" => $dinosaurio, "recinto" => $recinto]);
                                 }
                                 
+                                if ($cantidadDisponibles > 1) {
+                                    
+                                    $actualizar = $this->pdo->prepare("update inventario set cantidad = :cantidad where dinosaurioId = :dinosaurioId and username = :username and partidaId = :partidaId;");
+                                    $actualizar->execute(["username" => $username, "partidaId" => $partidaId, "dinosaurioId" => $dinosaurio, "cantidad" => $cantidadDisponibles-1]);
+                                } else {
+                                    
+                                    $eliminar = $this->pdo->prepare("delete from inventario where dinosaurioId = :dinosaurioId and username = :username and partidaId = :partidaId;");
+                                    $eliminar->execute(["username" => $username, "partidaId" => $partidaId, "dinosaurioId" => $dinosaurio]); 
+                                }
+
                                 return [
                                     "state" => "success"
                                 ];
@@ -1052,7 +1159,7 @@ class Draftosaurus extends GBloomDB {
                                     $dinosaurios++;
                                 }
 
-                                if ($solicitud["dinosaurioId"] == $dinosaurio) {
+                                if ($dinosaurios > 1) {
                                     $actualizar = $this->pdo->prepare("update tablero set cantidad = :cantidad where dinosaurioId = :dinosaurioId and recinto = :recinto and username = :username and partidaId = :partidaId;");
                                     $actualizar->execute(["username" => $username, "partidaId" => $partidaId, "dinosaurioId" => $dinosaurio, "recinto" => $recinto, "cantidad" => $dinosaurios]);
                                 } else {
@@ -1060,6 +1167,17 @@ class Draftosaurus extends GBloomDB {
                                     $insertar->execute(["username" => $username, "partidaId" => $partidaId, "dinosaurioId" => $dinosaurio, "recinto" => $recinto]);
                                 }
                                 
+                                
+                                if ($cantidadDisponibles > 1) {
+                                    
+                                    $actualizar = $this->pdo->prepare("update inventario set cantidad = :cantidad where dinosaurioId = :dinosaurioId and username = :username and partidaId = :partidaId;");
+                                    $actualizar->execute(["username" => $username, "partidaId" => $partidaId, "dinosaurioId" => $dinosaurio, "cantidad" => $cantidadDisponibles-1]);
+                                } else {
+                                    
+                                    $eliminar = $this->pdo->prepare("delete from inventario where dinosaurioId = :dinosaurioId and username = :username and partidaId = :partidaId;");
+                                    $eliminar->execute(["username" => $username, "partidaId" => $partidaId, "dinosaurioId" => $dinosaurio]); 
+                                }
+
                                 return [
                                     "state" => "success"
                                 ];
@@ -1107,6 +1225,7 @@ class Draftosaurus extends GBloomDB {
             $solicitud = $solicitud->fetch();
 
             if ($solicitud !== false) {
+                $cantidadDisponibles = $solicitud["cantidad"];
                 $cafeteria = false;
                 $baños = false;
                 $bosque = false;
@@ -1155,13 +1274,16 @@ class Draftosaurus extends GBloomDB {
 
                 $recintosProhibidos = [];
                 $tablero = $this->getTableroNull($username);
-                foreach ($tablero as $tableroRecinto) {
-                    if ($tableroRecinto["dinosaurioId"] == "rojo" && $dadoId == "notrex" && !isset($recintosProhibidos[$tableroRecinto["recinto"]])) {
-                        $recintosProhibidos[$tableroRecinto["recinto"]] = true;
-                    }
+                
+                if ($tablero["state"] == "success") {
+                    foreach ($tablero as $tableroRecinto) {
+                        if ($tableroRecinto["dinosaurioId"] == "rojo" && $dadoId == "notrex" && !isset($recintosProhibidos[$tableroRecinto["recinto"]])) {
+                            $recintosProhibidos[$tableroRecinto["recinto"]] = true;
+                        }
 
-                    if ($dadoId == "vacio" && !isset($recintosProhibidos[$tableroRecinto["recinto"]])) {
-                        $recintosProhibidos[$tableroRecinto["recinto"]] = true;
+                        if ($dadoId == "vacio" && !isset($recintosProhibidos[$tableroRecinto["recinto"]])) {
+                            $recintosProhibidos[$tableroRecinto["recinto"]] = true;
+                        }
                     }
                 }
 
@@ -1183,6 +1305,16 @@ class Draftosaurus extends GBloomDB {
                             $insertar = $this->pdo->prepare("insert into tablero(username, partidaId, dinosaurioId, recinto, cantidad) values (:username, :partidaId, :dinosaurioId, :recinto, 1);");
                             $insertar->execute(["username" => $username, "partidaId" => $partidaId, "dinosaurioId" => $dinosaurio, "recinto" => $recinto]);
 
+                            if ($cantidadDisponibles > 1) {
+                                
+                                $actualizar = $this->pdo->prepare("update inventario set cantidad = :cantidad where dinosaurioId = :dinosaurioId and username = :username and partidaId = :partidaId;");
+                                $actualizar->execute(["username" => $username, "partidaId" => $partidaId, "dinosaurioId" => $dinosaurio, "cantidad" => $cantidadDisponibles-1]);
+                            } else {
+                                
+                                $eliminar = $this->pdo->prepare("delete from inventario where dinosaurioId = :dinosaurioId and username = :username and partidaId = :partidaId;");
+                                $eliminar->execute(["username" => $username, "partidaId" => $partidaId, "dinosaurioId" => $dinosaurio]); 
+                            }
+
                             return [
                                 "state" => "success"
                             ];
@@ -1202,6 +1334,16 @@ class Draftosaurus extends GBloomDB {
                                 $actualizar = $this->pdo->prepare("update tablero set cantidad = :cantidad where dinosaurioId = :dinosaurioId and recinto = :recinto and username = :username and partidaId = :partidaId;");
                                 $actualizar->execute(["username" => $username, "partidaId" => $partidaId, "dinosaurioId" => $dinosaurio, "recinto" => $recinto, "cantidad" => $recinto]);
                                 
+                                if ($cantidadDisponibles > 1) {
+                                    
+                                    $actualizar = $this->pdo->prepare("update inventario set cantidad = :cantidad where dinosaurioId = :dinosaurioId and username = :username and partidaId = :partidaId;");
+                                    $actualizar->execute(["username" => $username, "partidaId" => $partidaId, "dinosaurioId" => $dinosaurio, "cantidad" => $cantidadDisponibles-1]);
+                                } else {
+                                    
+                                    $eliminar = $this->pdo->prepare("delete from inventario where dinosaurioId = :dinosaurioId and username = :username and partidaId = :partidaId;");
+                                    $eliminar->execute(["username" => $username, "partidaId" => $partidaId, "dinosaurioId" => $dinosaurio]); 
+                                }
+
                                 return [
                                     "state" => "success"
                                 ];
@@ -1220,6 +1362,16 @@ class Draftosaurus extends GBloomDB {
                         if (empty($solicitud)) {
                             $insertar = $this->pdo->prepare("insert into tablero(username, partidaId, dinosaurioId, recinto, cantidad) values (:username, :partidaId, :dinosaurioId, :recinto, 1);");
                             $insertar->execute(["username" => $username, "partidaId" => $partidaId, "dinosaurioId" => $dinosaurio, "recinto" => $recinto]);
+
+                            if ($cantidadDisponibles > 1) {
+                                
+                                $actualizar = $this->pdo->prepare("update inventario set cantidad = :cantidad where dinosaurioId = :dinosaurioId and username = :username and partidaId = :partidaId;");
+                                $actualizar->execute(["username" => $username, "partidaId" => $partidaId, "dinosaurioId" => $dinosaurio, "cantidad" => $cantidadDisponibles-1]);
+                            } else {
+                                
+                                $eliminar = $this->pdo->prepare("delete from inventario where dinosaurioId = :dinosaurioId and username = :username and partidaId = :partidaId;");
+                                $eliminar->execute(["username" => $username, "partidaId" => $partidaId, "dinosaurioId" => $dinosaurio]); 
+                            }
 
                             return [
                                 "state" => "success"
@@ -1246,6 +1398,16 @@ class Draftosaurus extends GBloomDB {
                             $insertar = $this->pdo->prepare("insert into tablero(username, partidaId, dinosaurioId, recinto, cantidad) values (:username, :partidaId, :dinosaurioId, :recinto, 1);");
                             $insertar->execute(["username" => $username, "partidaId" => $partidaId, "dinosaurioId" => $dinosaurio, "recinto" => $recinto]);
                             
+                            if ($cantidadDisponibles > 1) {
+                                
+                                $actualizar = $this->pdo->prepare("update inventario set cantidad = :cantidad where dinosaurioId = :dinosaurioId and username = :username and partidaId = :partidaId;");
+                                $actualizar->execute(["username" => $username, "partidaId" => $partidaId, "dinosaurioId" => $dinosaurio, "cantidad" => $cantidadDisponibles-1]);
+                            } else {
+                                
+                                $eliminar = $this->pdo->prepare("delete from inventario where dinosaurioId = :dinosaurioId and username = :username and partidaId = :partidaId;");
+                                $eliminar->execute(["username" => $username, "partidaId" => $partidaId, "dinosaurioId" => $dinosaurio]); 
+                            }
+
                             return [
                                 "state" => "success"
                             ];
@@ -1259,6 +1421,16 @@ class Draftosaurus extends GBloomDB {
                             $insertar = $this->pdo->prepare("insert into tablero(username, partidaId, dinosaurioId, recinto, cantidad) values (:username, :partidaId, :dinosaurioId, :recinto, 1);");
                             $insertar->execute(["username" => $username, "partidaId" => $partidaId, "dinosaurioId" => $dinosaurio, "recinto" => $recinto]);
                             
+                            if ($cantidadDisponibles > 1) {
+                                
+                                $actualizar = $this->pdo->prepare("update inventario set cantidad = :cantidad where dinosaurioId = :dinosaurioId and username = :username and partidaId = :partidaId;");
+                                $actualizar->execute(["username" => $username, "partidaId" => $partidaId, "dinosaurioId" => $dinosaurio, "cantidad" => $cantidadDisponibles-1]);
+                            } else {
+                                
+                                $eliminar = $this->pdo->prepare("delete from inventario where dinosaurioId = :dinosaurioId and username = :username and partidaId = :partidaId;");
+                                $eliminar->execute(["username" => $username, "partidaId" => $partidaId, "dinosaurioId" => $dinosaurio]); 
+                            }
+
                             return [
                                 "state" => "success"
                             ];
@@ -1278,6 +1450,16 @@ class Draftosaurus extends GBloomDB {
                             $insertar = $this->pdo->prepare("insert into tablero(username, partidaId, dinosaurioId, recinto, cantidad) values (:username, :partidaId, :dinosaurioId, :recinto, 1);");
                             $insertar->execute(["username" => $username, "partidaId" => $partidaId, "dinosaurioId" => $dinosaurio, "recinto" => $recinto]);
                             
+                            if ($cantidadDisponibles > 1) {
+                                
+                                $actualizar = $this->pdo->prepare("update inventario set cantidad = :cantidad where dinosaurioId = :dinosaurioId and username = :username and partidaId = :partidaId;");
+                                $actualizar->execute(["username" => $username, "partidaId" => $partidaId, "dinosaurioId" => $dinosaurio, "cantidad" => $cantidadDisponibles-1]);
+                            } else {
+                                
+                                $eliminar = $this->pdo->prepare("delete from inventario where dinosaurioId = :dinosaurioId and username = :username and partidaId = :partidaId;");
+                                $eliminar->execute(["username" => $username, "partidaId" => $partidaId, "dinosaurioId" => $dinosaurio]); 
+                            }
+
                             return [
                                 "state" => "success"
                             ];
@@ -1291,6 +1473,16 @@ class Draftosaurus extends GBloomDB {
                             $insertar = $this->pdo->prepare("insert into tablero(username, partidaId, dinosaurioId, recinto, cantidad) values (:username, :partidaId, :dinosaurioId, :recinto, 1);");
                             $insertar->execute(["username" => $username, "partidaId" => $partidaId, "dinosaurioId" => $dinosaurio, "recinto" => $recinto]);
                             
+                            if ($cantidadDisponibles > 1) {
+                                
+                                $actualizar = $this->pdo->prepare("update inventario set cantidad = :cantidad where dinosaurioId = :dinosaurioId and username = :username and partidaId = :partidaId;");
+                                $actualizar->execute(["username" => $username, "partidaId" => $partidaId, "dinosaurioId" => $dinosaurio, "cantidad" => $cantidadDisponibles-1]);
+                            } else {
+                                
+                                $eliminar = $this->pdo->prepare("delete from inventario where dinosaurioId = :dinosaurioId and username = :username and partidaId = :partidaId;");
+                                $eliminar->execute(["username" => $username, "partidaId" => $partidaId, "dinosaurioId" => $dinosaurio]); 
+                            }
+
                             return [
                                 "state" => "success"
                             ];
@@ -1313,12 +1505,22 @@ class Draftosaurus extends GBloomDB {
                                 $dinosaurios++;
                             }
 
-                            if ($solicitud["dinosaurioId"] == $dinosaurio) {
+                            if ($dinosaurios > 1) {
                                 $actualizar = $this->pdo->prepare("update tablero set cantidad = :cantidad where dinosaurioId = :dinosaurioId and recinto = :recinto and username = :username and partidaId = :partidaId;");
                                 $actualizar->execute(["username" => $username, "partidaId" => $partidaId, "dinosaurioId" => $dinosaurio, "recinto" => $recinto, "cantidad" => $dinosaurios]);
                             } else {
                                 $insertar = $this->pdo->prepare("insert into tablero(username, partidaId, dinosaurioId, recinto, cantidad) values (:username, :partidaId, :dinosaurioId, :recinto, 1);");
                                 $insertar->execute(["username" => $username, "partidaId" => $partidaId, "dinosaurioId" => $dinosaurio, "recinto" => $recinto]);
+                            }
+
+                            if ($cantidadDisponibles > 1) {
+                                
+                                $actualizar = $this->pdo->prepare("update inventario set cantidad = :cantidad where dinosaurioId = :dinosaurioId and username = :username and partidaId = :partidaId;");
+                                $actualizar->execute(["username" => $username, "partidaId" => $partidaId, "dinosaurioId" => $dinosaurio, "cantidad" => $cantidadDisponibles-1]);
+                            } else {
+                                
+                                $eliminar = $this->pdo->prepare("delete from inventario where dinosaurioId = :dinosaurioId and username = :username and partidaId = :partidaId;");
+                                $eliminar->execute(["username" => $username, "partidaId" => $partidaId, "dinosaurioId" => $dinosaurio]); 
                             }
                             
                             return [
@@ -1334,6 +1536,16 @@ class Draftosaurus extends GBloomDB {
                             $insertar = $this->pdo->prepare("insert into tablero(username, partidaId, dinosaurioId, recinto, cantidad) values (:username, :partidaId, :dinosaurioId, :recinto, 1);");
                             $insertar->execute(["username" => $username, "partidaId" => $partidaId, "dinosaurioId" => $dinosaurio, "recinto" => $recinto]);
                             
+                            if ($cantidadDisponibles > 1) {
+                                
+                                $actualizar = $this->pdo->prepare("update inventario set cantidad = :cantidad where dinosaurioId = :dinosaurioId and username = :username and partidaId = :partidaId;");
+                                $actualizar->execute(["username" => $username, "partidaId" => $partidaId, "dinosaurioId" => $dinosaurio, "cantidad" => $cantidadDisponibles-1]);
+                            } else {
+                                
+                                $eliminar = $this->pdo->prepare("delete from inventario where dinosaurioId = :dinosaurioId and username = :username and partidaId = :partidaId;");
+                                $eliminar->execute(["username" => $username, "partidaId" => $partidaId, "dinosaurioId" => $dinosaurio]); 
+                            }
+
                             return [
                                 "state" => "success"
                             ];
@@ -1352,6 +1564,16 @@ class Draftosaurus extends GBloomDB {
                             $insertar = $this->pdo->prepare("insert into tablero(username, partidaId, dinosaurioId, recinto, cantidad) values (:username, :partidaId, :dinosaurioId, :recinto, 1);");
                             $insertar->execute(["username" => $username, "partidaId" => $partidaId, "dinosaurioId" => $dinosaurio, "recinto" => $recinto]);
                             
+                            if ($cantidadDisponibles > 1) {
+                                
+                                $actualizar = $this->pdo->prepare("update inventario set cantidad = :cantidad where dinosaurioId = :dinosaurioId and username = :username and partidaId = :partidaId;");
+                                $actualizar->execute(["username" => $username, "partidaId" => $partidaId, "dinosaurioId" => $dinosaurio, "cantidad" => $cantidadDisponibles-1]);
+                            } else {
+                                
+                                $eliminar = $this->pdo->prepare("delete from inventario where dinosaurioId = :dinosaurioId and username = :username and partidaId = :partidaId;");
+                                $eliminar->execute(["username" => $username, "partidaId" => $partidaId, "dinosaurioId" => $dinosaurio]); 
+                            }
+
                             return [
                                 "state" => "success"
                             ];
@@ -1374,12 +1596,22 @@ class Draftosaurus extends GBloomDB {
                                 $dinosaurios++;
                             }
 
-                            if ($solicitud["dinosaurioId"] == $dinosaurio) {
+                            if ($dinosaurios > 1) {
                                 $actualizar = $this->pdo->prepare("update tablero set cantidad = :cantidad where dinosaurioId = :dinosaurioId and recinto = :recinto and username = :username and partidaId = :partidaId;");
                                 $actualizar->execute(["username" => $username, "partidaId" => $partidaId, "dinosaurioId" => $dinosaurio, "recinto" => $recinto, "cantidad" => $dinosaurios]);
                             } else {
                                 $insertar = $this->pdo->prepare("insert into tablero(username, partidaId, dinosaurioId, recinto, cantidad) values (:username, :partidaId, :dinosaurioId, :recinto, 1);");
                                 $insertar->execute(["username" => $username, "partidaId" => $partidaId, "dinosaurioId" => $dinosaurio, "recinto" => $recinto]);
+                            }
+
+                            if ($cantidadDisponibles > 1) {
+                                
+                                $actualizar = $this->pdo->prepare("update inventario set cantidad = :cantidad where dinosaurioId = :dinosaurioId and username = :username and partidaId = :partidaId;");
+                                $actualizar->execute(["username" => $username, "partidaId" => $partidaId, "dinosaurioId" => $dinosaurio, "cantidad" => $cantidadDisponibles-1]);
+                            } else {
+                                
+                                $eliminar = $this->pdo->prepare("delete from inventario where dinosaurioId = :dinosaurioId and username = :username and partidaId = :partidaId;");
+                                $eliminar->execute(["username" => $username, "partidaId" => $partidaId, "dinosaurioId" => $dinosaurio]); 
                             }
                             
                             return [
@@ -1395,6 +1627,16 @@ class Draftosaurus extends GBloomDB {
                             $insertar = $this->pdo->prepare("insert into tablero(username, partidaId, dinosaurioId, recinto, cantidad) values (:username, :partidaId, :dinosaurioId, :recinto, 1);");
                             $insertar->execute(["username" => $username, "partidaId" => $partidaId, "dinosaurioId" => $dinosaurio, "recinto" => $recinto]);
                             
+                            if ($cantidadDisponibles > 1) {
+                                
+                                $actualizar = $this->pdo->prepare("update inventario set cantidad = :cantidad where dinosaurioId = :dinosaurioId and username = :username and partidaId = :partidaId;");
+                                $actualizar->execute(["username" => $username, "partidaId" => $partidaId, "dinosaurioId" => $dinosaurio, "cantidad" => $cantidadDisponibles-1]);
+                            } else {
+                                
+                                $eliminar = $this->pdo->prepare("delete from inventario where dinosaurioId = :dinosaurioId and username = :username and partidaId = :partidaId;");
+                                $eliminar->execute(["username" => $username, "partidaId" => $partidaId, "dinosaurioId" => $dinosaurio]); 
+                            }
+
                             return [
                                 "state" => "success"
                             ];
@@ -1417,7 +1659,7 @@ class Draftosaurus extends GBloomDB {
                                 $dinosaurios++;
                             }
 
-                            if ($solicitud["dinosaurioId"] == $dinosaurio) {
+                            if ($dinosaurios > 1) {
                                 $actualizar = $this->pdo->prepare("update tablero set cantidad = :cantidad where dinosaurioId = :dinosaurioId and recinto = :recinto and username = :username and partidaId = :partidaId;");
                                 $actualizar->execute(["username" => $username, "partidaId" => $partidaId, "dinosaurioId" => $dinosaurio, "recinto" => $recinto, "cantidad" => $dinosaurios]);
                             } else {
@@ -1425,6 +1667,16 @@ class Draftosaurus extends GBloomDB {
                                 $insertar->execute(["username" => $username, "partidaId" => $partidaId, "dinosaurioId" => $dinosaurio, "recinto" => $recinto]);
                             }
                             
+                            if ($cantidadDisponibles > 1) {
+                                
+                                $actualizar = $this->pdo->prepare("update inventario set cantidad = :cantidad where dinosaurioId = :dinosaurioId and username = :username and partidaId = :partidaId;");
+                                $actualizar->execute(["username" => $username, "partidaId" => $partidaId, "dinosaurioId" => $dinosaurio, "cantidad" => $cantidadDisponibles-1]);
+                            } else {
+                                
+                                $eliminar = $this->pdo->prepare("delete from inventario where dinosaurioId = :dinosaurioId and username = :username and partidaId = :partidaId;");
+                                $eliminar->execute(["username" => $username, "partidaId" => $partidaId, "dinosaurioId" => $dinosaurio]); 
+                            }
+
                             return [
                                 "state" => "success"
                             ];
@@ -1464,8 +1716,8 @@ class Draftosaurus extends GBloomDB {
 
                 $usuarios = ["null", "null2", "null3", "null4"];
                 if ($isHost["state"] == "success") {
-                    $solicitud = $this->pdo->prepare("select dadoId from partida where partidaId = :partidaId;");
-                    $solicitud->execute(["partidaId" => $partidaId]);
+                    $solicitud = $this->pdo->prepare("select dadoId from partida where id = :id;");
+                    $solicitud->execute(["id" => $partidaId]);
                     $solicitud = $solicitud->fetch();
 
                     if ($solicitud !== false) {
@@ -1477,7 +1729,7 @@ class Draftosaurus extends GBloomDB {
                             $dinosaurios = [];
                             $jugadasPermitidas = [];
 
-                            foreach ($nullInventario as $dinosaurio) {
+                            foreach ($nullInventario["result"] as $dinosaurio) {
                                 $dinosaurios[] = $dinosaurio["dinosaurioId"];
                             }
 
@@ -1498,21 +1750,27 @@ class Draftosaurus extends GBloomDB {
                                     $recintosPermitidos = ["romance", "tres", "igualdad", "soledad", "desigualdad", "monarquia"];
                                     $recintosProhibidos = [];
 
-                                    foreach ($nullTablero as $tableroRecinto) {
-                                        if (!isset($recintosProhibidos[$tableroRecinto["recinto"]])) {
-                                            $recintosProhibidos[$tableroRecinto["recinto"]] = true;
+                                    if ($nullTablero["state"] == "success") {
+                                        foreach ($nullTablero as $tableroRecinto) {
+                                            if (!isset($recintosProhibidos[$tableroRecinto["recinto"]])) {
+                                                $recintosProhibidos[$tableroRecinto["recinto"]] = true;
+                                            }
                                         }
                                     }
+
                                     break;
                                 case "notrex":
                                     $recintosPermitidos = ["romance", "tres", "igualdad", "soledad", "desigualdad", "monarquia"];
                                     $recintosProhibidos = [];
 
-                                    foreach ($nullTablero as $tableroRecinto) {
-                                        if ($tableroRecinto["dinosaurioId"] == "rojo" && !isset($recintosProhibidos[$tableroRecinto["recinto"]])) {
-                                            $recintosProhibidos[$tableroRecinto["recinto"]] = true;
+                                    if ($nullTablero["state"] == "success") {
+                                        foreach ($nullTablero as $tableroRecinto) {
+                                            if ($tableroRecinto["dinosaurioId"] == "rojo" && !isset($recintosProhibidos[$tableroRecinto["recinto"]])) {
+                                                $recintosProhibidos[$tableroRecinto["recinto"]] = true;
+                                            }
                                         }
                                     }
+
                                     break;
                                 default:
                                     return [
@@ -1549,7 +1807,7 @@ class Draftosaurus extends GBloomDB {
                                                     $cantidad++;
                                                 }
 
-                                                if ($solicitud["dinosaurioId"] == $dinosaurio) {
+                                                if ($dinosaurios > 1) {
                                                     $jugadasPermitidas[] = ["recinto" => $recinto, "dinosaurio" => $dinosaurio];
                                                 } else {
                                                     break;
@@ -1870,6 +2128,77 @@ class Draftosaurus extends GBloomDB {
             }
         } else {
             return $credentials;
+        }
+    }
+
+    // PARA LA SEGUNDA ENTREGA
+    public function tirarDadoNulls($token): array {
+        $credentials = $this->getUserCredentials($token);
+
+        if ($credentials["state"] != "success") {
+            return $credentials;
+        }
+
+        $username = $credentials["result"]["username"];
+        $solicitud = $this->pdo->prepare("select partidaId from juega where username = :username and jugando = 1;");
+        $solicitud->execute(["username" => $username]);
+        $partidaId = $solicitud->fetch();
+
+        if ($partidaId !== false) {
+            $partidaId = $partidaId["partidaId"];
+            $isHost = $this->verificarHost($partidaId, $token);
+
+            if ($isHost["state"] == "success") {
+                $nulls = ["null", "null2", "null3", "null4"];
+                foreach ($nulls as $username) {
+                    $solicitud = $this->pdo->prepare("select p.id, p.turnoActual, j.numJugador from juega j join partida p on j.partidaId = p.id where username = :username and jugando = 1;");
+                    $solicitud->execute(["username" => $username]);
+                    $solicitud = $solicitud->fetch();
+
+                    if ($solicitud !== false) {
+                        $partidaId = $solicitud["id"];
+                        $turnoActual = $solicitud["turnoActual"];
+                        $numJugador = $solicitud["numJugador"];
+
+                        if ($turnoActual == $numJugador) {
+                            $solicitud = $this->pdo->query("select id from dado;");
+                            $dados = $solicitud->fetchAll();
+
+                            if (!empty($dados)) {
+                                $dadoId = $dados[array_rand($dados)]["id"];
+                                $actualizar = $this->pdo->prepare("update partida set dadoId = :dadoId where id = :id;");
+                                $actualizar->execute(["dadoId" => $dadoId, "id" => $partidaId]);
+
+                                return [
+                                    "state" => "success"
+                                ];
+                            } else {
+                                return [
+                                    "state" => "notFound",
+                                    "ErrMessage" => "No se encuentran registradas las caras del dado en la base de datos"
+                                ];
+                            }
+                        } else {
+                            return [
+                                "state" => "forbidden",
+                                "ErrMessage" => "El jugador brindado no le toca turno para tirar el dado"
+                            ];
+                        }
+                    } else {
+                        return [
+                            "state" => "notFound",
+                            "ErrMessage" => "El usuario brindado no esta registrado en ninguna partida"
+                        ];
+                    }
+                }
+            } else {
+                return $isHost;
+            }
+        } else {
+            return [
+                "state" => "notFound",
+                "ErrMessage" => "El usuario brindado no esta registrado en ninguna partida"
+            ];
         }
     }
 
@@ -2296,6 +2625,264 @@ class Draftosaurus extends GBloomDB {
                     }
                 } else {
                     return $isHost;
+                }
+            } else {
+                return [
+                    "state" => "notFound",
+                    "ErrMessage" => "El usuario brindado no esta registrado en ninguna partida"
+                ];
+            }
+        } else {
+            return $credentials;
+        }
+    }
+
+    // Copiar de aqui en adelante
+    public function empezarTurno(string $token): array {
+        $credentials = $this->getUserCredentials($token);
+        if ($credentials["state"] == "success") {
+            $username = $credentials["result"]["username"];
+            $solicitud = $this->pdo->prepare("select partidaId from juega where username = :username and jugando = 1;");
+            $solicitud->execute(["username" => $username]);
+            $partidaId = $solicitud->fetch();
+
+            if ($partidaId !== false) {
+                $partidaId = $partidaId["partidaId"];
+
+                $actualizar = $this->pdo->prepare("update juega set estado = :estado where username = :username and partidaId = :partidaId;");
+                $actualizar->execute(["estado" => "jugandoTurno", "partidaId" => $partidaId, "username" => $username]);
+
+                return [
+                    "state" => "success"
+                ];
+            } else {
+                return [
+                    "state" => "notFound",
+                    "ErrMessage" => "El usuario brindado no esta registrado en ninguna partida"
+                ];
+            }
+        } else {
+            return $credentials;
+        }
+    }
+
+    public function terminarTurno(string $token): array {
+        $credentials = $this->getUserCredentials($token);
+        if ($credentials["state"] == "success") {
+            $username = $credentials["result"]["username"];
+            $solicitud = $this->pdo->prepare("select partidaId from juega where username = :username and jugando = 1;");
+            $solicitud->execute(["username" => $username]);
+            $partidaId = $solicitud->fetch();
+
+            if ($partidaId !== false) {
+                $partidaId = $partidaId["partidaId"];
+
+                $actualizar = $this->pdo->prepare("update juega set estado = :estado where username = :username and partidaId = :partidaId;");
+                $actualizar->execute(["estado" => "turnoTerminado", "partidaId" => $partidaId, "username" => $username]);
+
+                return [
+                    "state" => "success"
+                ];
+            } else {
+                return [
+                    "state" => "notFound",
+                    "ErrMessage" => "El usuario brindado no esta registrado en ninguna partida"
+                ];
+            }
+        } else {
+            return $credentials;
+        }
+    }
+
+    // PARA LA SEGUNDA ENTREGA
+    public function empezarTurnoNulls($token): array {
+        $credentials = $this->getUserCredentials($token);
+
+        if ($credentials["state"] != "success") {
+            return $credentials;
+        }
+
+        $username = $credentials["result"]["username"];
+        $solicitud = $this->pdo->prepare("select partidaId from juega where username = :username and jugando = 1;");
+        $solicitud->execute(["username" => $username]);
+        $partidaId = $solicitud->fetch();
+
+        if ($partidaId !== false) {
+            $partidaId = $partidaId["partidaId"];
+            $isHost = $this->verificarHost($partidaId, $token);
+
+            if ($isHost["state"] == "success") {
+                $nulls = ["null", "null2", "null3", "null4"];
+                foreach ($nulls as $username) {
+                    $solicitud = $this->pdo->prepare("select partidaId from juega where username = :username and jugando = 1;");
+                    $solicitud->execute(["username" => $username]);
+                    $partidaId = $solicitud->fetch();
+
+                    if ($partidaId !== false) {
+                        $partidaId = $partidaId["partidaId"];
+
+                        $actualizar = $this->pdo->prepare("update juega set estado = :estado where username = :username and partidaId = :partidaId;");
+                        $actualizar->execute(["estado" => "jugandoTurno", "partidaId" => $partidaId, "username" => $username]);
+
+                        return [
+                            "state" => "success"
+                        ];
+                    } else {
+                        return [
+                            "state" => "notFound",
+                            "ErrMessage" => "El usuario brindado no esta registrado en ninguna partida"
+                        ];
+                    }
+                }
+            } else {
+                return $isHost;
+            }
+        } else {
+            return [
+                "state" => "notFound",
+                "ErrMessage" => "El usuario brindado no esta registrado en ninguna partida"
+            ];
+        }
+    }
+
+    // PARA LA SEGUNDA ENTREGA
+    public function terminarTurnoNulls(string $token): array {
+        $nulls = ["null", "null2", "null3", "null4"];
+        foreach ($nulls as $username) {
+            $solicitud = $this->pdo->prepare("select partidaId from juega where username = :username and jugando = 1;");
+            $solicitud->execute(["username" => $username]);
+            $partidaId = $solicitud->fetch();
+
+            if ($partidaId !== false) {
+                $partidaId = $partidaId["partidaId"];
+
+                $actualizar = $this->pdo->prepare("update juega set estado = :estado where username = :username and partidaId = :partidaId;");
+                $actualizar->execute(["estado" => "turnoTerminado", "partidaId" => $partidaId, "username" => $username]);
+
+                return [
+                    "state" => "success"
+                ];
+            } else {
+                return [
+                    "state" => "notFound",
+                    "ErrMessage" => "El usuario brindado no esta registrado en ninguna partida"
+                ];
+            }
+        }
+
+        return [
+            "state" => "success"
+        ];
+    }
+
+    public function getTurnoActual(string $token): array {
+        $credentials = $this->getUserCredentials($token);
+        if ($credentials["state"] == "success") {
+            $username = $credentials["result"]["username"];
+            $solicitud = $this->pdo->prepare("select partidaId from juega where username = :username and jugando = 1;");
+            $solicitud->execute(["username" => $username]);
+            $partidaId = $solicitud->fetch();
+
+            if ($partidaId !== false) {
+                $partidaId = $partidaId["partidaId"];
+
+                $solicitud = $this->pdo->prepare("select turnoActual from partida where id = :id;");
+                $solicitud->execute(["id" => $partidaId]);
+                $solicitud = $solicitud->fetch();
+
+                if ($solicitud !== false) {
+                    return [
+                        "state" => "success",
+                        "result" => $solicitud["turnoActual"]
+                    ];
+                } else {
+                    return [
+                        "state" => "notFound",
+                        "ErrMessage" => "Error al buscar partida id"
+                    ];
+                }
+            } else {
+                return [
+                    "state" => "notFound",
+                    "ErrMessage" => "El usuario brindado no esta registrado en ninguna partida"
+                ];
+            }
+        } else {
+            return $credentials;
+        }
+    }
+
+    public function getFaseActual(string $token): array {
+        $credentials = $this->getUserCredentials($token);
+        if ($credentials["state"] == "success") {
+            $username = $credentials["result"]["username"];
+            $solicitud = $this->pdo->prepare("select partidaId from juega where username = :username and jugando = 1;");
+            $solicitud->execute(["username" => $username]);
+            $partidaId = $solicitud->fetch();
+
+            if ($partidaId !== false) {
+                $partidaId = $partidaId["partidaId"];
+
+                $solicitud = $this->pdo->prepare("select faseActual from partida where id = :id;");
+                $solicitud->execute(["id" => $partidaId]);
+                $solicitud = $solicitud->fetch();
+
+                if ($solicitud !== false) {
+                    return [
+                        "state" => "success",
+                        "result" => $solicitud["faseActual"]
+                    ];
+                } else {
+                    return [
+                        "state" => "notFound",
+                        "ErrMessage" => "Error al buscar partida id"
+                    ];
+                }
+            } else {
+                return [
+                    "state" => "notFound",
+                    "ErrMessage" => "El usuario brindado no esta registrado en ninguna partida"
+                ];
+            }
+        } else {
+            return $credentials;
+        }
+    }
+
+    public function isPartidaOver(string $token): array {
+        $credentials = $this->getUserCredentials($token);
+        if ($credentials["state"] == "success") {
+            $username = $credentials["result"]["username"];
+            $solicitud = $this->pdo->prepare("select partidaId from juega where username = :username and jugando = 1;");
+            $solicitud->execute(["username" => $username]);
+            $partidaId = $solicitud->fetch();
+
+            if ($partidaId !== false) {
+                $partidaId = $partidaId["partidaId"];
+
+                $solicitud = $this->pdo->prepare("select horaFinal from partida where id = :id;");
+                $solicitud->execute(["id" => $partidaId]);
+                $solicitud = $solicitud->fetch();
+
+                if ($solicitud !== false) {
+                    $horaFinal = $solicitud["horaFinal"];
+                    if ($horaFinal != "NULL") {
+                        return [
+                            "state" => "success",
+                            "result" => true
+                        ];
+                    } else {
+                        return [
+                            "state" => "success",
+                            "result" => false
+                        ];
+                    }
+                    
+                } else {
+                    return [
+                        "state" => "notFound",
+                        "ErrMessage" => "Error al buscar partida id"
+                    ];
                 }
             } else {
                 return [

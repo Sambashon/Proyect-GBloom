@@ -19,12 +19,12 @@ if(startBtn){
 }
 
 async function joinMatch() {
-    let accion = await fetch("/php/scripts/game/joinLobby.php", {method: "POST"}).then(function (response) {
+    let accion = await fetch("/php/scripts/game/lobby/joinLobby.php", {method: "POST"}).then(function (response) {
         return response.json();
     });
 
     if (accion.state == "success") {
-        accion = await fetch("/php/scripts/game/iniciarPartida.php", {method: "POST"}).then(function (response) {
+        accion = await fetch("/php/scripts/game/lobby/iniciarPartida.php", {method: "POST"}).then(function (response) {
             return response.json();
         });
 
