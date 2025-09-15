@@ -16,7 +16,13 @@ echo "=== INSTALACIÓN DRAFTOSAURUS ==="
 # 1. Instalar todo en lotes lógicos
 echo "1. Instalando paquetes base..."
 apt update
-apt install git apache2 openssh-server mariadb-server certbot python3-certbot-apache curl -y
+apt install sudo apache2 openssh-server mariadb-server certbot python3-certbot-apache curl -y
+
+echo "1.1 Creando usuario admin..."
+useradd -m -s /bin/bash goldenadmin
+echo "goldenadmin:Drafto123!" | chpasswd
+usermod -aG sudo goldenadmin
+
 
 echo "2. Instalando PHP con todos los módulos..."
 mkdir /php
@@ -66,10 +72,9 @@ systemctl restart networking
 # Tareas Programadas
 mkdir -p /Draftosaurus/backups
 mkdir -p /Draftosaurus/scripts
-cp /tmp/temp-repo/scripts/backup.sh /Draftosaurus/scripts
+cp /tmp/temp-repo/scripts/backup_db.sh /Draftosaurus/scripts
 cp /tmp/temp-repo/scripts/server.sh /Draftosaurus/scripts
-echo "0 0 */14 * 1 /Draftosaurus/scripts/backup.sh" | crontab -
-
+echo "0 0 *14/ * 1 /Draftosaurus/scripts/master_backup.sh" | crontab -
 # 8. Crear BD
 mysql -u root -e "CREATE DATABASE gbloom_db;"
 mysql -u root gbloom_db < /tmp/temp-repo/sql/tablas.sql
@@ -78,7 +83,7 @@ mysql -u root gbloom_db < /tmp/temp-repo/sql/tablas.sql
 rm -rf /tmp/temp-repo
 
 echo "=== INSTALACIÓN COMPLETADA ==="
-
+echo "La contraseña del usuario admin por defecto es 'Drafto123'"
 ;;
 
 2)
