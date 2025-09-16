@@ -14,4 +14,5 @@ echo "=== [MASTER BACKUP RUN] === $(date)" | tee -a "$LOG_FILE"
 
 # 4. Backup de base de datos
 /Draftosaurus/scripts/backup_db.sh
+/Draftosaurus/scripts/backup_encrypted_db.sh
 echo "=== [END RUN] === $(date)" | tee -a "$LOG_FILE"

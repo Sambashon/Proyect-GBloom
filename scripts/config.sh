@@ -6,6 +6,9 @@
 # Carpetas origen
 SOURCE_DIR="/var/www/html"
 
+#Passphrase for encryption
+BACKUP_PASSPHRASE="gbloomer"
+
 # Backups locales
 LOCAL_BACKUP_DIR="/Draftosaurus/backups"
 LOCAL_DB_BACKUP_DIR="/Draftosaurus/dbBackups"
