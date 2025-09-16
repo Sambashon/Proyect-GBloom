@@ -57,7 +57,7 @@ systemctl start apache2 ssh mariadb
 # 4. Clonar y configurar
 echo "4. Clonando repositorio..."
 cd /tmp
-git clone --single-branch --branch Segunda-Entrega-Ariel https://username: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@github.com/Sambashon/Proyect-GBloom.git temp-repo
+git clone --single-branch --branch Segunda-Entrega-Main https://username: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@github.com/Sambashon/Proyect-GBloom.git temp-repo
 cd ..
 
 echo "5. Configurando Apache..."
