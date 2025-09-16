@@ -17,7 +17,7 @@ async function setup(map, canvas) {
   dino.position = [0, -100, 0];
   dino.rotation[1] = Matrix3D.convertToRad(-90);
 
-  await empezarTurno();
+  //await empezarTurno();
 
   /* El overlay es un plano que tiene una textura con areas transparentes (png). El motor 3d implementado todavía
   no maneja este tipo de objetos de forma particular a otros (como sería apropiado),
@@ -29,7 +29,7 @@ async function setup(map, canvas) {
   map.push(overlay);
 
   // Set Up Tablero e Inventario
-  let solicitud = await executeScript("getInventario.php");
+  let solicitud = await executeScript("getters/getInventario.php");
   
   if (solicitud.success) {
     inventario.importarInventario(solicitud.result);
@@ -41,7 +41,7 @@ async function setup(map, canvas) {
   tablero = new Tablero(inventario);
 }
 
-function update(map, dt) {
+async function update(map, dt) {
   if (listener.mouse.focus.slice(0, 4) == "slot") {
     utlimoSlot = listener.mouse.focus;
   }
@@ -52,16 +52,16 @@ function update(map, dt) {
   if (state === "colocado") {  
     if (recinto) {
       if (tablero.agregarDinosaurio(dino, recinto)) {
-        DRAW = false;
-        action = await executeScript("partida/colocarDinosaurio.php", {dinosaurioId: dino.id, recinto: recinto});
-        if (!action.success) {
-          alert(action.ErrMessage);
-        }
+        //DRAW = false;
+        //action = await executeScript("partida/colocarDinosaurio.php", {dinosaurioId: dino.id, recinto: recinto});
+        //if (!action.success) {
+        //  alert(action.ErrMessage);
+        //}
 
-        action = await executeScript("partida/colocarDinosaurioNulls.php", {dinosaurioId: dino.id, recinto: recinto});
-        if (!action.success) {
-          alert(action.ErrMessage);
-        }
+        //action = await executeScript("partida/colocarDinosaurioNulls.php", {dinosaurioId: dino.id, recinto: recinto});
+        //if (!action.success) {
+        //  alert(action.ErrMessage);
+        //}
         dino = ENGINE.spawnDino("rojo", "rojo");
         ENGINE.moveOverlayToLast(overlay);
         inventario.quitarDinosaurio(utlimoSlot);
@@ -69,8 +69,8 @@ function update(map, dt) {
         radio.playEffect("place");
         dino.position = [0, -100, 0];
         dino.rotation[1] = Matrix3D.convertToRad(-90);
-        action = await executeScript("partida/terminarTurno.php", true);
-        DRAW = false;
+        //action = await executeScript("partida/terminarTurno.php", true);
+        //DRAW = false;
       } else {
         dino.position = [0, -100, 0];
       }
