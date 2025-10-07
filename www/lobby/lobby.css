@@ -1,0 +1,29 @@
+.profileContainer{
+    height: fit-content;
+    width: fit-content;
+    min-width: 105px;
+    min-height: 105px;
+    padding: 5px; /*profileborder*/
+    background-color: #480E0E;
+    border-radius: 50%;
+    display: flex;
+    justify-self: center;
+    align-self: center;
+    align-items: center;
+    justify-content: center;
+}
+.col{
+    margin: 0;
+    width: fit-content;
+}
+@media (max-width: 768px) {
+    .profileContainer img{
+        height: 70px;
+        width: 70px;
+    }
+    .profileContainer{
+        min-height: 75px;
+        min-width: 75px;
+        padding: 5px;
+    }
+}

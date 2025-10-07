@@ -1,0 +1,59 @@
+{
+    "src": {
+        "models": [{"model": "/engine/gameScene/src/models/floor2.obj", "image": 0},
+        {"model": "/engine/gameScene/src/models/water.obj", "image": 1},
+        {"model": "/engine/gameScene/src/models/trees.obj", "image": 2},
+        {"model": "/engine/gameScene/src/models/bridge.obj", "image": 3},
+        {"model": "/engine/gameScene/src/models/signs.obj", "image": 4},
+        {"model": "/engine/gameScene/src/models/rocks.obj", "image": 5},
+        {"model": "/engine/gameScene/src/models/houses.obj", "image": 5},
+        {"model": "/engine/gameScene/src/models/deadTrees.obj", "image": 3},
+        {"id": "verde", "model": "/engine/gameScene/src/models/dinoVerde.obj", "image": 6},
+        {"id": "naranja", "model": "/engine/gameScene/src/models/dinoNaranja.obj", "image": 7},
+        {"id": "rojo", "model": "/engine/gameScene/src/models/dinoRojo.obj", "image": 8},
+        {"id": "azul", "model": "/engine/gameScene/src/models/dinoAzul.obj", "image": 9},
+        {"id": "amarillo", "model": "/engine/gameScene/src/models/dinoAmarillo.obj", "image": 10},
+        {"id": "morado", "model": "/engine/gameScene/src/models/dinoMorado.obj", "image": 11},
+        {"id": "overlay", "model": "/engine/gameScene/src/models/overlay.obj", "image": 12},
+        {"model": "/engine/gameScene/src/models/trees2.obj", "image": 13},
+        {"model": "/engine/gameScene/src/models/pineTrees.obj", "image": 14},
+        {"model": "/engine/gameScene/src/models/pineTrees2.obj", "image": 15}
+        ],
+        "images": [
+        "/engine/gameScene/src/images/mapa.png",
+        "/engine/gameScene/src/images/water.png",
+        "/engine/gameScene/src/images/tree.png",
+        "/engine/gameScene/src/images/bridge.png",
+        "/engine/gameScene/src/images/signs.png",
+        "/engine/gameScene/src/images/rocks.png",
+        "/engine/gameScene/src/images/verde.png",
+        "/engine/gameScene/src/images/naranja.png",
+        "/engine/gameScene/src/images/rojo.png",
+        "/engine/gameScene/src/images/azul.png",
+        "/engine/gameScene/src/images/amarillo.png",
+        "/engine/gameScene/src/images/morado.png",
+        "/engine/gameScene/src/images/overlay.png",
+        "/engine/gameScene/src/images/tree2.png",
+        "/engine/gameScene/src/images/pineTree.png",
+        "/engine/gameScene/src/images/pineTree2.png"
+        ]
+    },
+    "data": {
+        "objects": [
+        {"id": "piso", "model": 0, "position": [0, -5, 0], "scale": [2, 2, 2]},
+        {"id": "agua", "model": 1, "position": [0, -5, 0], "scale": [2, 2, 2]},
+        {"id": "arboles", "model": 2, "position": [0, -5, 0], "scale": [2, 2, 2]},
+        {"id": "arboles2", "model": 15, "position": [0, -5, 0], "scale": [2, 2, 2]},
+        {"id": "pinos", "model": 16, "position": [0, -5, 0], "scale": [2, 2, 2]},
+        {"id": "pinos2", "model": 17, "position": [0, -5, 0], "scale": [2, 2, 2]},
+        {"id": "puente", "model": 3, "position": [0, -5, 0], "scale": [2, 2, 2]},
+        {"id": "carteles", "model": 4, "position": [0, -5, 0], "scale": [2, 2, 2]},
+        {"id": "rocas", "model": 5, "position": [0, -5, 0], "scale": [2, 2, 2]},
+        {"id": "casas", "model": 6, "position": [0, -5, 0], "scale": [2, 2, 2]},
+        {"id": "deadTrees", "model": 7, "position": [0, -5, 0], "scale": [2, 2, 2]}
+        ],
+        "cameras": [
+            {"id": "camera00", "position": [0, 300, 10], "rotation": [0, 0, 1.57079633], "fov": 60, "active": false}
+        ]
+    }
+}

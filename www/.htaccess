@@ -1,0 +1,7 @@
+RewriteEngine On
+
+# Redirigir raíz (/) a /home (visible en URL)
+RewriteRule ^$ /homePage/home.html [R=302,L]
+
+# Verificar cuenta por medio de link de brindada por el correo
+RewriteRule ^auth/activar$ /php/scripts/auth/activar.php [L,QSA]

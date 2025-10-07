@@ -1,0 +1,114 @@
+.pageHeader{
+    width: 100%;
+    height: 10%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+}
+.main-container{
+    gap: 1rem;
+}
+.profileContainer{
+    cursor: pointer;
+    height: fit-content;
+    width: fit-content;
+    min-width: 105px;
+    min-height: 105px;
+    padding: 5px; /*profileborder*/
+    background-color: #480E0E;
+    border-radius: 50%;
+    display: flex;
+    justify-self: center;
+    align-self: center;
+    align-items: center;
+    justify-content: center;
+}
+.col{
+    margin: 0;
+    width: fit-content;
+}
+.container{
+    max-width: 40vw;
+}
+span {
+    font-size: 2rem;
+    line-height: 1;
+    height: calc(fit-content -10px);
+}
+.square-item {
+    aspect-ratio: 1 / 1;      /* Makes it a square */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    border: 2px solid #480E0E;
+}
+.customContainer{
+    width: 25vw;
+    margin: 0;
+}
+div:has(section){
+    border-radius: 5rem;
+}
+
+footer{
+    gap:1rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    
+}
+
+.bordered{
+    border: 3px solid #480E0E;
+}
+input{
+    all: unset;
+    background-color: inherit;
+    color: white;
+    border: none;
+    border-bottom: 2px solid #b18409;
+    width: fit-content;
+    height: 5vh;
+    font-size: 1.5rem;
+}
+
+.customRow{
+    display: flex;
+    width: 100%;
+    height: fit-content;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 3rem;
+}
+@media (max-width: 768px) {
+    .customContainer{
+        height: 330px;
+        width: 330px;
+        margin-bottom: 5vw;
+    }
+    .profileContainer img{
+        height: 70px;
+        width: 70px;
+    }
+    .circle-button{
+        font-size: 16px !important;
+        padding: 0.5rem 0;
+    }
+    .profileContainer{
+        min-height: 75px;
+        min-width: 75px;
+        padding: 5px;
+    }
+}
+@media (max-width: 450px) {
+    .customContainer{
+        height: 270px;
+        width: 270px;
+        margin-bottom: 5vw;
+    }
+
+}
