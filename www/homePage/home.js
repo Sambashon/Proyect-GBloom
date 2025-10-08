@@ -34,11 +34,9 @@ function closePanels(){
     state.currentPanel = null;
 }
 function togglePanel(panelName, panelElement) {
-    console.log("panelToggled");
     footerMenu.classList.add("visible");
 
     if (state.currentPanel === panelName) {
-        console.log(panelName);
         footerMenu.classList.remove("visible");
         closePanels();
         return;
@@ -123,7 +121,7 @@ async function connectLobby(code) {
     });
     
 
-    if (accion.state == "success") {
+    if (accion.status == "success") {
         const solicitud = await fetch("/php/scripts/game/lobby/verificarCodigo.php", {
             method: "POST",
             body: JSON.stringify({codigo: code})
@@ -151,7 +149,10 @@ async function requestUserData() {
     playBtn.addEventListener("click", () => togglePanel("Play", playSection));
 
 
-    if (response.state == "success") {
+    if (response.status == "success") {
+        profileBtn.removeAttribute('data-bs-toggle');
+        profileBtn.removeAttribute('data-bs-target');
+
         const usuario = response.result;
         username = usuario.username;
         email = usuario.correo;

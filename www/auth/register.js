@@ -48,11 +48,17 @@ form.addEventListener("submit", async (e) => {
 
         const data = await response.json();
 
-        if (data.state === "success") {
+        if (data.status === "success") {
             alert("Registration successful!");
             window.location.href = "/auth/login.html";
         } else {
-            errorContainer.textContent = data.ErrMessage || "Registration failed.";
+            // Mejorar el output de errDetails
+            if (data.status === 404) {
+                errorContainer.textContent = data.ErrMessage || "Registration failed.";
+            } else {
+                alert(data.ErrMessage);
+                errorContainer.textContent = data.ErrDetails || "Registration failed.";
+            }
             errorContainer.style.display = "block";
         }
     } catch (err) {

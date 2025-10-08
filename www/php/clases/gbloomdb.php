@@ -2,7 +2,7 @@
 include "gerror.php";
 class GBloomDB {
     protected PDO $pdo;
-    protected array $success;
+    public array $success;
     protected GError $notFound;
     private GError $expiration;
     private GError $invalidToken;
@@ -101,8 +101,11 @@ class GBloomDB {
         $this->notFound->setOrigin("GBloomDB->getUserCredentials()");
         $usuario = $this->notFound->filter($solicitud->fetch());
 
-        $this->success["result"] = $usuario;
+        return $this->returnSuccess($usuario);
+    }
 
+    public function returnSuccess(mixed $result): array {
+        $this->success["result"] = $result;
         return $this->success;
     }
 

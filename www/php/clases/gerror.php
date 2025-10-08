@@ -172,7 +172,8 @@ class GError {
             throw new Exception(json_encode([
                 "status" => $this->errorType,
                 "ErrMessage" => $this->errMessage,
-                "errDetails" => $this->errDetails
+                "ErrDetails" => $this->errDetails,
+                "origin" => $this->origin
             ]));
         }
     }

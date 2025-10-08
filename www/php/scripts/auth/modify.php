@@ -1,62 +1,64 @@
 <?php
 include "../../clases/perfil.php";
+include "../filters.php";
 
 $perfil = new Perfil();
-$request = $_SERVER["REQUEST_METHOD"];
 
-switch ($request) {
-    case "POST":
-        if (isset($_COOKIE["golden-token"])) {
-            $token = $_COOKIE["golden-token"];
+$filtroTokenSesion = new GError(
+    "Token de Sesión",
+    GError::notFound,
+    GError::inclusive,
+    [
+        fn($input) => isset($_COOKIE["golden-token"])
+    ],
+    "Validación Token",
+    true,
+    "El token de sesion requerido no se encuentra registrado"
+);
 
-            try {
-                $body = json_decode(file_get_contents('php://input'), true);
-            } catch (Exception $e) {
-                echo json_encode(["state" => "forbidden", "ErrMessage" => "El formato de entrada no es valido"]);
-                break;
-            }
-
-            if (isset($body["username"]) || isset($body["contraseña"]) || isset($body["correo"]) || isset($body["fechaNacimiento"]) || isset($body["descripcion"])) {
-                $credentials = $perfil->getUserCredentials($token);
-                if ($credentials["state"] == "success") {
-                    $usuario = $credentials["result"];
-
-                    if (isset($body["username"])) {
-                        $usuario["username"] = $body["username"];
-                    }
-                    if (isset($body["contraseña"])) {
-                        $usuario["contraseña"] = $body["contraseña"];
-                    }
-                    if (isset($body["correo"])) {
-                        $usuario["correo"] = $body["correo"];
-                    }
-                    if (isset($body["fechaNacimiento"])) {
-                        $usuario["fechaNacimiento"] = $body["fechaNacimiento"];
-                    }
-                    if (isset($body["descripcion"])) {
-                        $usuario["descripcion"] = $body["descripcion"];
-                    }
-
-                    $perfil->editarUsuario($token, $usuario);
-                    
-                    return [
-                        "state" => "success"
-                    ];
-                } else {
-                    return $credentials;
-                }
-            } else {
-                echo json_encode(["state" => "notFound", "ErrMessage" => "No se han encontrado los parametros necesarios para la accion solicitada"]);
-            }
-        } else {
-            echo json_encode(["state" => "notFound", "ErrMessage" => "El token de sesion requerido no se encuentra registrado"]);
-            break;
+$filtroParametrosOpcionales = new GError(
+    "Parámetros Opcionales",
+    GError::notFound,
+    GError::inclusive,
+    [
+        "al_menos_un_parametro" => function($data) {
+            return isset($data["username"]) || 
+                   isset($data["contraseña"]) || 
+                   isset($data["correo"]) || 
+                   isset($data["fechaNacimiento"]) || 
+                   isset($data["descripcion"]);
         }
+    ],
+    "Validación Parámetros Edición",
+    true,
+    "No se han encontrado los parametros necesarios para la accion solicitada"
+);
 
-        break;
-    default:
-        echo json_encode(["state" => "forbidden", "ErrMessage" => "El metodo utilizado para la solicitud es invalida. Pofavor use POST"]);
-        break;
+try {
+    $filtroMetodoPost->filter($_SERVER["REQUEST_METHOD"]);
+    $filtroTokenSesion->filter(true);
+    
+    $bodyInput = file_get_contents('php://input');
+    $filtroBodyJSON->filter($bodyInput);
+    $body = json_decode($bodyInput, true);
+    
+    $filtroParametrosOpcionales->filter($body);
+    
+    $token = $_COOKIE["golden-token"];
+    $credentials = $perfil->getUserCredentials($token);
+    $usuario = $credentials["result"];
+    
+    $cambios = [];
+    if (isset($body["username"])) $cambios["username"] = $body["username"];
+    if (isset($body["contraseña"])) $cambios["contraseña"] = $body["contraseña"];
+    if (isset($body["correo"])) $cambios["correo"] = $body["correo"];
+    if (isset($body["fechaNacimiento"])) $cambios["fechaNacimiento"] = $body["fechaNacimiento"];
+    if (isset($body["descripcion"])) $cambios["descripcion"] = $body["descripcion"];
+    
+    $perfil->editarUsuario($token, $cambios);
+    
+    echo json_encode($perfil->returnSuccess(null));
+} catch (Exception $e) {
+    echo $e->getMessage();
 }
-
 ?>

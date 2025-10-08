@@ -12,7 +12,7 @@ login.addEventListener("submit", async function ($e) {
         return response.json();
     });
 
-    if (acceder.state == "success") {
+    if (acceder.status == "success") {
         alert("Sesion Iniciada como " + username.value);
         window.location.href = "/";
     } else {
@@ -64,10 +64,10 @@ loginForm.addEventListener("submit", async (e) => {
 
         const data = await response.json();
 
-        if (data.state === "success") {
+        if (data.status === "success") {
             window.location.href = "/homePage/home.html";
         } else {
-            loginError.textContent = data.ErrMessage || "Invalid username or password.";
+            loginError.textContent = data.ErrDetails || "Invalid username or password.";
             loginError.style.display = "block";
         }
     } catch (err) {

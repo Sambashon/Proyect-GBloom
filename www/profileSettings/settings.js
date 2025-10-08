@@ -1,9 +1,8 @@
-let changesSaved = false;
+
 let username;
 let email;
 let aboutme;
 let birthdate;
-let password;
 
 const usernameInput = document.querySelector("input#username");
 const emailInput = document.querySelector("input#email");
@@ -11,6 +10,7 @@ const aboutmeInput = document.querySelector("textarea#about");
 const passwordInput = document.querySelector("input#password");
 const birthdayInput = document.getElementById("birthdate");
 const save = document.querySelector("form");
+const deleteAccount = document.querySelector("button#deleteAccBtn");
 const leaveBtn = document.querySelector("#leaveBtn");
 const unsavedModalEl = document.querySelector("#unsavedModal");
 const unsavedModal = new bootstrap.Modal(unsavedModalEl);
@@ -18,11 +18,21 @@ const unsavedModal = new bootstrap.Modal(unsavedModalEl);
 
 
 leaveBtn.addEventListener("click", () => {
-    if (username == usernameInput.value && email == emailInput.value && password == passwordInput.value && aboutme == aboutmeInput.value || changesSaved) {
-        console.log("No unsaved changes, proceed with leaving.");//ariel le meti un "|| changesSaved a la condicional de arriba"
-        window.location.href = '../homePage/home.html';  
+    if (username == usernameInput.value && birthdate == birthdayInput.value && aboutme == aboutmeInput.value) {
+        window.location.href = '../homePage/home.html';
     } else {
         unsavedModal.show();
+    }
+});
+
+deleteAccount.addEventListener("click", async () => {
+    const action = await fetch("/php/scripts/auth/delete.php");
+    const data = await action.json();
+    
+    if (data.status == "success") {
+        window.location.href = '../homePage/home.html';
+    } else {
+        alert(data.ErrMessage);
     }
 });
 
@@ -73,6 +83,7 @@ function validateProfileForm() {
         clearError(usernameInput);
     }
 
+    /*
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(emailInput.value.trim())) {
         showError(emailInput, "Please enter a valid email address.");
@@ -106,6 +117,7 @@ save.addEventListener("submit", async (e) =>{
         return;
     }
     try{
+        /*
         if (passwordInput.value != "") {
             const action = await fetch("/php/scripts/auth/modify.php", {
             method: "POST",
@@ -117,27 +129,23 @@ save.addEventListener("submit", async (e) =>{
                     descripcion: aboutmeInput.value
                 })
             });
-        } else {
-            const action = await fetch("/php/scripts/auth/modify.php", {
-            method: "POST",
-            body: JSON.stringify({
-                    username: usernameInput.value,
-                    correo: emailInput.value,
-                    fechaNacimiento: birthdayInput.value,
-                    descripcion: aboutmeInput.value
-                })
-            });
-        }
-        requestUserData();
-        alert("Changes saved!");
-        changesSaved = true;
+        } else {*/
+        const action = await fetch("/php/scripts/auth/modify.php", {
+        method: "POST",
+        body: JSON.stringify({
+                username: usernameInput.value,
+                fechaNacimiento: birthdayInput.value,
+                descripcion: aboutmeInput.value
+            })
+        });
+        //}
+
         const data = await action.json();
-        if (data.state === "success") {
+        if (data.status === "success") {
             await requestUserData();
             alert("Changes saved!");
-            changesSaved = true;
         } else {
-            alert("Error saving changes: " + (data.message || "Unknown error"));
+            alert("Error saving changes: " + (data.ErrDetails || "Unknown error"));
         }
     } catch (err) {
         alert("Network error. Please try again later.");
@@ -149,20 +157,17 @@ async function requestUserData() {
         return response.json();
     });
 
-    if (response.state == "success") {
+    if (response.status == "success") {
         const usuario = response.result;
         username = usuario.username;
-        email = usuario.correo;
+        //email = usuario.correo;
         aboutme = usuario.descripcion;
-        password = usuario.contraseña;
         birthdate = usuario.fechaNacimiento;
 
         usernameInput.value = username;
-        emailInput.value = email;
-        passwordInput.value = "";
+        //emailInput.value = email;
         birthdayInput.value = birthdate;
         aboutmeInput.value = aboutme;
-
     }
 }
 
