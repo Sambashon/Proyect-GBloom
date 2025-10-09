@@ -150,6 +150,10 @@ class Perfil extends GBloomDB {
         $solicitud = $this->pdo->prepare("select username, contraseña, verificado from usuario where username = :username;");
         $solicitud->execute(["username" => $username]);
         $usuario = $solicitud->fetch();
+
+        $this->notFound->setOrigin("Perfil->accederUsuario()");
+        $this->notFound->setErrMessage("La contraseña o el usuario ingresados no son validos");
+        $this->notFound->filter($usuario);
         $this->filtroAccesso->filter(["contraseña" => $contraseña, "usuario" => $usuario]);
 
         $token = $this->generarToken();

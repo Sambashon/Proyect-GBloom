@@ -146,12 +146,13 @@ async function requestUserData() {
     });
 
     settingsBtn.addEventListener("click", () => togglePanel("Settings", settingsSection));
-    playBtn.addEventListener("click", () => togglePanel("Play", playSection));
-
 
     if (response.status == "success") {
         profileBtn.removeAttribute('data-bs-toggle');
         profileBtn.removeAttribute('data-bs-target');
+
+        playBtn.removeAttribute('data-bs-toggle');
+        playBtn.removeAttribute('data-bs-target');
 
         const usuario = response.result;
         username = usuario.username;
@@ -166,6 +167,7 @@ async function requestUserData() {
         document.querySelector("h2#aboutme").textContent = aboutme;
 
         profileBtn.addEventListener("click", () => togglePanel("Profile", profileSection));
+        playBtn.addEventListener("click", () => togglePanel("Play", playSection));
     }
 }
 
