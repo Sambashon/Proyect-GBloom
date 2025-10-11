@@ -4,7 +4,7 @@ $filtroMetodoPost = new GError(
     GError::forbidden,
     GError::inclusive,
     [
-        "metodo_invalido" => fn($input) => $input === "POST"
+        "Metodo invalido" => fn($input) => $input === "POST"
     ],
     "Validación Método HTTP",
     true,

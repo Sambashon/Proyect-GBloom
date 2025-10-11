@@ -14,6 +14,7 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
 
     <link rel="stylesheet" href="../src/css/general.css">
+    <link rel="stylesheet" href="../src/css/modal.css">
     <link rel="stylesheet" href="forms.css">
 </head>
 <body>
@@ -23,6 +24,13 @@
             <button class="custom-button" id="xOut"><h2>x</h2></button>
         </section>
     </header>
+
+    <div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModal" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <img src="/Resources/Icons/cargando.gif" width="100px" style="margin: auto;"></img>
+        </div>
+    </div>
+
     <main class="main-container">
         <div class="form-container">
             <h1 class="text-outline responsive-title text-center">Login</h1>
@@ -43,12 +51,18 @@
                     <label class="text-outline form-check-lable" for="checkBox">
                         Stay Logged In
                     </label>
-                    <input type="submit" class="custom-button right">
+                    <input type="submit" class="custom-button right" data-bs-toggle="modal" data-bs-target="#loginModal">
+                </div>
+                <div class="form-footer">
+                    <label class="text-outline">
+                        <a href="#" id="recoveryLink">Forgot your password or username?</a>
+                    </label>
                 </div>
 
             </form>
         </div>
     </main>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="ui.js"></script>
     <script src="login.js"></script>
     <script src="../src/js/passwordEyes.js"></script>

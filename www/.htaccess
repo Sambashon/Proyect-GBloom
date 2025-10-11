@@ -5,3 +5,11 @@ RewriteRule ^$ /homePage/home.html [R=302,L]
 
 # Verificar cuenta por medio de link de brindada por el correo
 RewriteRule ^auth/activar$ /php/scripts/auth/activar.php [L,QSA]
+
+# Restablecer Contraseña por medio de link de brindada por el correo
+RewriteRule ^auth/recuperar$ /auth/recuperar.html [L,QSA]
+
+# HTML Error
+ErrorDocument 400 /error/400.html
+ErrorDocument 403 /error/403.html
+ErrorDocument 404 /error/404.html

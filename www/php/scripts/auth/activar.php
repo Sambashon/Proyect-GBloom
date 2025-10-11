@@ -12,9 +12,9 @@ try {
 
         header("Location: https://" . $host . "/auth/login.html");
     } else {
-        echo "Link Invalido";
+        include "../../../error/400.html";
     }
 } catch (Exception $e) {
-    echo $e->getMessage();
+    include "../../../error/notLink.html";
 }
 ?>

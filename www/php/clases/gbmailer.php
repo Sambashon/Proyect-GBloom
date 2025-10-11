@@ -24,6 +24,8 @@ class GBMailer {
         $this->mailer->isHTML(true);
         $this->mailer->setFrom("gbloomenterprise@gmail.com", "Golden Blossom Enterprise");
 
+        $this->mailer->CharSet = 'UTF-8';
+        $this->mailer->Encoding = 'base64';
     }
 
     public function enviarCorreo(string $asunto, string $destinatario, string $contenido) {
@@ -126,6 +128,7 @@ class GBMailer {
     }
 
     public function cambiosCuenta($correo, $usuario) {
+        $host = $_SERVER['SERVER_NAME'];
         $contenido = <<<EOF
             <!DOCTYPE html>
             <html lang="es">
@@ -200,7 +203,7 @@ class GBMailer {
                     Pero si <strong>no reconoces esta actividad</strong>, te recomendamos que revises tu cuenta de inmediato.
                 </div>
                 <p>Puedes acceder a tu cuenta desde el siguiente enlace seguro:</p>
-                <a href="https://goldenblossom.ddns.net/" class="button">Revisar mi cuenta</a>
+                <a href="https://$host/" class="button">Revisar mi cuenta</a>
                 <p>Por tu seguridad, nunca compartas tu contraseña y asegúrate de usar una clave única y segura.</p>
                 <p>El equipo de GBloom</p>
                 </div>
@@ -305,4 +308,94 @@ class GBMailer {
         $this->enviarCorreo("Tu cuenta ha sido eliminada - Draftosaurus", $correo, $contenido);
     }
 
+    public function recuperarContraseña($correo, $usuario, $codigo) {
+        $host = $_SERVER['SERVER_NAME'];
+        $contenido = <<<EOF
+            <!DOCTYPE html>
+            <html lang="es">
+            <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>Recuperar contraseña - Draftosaurus</title>
+            <style>
+                body {
+                    font-family: Arial, sans-serif;
+                    background-color: #f0f4f8;
+                    margin: 0;
+                    padding: 0;
+                    color: #333;
+                }
+                .container {
+                    max-width: 600px;
+                    margin: 30px auto;
+                    background-color: #ffffff;
+                    border-radius: 12px;
+                    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+                    overflow: hidden;
+                }
+                .header {
+                    background-color: #D59F0A;
+                    color: white;
+                    padding: 20px;
+                    text-align: center;
+                    font-size: 24px;
+                    font-weight: bold;
+                }
+                .content {
+                    padding: 20px;
+                    line-height: 1.6;
+                }
+                .button {
+                    display: inline-block;
+                    margin: 20px 0;
+                    padding: 12px 25px;
+                    background-color: #D59F0A;
+                    color: white;
+                    text-decoration: none;
+                    border-radius: 6px;
+                    font-weight: bold;
+                }
+                .alert {
+                    background-color: #ffe4b3;
+                    border-left: 6px solid #D59F0A;
+                    padding: 15px;
+                    margin: 20px 0;
+                    border-radius: 6px;
+                }
+                .footer {
+                    background-color: #f0f4f8;
+                    color: #666;
+                    text-align: center;
+                    padding: 15px;
+                    font-size: 12px;
+                }
+            </style>
+            </head>
+            <body>
+            <div class="container">
+                <div class="header">
+                    Recuperación de contraseña
+                </div>
+                <div class="content">
+                    <p>Hola <strong>$usuario</strong>,</p>
+                    <p>Hemos recibido una solicitud para restablecer tu contraseña de <strong>Draftosaurus</strong>.</p>
+                    <div class="alert">
+                        Si tú no solicitaste este cambio, puedes ignorar este correo y tu contraseña seguirá siendo la misma.
+                    </div>
+                    <p>Para continuar con el proceso de recuperación, haz clic en el siguiente botón:</p>
+                    <a href="https://$host/auth/recuperar?codigo=$codigo" class="button">Restablecer contraseña</a>
+                    <p>Por motivos de seguridad, este enlace será válido por un tiempo limitado. Una vez restablecida, asegúrate de elegir una contraseña segura.</p>
+                    <p>El equipo de GBloom</p>
+                </div>
+                <div class="footer">
+                    Este correo es automático, por favor no respondas. <br>
+                    © 2025 Golden Blossom. Todos los derechos reservados.
+                </div>
+            </div>
+            </body>
+            </html>
+        EOF;
+
+        $this->enviarCorreo("Recuperar contraseña - Draftosaurus", $correo, $contenido);
+    }
 }

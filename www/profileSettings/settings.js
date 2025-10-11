@@ -9,12 +9,14 @@ const emailInput = document.querySelector("input#email");
 const aboutmeInput = document.querySelector("textarea#about");
 const passwordInput = document.querySelector("input#password");
 const birthdayInput = document.getElementById("birthdate");
+const changePassBtn = document.querySelector("button#changePass");
 const save = document.querySelector("form");
 const deleteAccount = document.querySelector("button#deleteAccBtn");
 const leaveBtn = document.querySelector("#leaveBtn");
 const unsavedModalEl = document.querySelector("#unsavedModal");
 const unsavedModal = new bootstrap.Modal(unsavedModalEl);
-
+const deleteModal = new bootstrap.Modal(document.querySelector("#deleteModal"));
+const deleteModalEl = document.querySelector("#deleteModal");
 
 
 leaveBtn.addEventListener("click", () => {
@@ -26,7 +28,42 @@ leaveBtn.addEventListener("click", () => {
 });
 
 deleteAccount.addEventListener("click", async () => {
-    const action = await fetch("/php/scripts/auth/delete.php");
+    const action = await fetch("/php/scripts/auth/delete.php", {method: "POST"});
+    const data = await action.json();
+    
+    deleteModalEl.innerHTML = `<div class="modal-dialog modal-dialog-centered">
+            <img src="/Resources/Icons/cargando.gif" width="100px" style="margin: auto;"></img>
+        </div>`;
+    deleteModal._config.backdrop = 'static';
+    deleteModal._config.keyboard = false;
+    
+    if (data.status == "success") {
+        await setTimeout(() => {deleteModal.hide()}, 1000);
+        window.location.href = '../homePage/home.html';
+    } else {
+        await setTimeout(() => {deleteModal.hide()}, 1000);
+        deleteModal._config.backdrop = true;
+        deleteModal._config.keyboard = true;
+        deleteModalEl.innerHTML = `<div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+            <div class="modal-header centered-modal-header">
+                <h1 class="modal-title responsive-text text-outline">Are you sure you want to delete your account?</h1>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="custom-button dark-red" id="deleteAccBtn">YES</button>
+                <button type="button" class="custom-button" data-bs-dismiss="modal">NO</button>
+            </div>    
+            </div>
+        </div>`;
+        alert(data.ErrMessage);
+    }
+});
+
+changePassBtn.addEventListener("click", async () => {
+    const action = await fetch("/php/scripts/auth/recuperarContraseña.php", {
+        method: "POST",
+        body: JSON.stringify({correo: email})
+    });
     const data = await action.json();
     
     if (data.status == "success") {
@@ -160,7 +197,7 @@ async function requestUserData() {
     if (response.status == "success") {
         const usuario = response.result;
         username = usuario.username;
-        //email = usuario.correo;
+        email = usuario.correo;
         aboutme = usuario.descripcion;
         birthdate = usuario.fechaNacimiento;
 

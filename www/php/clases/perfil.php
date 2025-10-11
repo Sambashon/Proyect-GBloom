@@ -94,8 +94,7 @@ class Perfil extends GBloomDB {
         $expira = $expira->format("Y-m-d H:m:s");
         $codigo = $this->generarCodigoAcceso();
         
-        $insertar = $this->pdo->prepare("insert into codigo_temporal(codigo, username, expira) values (:codigo, :username, :expira)");
-        $insertar->execute(["codigo" => $codigo, "username" => $username, "expira" => $expira]);
+        $this->registrarCodigoTemporal($codigo, $username, $expira);
 
         return $this->returnSuccess($codigo);
     }
@@ -122,15 +121,30 @@ class Perfil extends GBloomDB {
         return $codigo;
     }
 
-    public function activarCuenta($codigo): array {
+    public function registrarCodigoTemporal(string $codigo, string $username, string $expira): array {
+        $eliminar = $this->pdo->prepare("delete from codigo_temporal where username = :username");
+        $eliminar->execute(["username" => $username]);
+
+        $insertar = $this->pdo->prepare("insert into codigo_temporal(codigo, username, expira) values (:codigo, :username, :expira)");
+        $insertar->execute(["codigo" => $codigo, "username" => $username, "expira" => $expira]);
+
+        return $this->returnSuccess(null);
+    }
+
+    public function verificarCodigoAcceso(string $codigo): array {
         $solicitud = $this->pdo->prepare("select username from codigo_temporal where codigo = :codigo");
         $solicitud->execute(["codigo" => $codigo]);
 
-        $this->notFound->setOrigin("Perfil->activarCuenta()");
+        $this->notFound->setOrigin("Perfil->verificarCodigoAcceso()");
         $this->notFound->setErrMessage("Codigo de activacion invalido");
         $solicitud = $this->notFound->filter($solicitud->fetch());
 
-        $username = $solicitud["username"];
+
+        return $this->returnSuccess($solicitud["username"]);
+    }
+
+    public function activarCuenta(string $codigo): array {
+        $username = $this->verificarCodigoAcceso($codigo)["result"];
 
         $actualizar = $this->pdo->prepare("update usuario set verificado = 1 where username = :username");
         $actualizar->execute(["username" => $username]);
@@ -182,6 +196,9 @@ class Perfil extends GBloomDB {
         $eliminar = $this->pdo->prepare("delete from sesion where username = :username");
         $eliminar->execute(["username" => $username]);
 
+        $eliminar = $this->pdo->prepare("delete from codigo_temporal where username = :username");
+        $eliminar->execute(["username" => $username]);
+
         $eliminar = $this->pdo->prepare("delete from tablero where username = :username");
         $eliminar->execute(["username" => $username]);
 
@@ -213,6 +230,7 @@ class Perfil extends GBloomDB {
 
         return $this->returnSuccess(null);
     }
+
     public function editarUsuario(string $token, array $cambios): array {
         $credentials = $this->getUserCredentials($token);
         $username = $credentials["result"]["username"];
@@ -286,5 +304,60 @@ class Perfil extends GBloomDB {
 
         return $this->returnSuccess(null);
     }
-    
+
+    public function cambiarContraseña(string $codigo, string $contraseña): array {
+        $username = $this->verificarCodigoAcceso($codigo)["result"];
+        $this->filtroRegistro->filter(["contraseña" => $contraseña]);
+
+        $contraseña = password_hash($contraseña, PASSWORD_DEFAULT);
+
+        $correo = $this->getCorreoAsociado($username)["result"];
+
+        $actualizar = $this->pdo->prepare("update usuario set contraseña = :contrasena where username = :username");
+        $actualizar->execute(["contrasena" => $contraseña, "username" => $username]);
+
+        $eliminar = $this->pdo->prepare("delete from codigo_temporal where username = :username");
+        $eliminar->execute(["username" => $username]);
+
+        $this->mailer->cambiosCuenta($correo, $username);
+
+        return $this->returnSuccess(null);
+    }
+
+    public function recuperarContraseña(string $correo): array {
+        $this->notFound->setOrigin("Perfil->recuperarContraseña()");
+        $this->notFound->setErrMessage("El correo brindado no esta asociado a ninguna cuenta registrada");
+        $solicitud = $this->pdo->prepare("select username from usuario where correo = :correo;");
+        $solicitud->execute(["correo" => $correo]);
+        $username = $this->notFound->filter($solicitud->fetch())["username"];
+
+        $expira = new DateTime();
+        $expira->modify("+15 minutes");
+        $expira = $expira->format("Y-m-d H:m:s");
+        $codigo = $this->generarCodigoAcceso();
+            
+        $this->registrarCodigoTemporal($codigo, $username, $expira);
+        $this->mailer->recuperarContraseña($correo, $username, $codigo);
+
+        return $this->returnSuccess(null);
+    }
+
+    public function getCorreoAsociado(string $username): array {
+        $this->notFound->setOrigin("Perfil->getCorreoAsociado()");
+        $this->notFound->setErrMessage("No hay ningun correo asociado al nombre de usuario brindado");
+        $solicitud = $this->pdo->prepare("select correo from usuario where username = :username");
+        $solicitud->execute(["username" => $username]);
+        $correo = $this->notFound->filter($solicitud->fetch())["correo"];
+
+        return $this->returnSuccess($correo);
+    }
+    public function getUsuarioAsociado(string $correo): array {
+        $this->notFound->setOrigin("Perfil->getUsuarioAsociado()");
+        $this->notFound->setErrMessage("No hay ningun nombre de usuario asociado al correo brindado");
+        $solicitud = $this->pdo->prepare("select username from usuario where correo = :correo");
+        $solicitud->execute(["correo" => $correo]);
+        $username = $this->notFound->filter($solicitud->fetch())["username"];
+
+        return $this->returnSuccess($username);
+    }
 }

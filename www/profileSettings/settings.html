@@ -70,7 +70,6 @@
                 <button class="circle-button pencilBtn">✎</button>
             </div>
             <div class="error-message">
-                Error(s):
             </div>
         </section>
         <main class="form-section">
@@ -85,16 +84,19 @@
                         <input name="username" id="username" type="text" class="clickable fs-8">
                         <button class="custom-button editBtn" type="button">Edit</button>
                     </div>
-                    
                     <div class="form-group">
                         <label for="birthdate" class="responsive-text text-outline">BirthDate</label>
                         <input  type="date" name="birthdate"  id="birthdate" class="clickable fs-8 birthday-input">
                         <button class="custom-button editBtn" type="button">Edit</button>
                     </div>
-                    <div class="form-text-area form-group" style="margin-bottom: 100px;">
+                    <div class="form-text-area form-group">
                         <label for="about" class="responsive-text text-outline">About me</label>
                         <textarea type="text" name="about" id="about" class="fs-8 clickable custom-text-area"></textarea>
                         <button class="custom-button editBtn" type="button">Edit</button>
+                    </div>
+                    <div class="form-group" style="margin-bottom: 30px;">
+                        <label for="password" class="responsive-text text-outline">Password</label>
+                        <button class="custom-button editBtn" type="button" id="changePass">Change Password</button>
                     </div>
                     <div class="form-group" style="display: flex; align-items: center; justify-content: center; margin-bottom: 0;">
                         <button class="custom-button editBtn red" type="button" data-bs-toggle="modal" data-bs-target="#deleteModal">Delete account</button>
