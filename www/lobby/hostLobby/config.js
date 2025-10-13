@@ -14,7 +14,6 @@ let buttonSelected = null;
 
 footerButtons.forEach((button) => {
   button.addEventListener("click", () => {
-
     if (buttonSelected && buttonSelected !== button) {
       buttonSelected.classList.remove("bordered");
       button.classList.add("bordered");
@@ -41,10 +40,15 @@ editBtn.addEventListener("click", () => {
             nameInput.replaceWith(partyTitle);
         }
     })
+
+    nameInput.addEventListener("focusout", () =>{
+        const name = nameInput.value;
+        partyTitle.innerText = name;
+        nameInput.replaceWith(partyTitle);
+    })
 })
 
 backBtn.addEventListener("click", () =>{
-    console.log("waza")
     window.location.href = "../../homePage/home.html";
 })
 
@@ -58,10 +62,38 @@ syncBtn.addEventListener("click", () =>{
     virtualSelected = false;
 })
 
-startBtn.addEventListener("click", () =>{
+startBtn.addEventListener("click", async () =>{
+    let modo;
     if(virtualSelected){
-        window.location = "lobby.html";
+        modo = "virtual";
     }else if(syncSelected){
-        alert("Page under construction...");
+        modo = "seguimiento";
+    }
+
+    let action = await fetch("/php/scripts/game/lobby/crearPartida.php", {
+        method: "POST",
+        // Cantidad de jugadores por defecto
+        body: JSON.stringify({nombre: partyTitle.textContent, cantidadJugadores: 5, modo: modo})
+    }).then((response) => {
+        return response.json();
+    });
+
+    if (action.status !== "success") {
+        alert("Error al configurar la Partida");
+        console.log(action.ErrMessage, action.ErrDetails);
+    }
+
+    action = await fetch("/php/scripts/game/lobby/joinLobby.php", {
+        method: "POST",
+        body: JSON.stringify({codigo: action.result})
+    }).then((response) => {
+        return response.json();
+    });
+
+    if (action.status == "success") {
+        window.location.href = "/lobby/hostLobby/lobby.html";
+    } else {
+        alert("Error al unirse a la sala de espera");
+        console.log(action.ErrMessage, action.ErrDetails);
     }
 })

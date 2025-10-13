@@ -111,31 +111,28 @@ function handleSwipe() {
         closePanels();
     }
 }
+
+// Cambiar aqui!!!!!!!!!!!!
 async function connectLobby(code) {
-    // Logica temporal para jugar un jugador en la segunda entrega
+    /* Logica temporal para jugar un jugador en la segunda entrega
     const accion = await fetch("/php/scripts/game/lobby/crearPartida.php", {
         method: "POST",
         body: JSON.stringify({nombre: "Golden Match", cantidadJugadores: 5, modo: "virtual", codigo: code})
     }).then(function (response) {
         return response.json();
     });
-    
+    */
+    const solicitud = await fetch("/php/scripts/game/lobby/verificarCodigo.php", {
+        method: "POST",
+        body: JSON.stringify({codigo: code})
+    }).then(function (response) {
+        return response.json();
+    });
 
-    if (accion.status == "success") {
-        const solicitud = await fetch("/php/scripts/game/lobby/verificarCodigo.php", {
-            method: "POST",
-            body: JSON.stringify({codigo: code})
-        }).then(function (response) {
-            return response.json();
-        });
-
-        if (solicitud.state == "success") {
-            window.location.href = "/lobby/guestLobby/lobby.html";
-        } else {
-            alert(solicitud.ErrMessage);
-        }
+    if (solicitud.status == "success") {
+        window.location.href = "/lobby/guestLobby/lobby.html";
     } else {
-        alert(accion.ErrMessage);
+        alert(solicitud.ErrMessage);
     }
     
 } 

@@ -98,7 +98,7 @@ async function executeScript(script, body) {
   }
 
     if (action.result) {
-      return {success: true, result: action.result};
+      return {success: true, result: action.result.result};
     } else if (action.ErrMessage) {
       return {success: false, ErrMessage: action.ErrMessage}
     } else {

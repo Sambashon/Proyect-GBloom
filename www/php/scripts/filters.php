@@ -65,4 +65,16 @@ $filtroSesionActiva = new GError(
     true,
     "Ya existe una sesion activa para el nombre usuario brindado"
 );
+
+$filtroTokenSesion = new GError(
+    "Token Sesión",
+    GError::notFound,
+    GError::inclusive,
+    [
+        fn() => isset($_COOKIE["golden-token"]) && !empty(trim($_COOKIE["golden-token"]))
+    ],
+    "Validación Token Sesión",
+    true,
+    "El token de sesion requerido no se encuentra registrado"
+);
 ?>

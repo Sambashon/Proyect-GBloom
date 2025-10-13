@@ -1,9 +1,8 @@
 <?php
-include "../../../clases/inventario.php";
+include "../../../clases/lobby.php";
 include "../../filters.php";
 
-$partida = new Partida();
-$inventario = new Inventario();
+$lobby = new Lobby();
 
 $filtroCodigoPartida = new GError(
     "Código Partida",
@@ -25,11 +24,11 @@ try {
     $token = $_COOKIE["golden-token"];
     $codigo = $_COOKIE["golden-code"];
     
-    $accion = $partida->iniciarPartida($token, $codigo);
-    $accion = $inventario->setupInventarios($token);
-    $accion = $partida->setupOrdenJugadores($token);
-    
-    echo json_encode($accion);
+    $jugadores = $lobby->getLobbyUsuarios($codigo)["result"];
+    $nombre = $lobby->getLobbyNombre($codigo)["result"];
+    $host = $lobby->getLobbyHost($codigo)["result"];
+    $comienza = $lobby->partidaComienza($codigo);
+    echo json_encode($lobby->returnSuccess(["codigo" => $codigo, "nombre" => $nombre, "host" => $host, "jugadores" => $jugadores, "comienza" => $comienza]));
     
 } catch (Exception $e) {
     echo $e->getMessage();

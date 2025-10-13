@@ -1,31 +1,43 @@
 <?php
-include "../../../clases/draftosaurus.php";
+include "../../../clases/lobby.php";
+include "../../filters.php";
 
-$draft = new Draftosaurus();
-$request = $_SERVER["REQUEST_METHOD"];
+$lobby = new Lobby();
 
-switch ($request) {
-    case "POST":
-        if (isset($_COOKIE["golden-token"])) {
-            $token = $_COOKIE["golden-token"];
-            
-            if (isset($_COOKIE["golden-code"])) {
-                $codigo = $_COOKIE["golden-code"];
-                $accion = $draft->conectaLobby($token, $codigo);
+$filtroCodigoDisponible = new GError(
+    "Código Disponible",
+    GError::notFound,
+    GError::inclusive,
+    [
+        "codigo_en_body" => fn($input) => isset($input['body']['codigo']) && !empty(trim($input['body']['codigo'])),
+        "codigo_en_cookie" => fn($input) => isset($_COOKIE["golden-code"]) && !empty(trim($_COOKIE["golden-code"]))
+    ],
+    "Validación Código Disponible",
+    true,
+    "No se ha encontrado el codigo de acceso de la partida"
+);
 
-                echo json_encode($accion);
-            } else {
-                echo json_encode(["state" => "notFound", "ErrMessage" => "No se ha encontrado el codigo de acceso de la partida"]);
-            }
+try {
+    $filtroMetodoPost->filter($_SERVER["REQUEST_METHOD"]);
+    $filtroTokenSesion->filter(null);
+    
+    $bodyInput = file_get_contents('php://input');
+    $filtroBodyJSON->filter($bodyInput);
+    $body = json_decode($bodyInput, true);
+    
+    $inputData = ['body' => $body];
+    $filtroCodigoDisponible->filter($inputData);
+    
+    $token = $_COOKIE["golden-token"];
+    
+    $codigo = isset($body["codigo"]) && !empty(trim($body["codigo"])) 
+        ? $body["codigo"] 
+        : $_COOKIE["golden-code"];
 
-        } else {
-            echo json_encode(["state" => "notFound", "ErrMessage" => "El token de sesion requerido no se encuentra registrado"]);
-            break;
-        }
-        break;
-    default:
-        echo json_encode(["state" => "forbidden", "ErrMessage" => "El metodo utilizado para la solicitud es invalida. Pofavor use POST"]);
-        break;
+    $accion = $lobby->conectaLobby($token, $codigo);
+    echo json_encode($lobby->returnSuccess(null));
+    
+} catch (Exception $e) {
+    echo $e->getMessage();
 }
-
 ?>

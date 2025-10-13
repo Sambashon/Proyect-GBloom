@@ -1,53 +1,52 @@
 <?php
-include "../../../clases/draftosaurus.php";
+include "../../../clases/lobby.php";
+include "../../filters.php";
 
-$draft = new Draftosaurus();
-$request = $_SERVER["REQUEST_METHOD"];
+$partida = new Partida();
+$lobby = new Lobby();
 
-switch ($request) {
-    case "POST":
-        if (isset($_COOKIE["golden-token"])) {
-            $token = $_COOKIE["golden-token"];
+$filtroParametrosPartida = new GError(
+    "Parámetros Partida",
+    GError::notFound,
+    GError::all_match,
+    [
+        "nombre requerido" => fn($data) => isset($data["nombre"]) && !empty(trim($data["nombre"])),
+        "cantidadJugadores requerida" => fn($data) => isset($data["cantidadJugadores"]) && is_numeric($data["cantidadJugadores"]),
+        "modo requerido" => fn($data) => isset($data["modo"]) && !empty(trim($data["modo"]))
+    ],
+    "Validación Parámetros Partida",
+    true,
+    "No se han encontrado los parametros necesarios para la accion solicitada"
+);
 
-            try {
-                $body = json_decode(file_get_contents('php://input'), true);
-            } catch (Exception $e) {
-                echo json_encode(["state" => "forbidden", "ErrMessage" => "El formato de entrada no es valido"]);
-                break;
-            }
-            
-            if (isset($body["nombre"]) || isset($body["cantidadJugadores"]) || isset($body["modo"])) {
-                $nombre = $body["nombre"];
-                $cantidad = $body["cantidadJugadores"];
-                $modo = $body["modo"];
+try {
+    $filtroMetodoPost->filter($_SERVER["REQUEST_METHOD"]);
+    $filtroTokenSesion->filter(null);
+    $token = $_COOKIE["golden-token"];
+    
+    $bodyInput = file_get_contents('php://input');
+    $filtroBodyJSON->filter($bodyInput);
+    $body = json_decode($bodyInput, true);
+    
+    $filtroParametrosPartida->filter($body);
+    
+    $nombre = trim($body["nombre"]);
+    $cantidad = $body["cantidadJugadores"];
+    $modo = trim($body["modo"]);
 
-                $accion = $draft->eliminarPartidaDefecto();
-                $accion = $draft->eliminarPartida($nombre, $token);
-                if ($accion["state"] == "success") {
-                    $accion = $draft->crearPartida($nombre, $token, $cantidad, $modo);
-                    if ($accion["state"] == "success") {
-                        $accion = $draft->crearLobby($nombre, $token);
+    $accion = $partida->crearPartida($nombre, $token, $cantidad, $modo);
+    $codigo = $lobby->crearLobby($nombre, $token)["result"];
 
-                        echo json_encode($accion);
-                    } else {
-                        echo json_encode($accion);
-                    }
-                }  else {
-                    echo json_encode($accion);
-                }
+    setcookie('golden-code', $codigo, [
+        'expires' => time() + 86400,
+        'path' => '/',
+        'secure' => false,
+        'httponly' => true,
+        'samesite' => 'Lax'
+    ]);
 
-            } else {
-                echo json_encode(["state" => "notFound", "ErrMessage" => "No se han encontrado los parametros necesarios para la accion solicitada"]);
-            }
-
-        } else {
-            echo json_encode(["state" => "notFound", "ErrMessage" => "El token de sesion requerido no se encuentra registrado"]);
-            break;
-        }
-        break;
-    default:
-        echo json_encode(["state" => "forbidden", "ErrMessage" => "El metodo utilizado para la solicitud es invalida. Pofavor use POST"]);
-        break;
+    echo json_encode($partida->returnSuccess($codigo));
+} catch (Exception $e) {
+    echo $e->getMessage();
 }
-
 ?>

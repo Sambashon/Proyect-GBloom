@@ -1,38 +1,43 @@
 <?php
-include "../../../clases/draftosaurus.php";
+include "../../../clases/lobby.php";
+include "../../filters.php";
 
-$draft = new Draftosaurus();
-$request = $_SERVER["REQUEST_METHOD"];
+$lobby = new Lobby();
 
-switch ($request) {
-    case "POST":
-        try {
-            $body = json_decode(file_get_contents('php://input'), true);
-        } catch (Exception $e) {
-            echo json_encode(["state" => "forbidden", "ErrMessage" => "El formato de entrada no es valido"]);
-            break;
-        }
-            
-        if (isset($body["codigo"])) {
-            $codigo = $body["codigo"];
-            $solicitud = $draft->verificarCodigo($codigo);
+$filtroParametrosCodigo = new GError(
+    "Parámetros Código",
+    GError::notFound,
+    GError::all_match,
+    [
+        "codigo requerido" => fn($data) => isset($data["codigo"]) && !empty(trim($data["codigo"]))
+    ],
+    "Validación Parámetros Código",
+    true,
+    "No se han encontrado los parametros necesarios para la accion solicitada"
+);
 
-            setcookie('golden-code', $body["codigo"], [
-            'expires' => time() + 86400,
-            'path' => '/',
-            'secure' => false,
-            'httponly' => true,
-            'samesite' => 'Lax'
-            ]);
-            
-            echo json_encode($solicitud);
-        } else {
-            echo json_encode(["state" => "notFound", "ErrMessage" => "No se han encontrado los parametros necesarios para la accion solicitada"]);
-        }
-        break;
-    default:
-        echo json_encode(["state" => "forbidden", "ErrMessage" => "El metodo utilizado para la solicitud es invalida. Pofavor use POST"]);
-        break;
+try {
+    $filtroMetodoPost->filter($_SERVER["REQUEST_METHOD"]);
+    
+    $bodyInput = file_get_contents('php://input');
+    $filtroBodyJSON->filter($bodyInput);
+    $body = json_decode($bodyInput, true);
+    
+    $filtroParametrosCodigo->filter($body);
+    
+    $codigo = $body["codigo"];
+    $solicitud = $lobby->verificarCodigo($codigo);
+
+    setcookie('golden-code', $codigo, [
+        'expires' => time() + 86400,
+        'path' => '/',
+        'secure' => false,
+        'httponly' => true,
+        'samesite' => 'Lax'
+    ]);
+    
+    echo json_encode($solicitud);
+} catch (Exception $e) {
+    echo $e->getMessage();
 }
-
 ?>

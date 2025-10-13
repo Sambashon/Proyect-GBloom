@@ -16,8 +16,6 @@ const leaveBtn = document.querySelector("#leaveBtn");
 const unsavedModalEl = document.querySelector("#unsavedModal");
 const unsavedModal = new bootstrap.Modal(unsavedModalEl);
 const deleteModal = new bootstrap.Modal(document.querySelector("#deleteModal"));
-const deleteModalEl = document.querySelector("#deleteModal");
-
 
 leaveBtn.addEventListener("click", () => {
     if (username == usernameInput.value && birthdate == birthdayInput.value && aboutme == aboutmeInput.value) {
@@ -31,6 +29,8 @@ deleteAccount.addEventListener("click", async () => {
     const action = await fetch("/php/scripts/auth/delete.php", {method: "POST"});
     const data = await action.json();
     
+    const deleteModalEl = document.querySelector("#deleteModal");
+
     deleteModalEl.innerHTML = `<div class="modal-dialog modal-dialog-centered">
             <img src="/Resources/Icons/cargando.gif" width="100px" style="margin: auto;"></img>
         </div>`;

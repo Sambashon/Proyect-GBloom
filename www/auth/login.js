@@ -38,8 +38,7 @@ const loginForm = document.querySelector("form");
 const usernameInput = document.getElementById("username");
 const passwordInput = document.getElementById("password");
 const stayLoggedIn = document.getElementById("checkBox");
-const loginError = document.getElementById("loginError");
-const errorContainer = document.querySelector("#loginError");
+const loginError = document.querySelector("#loginError");
 
 loginForm.addEventListener("submit", async (e) => {
     e.preventDefault();
@@ -53,15 +52,15 @@ loginForm.addEventListener("submit", async (e) => {
     // --- Validation ---
     if (!username || username.length < 3) {
         await setTimeout(() => {loginModal.hide()}, 1000);
-        errorContainer.textContent = "Username must be at least 3 characters long.";
-        errorContainer.style.display = "block";
+        loginError.textContent = "Username must be at least 3 characters long.";
+        loginError.style.display = "block";
         return;
     }
 
     if (!password || password.length > 8 && password.length < 100) {
         await setTimeout(() => {loginModal.hide()}, 1000);
-        errorContainer.textContent = "Password must be at least 8 characters long.";
-        errorContainer.style.display = "block";
+        loginError.textContent = "Password must be at least 8 characters long.";
+        loginError.style.display = "block";
         return;
     }
     
@@ -122,7 +121,8 @@ loginForm.addEventListener("submit", async (e) => {
             loginModal._config.keyboard = true;
         } else {
             await setTimeout(() => {loginModal.hide()}, 1000);
-            loginError.textContent = data.ErrDetails || "Invalid username or password.";
+            if (data.ErrDetails.length > 0) loginError.textContent = data.ErrDetails || "Invalid username or password.";
+            else loginError.textContent = data.ErrMessage || "Invalid username or password.";
             loginError.style.display = "block";
         }
     } catch (err) {
@@ -142,7 +142,7 @@ async function sendActivationEmail() {
 
     if (data.status === "success") {
     } else {
-        alert(data.ErrMessage || "No fue posible reenviar el correo.", errorBox);
+        alert(data.ErrMessage || "No fue posible reenviar el correo.");
         console.log(data.origin);
     }
 }
@@ -156,7 +156,7 @@ async function sendRecoveryEmail() {
 
     if (data.status === "success") {
     } else {
-        alert(data.ErrMessage || "No fue posible reenviar el correo.", errorBox);
+        alert(data.ErrMessage || "No fue posible reenviar el correo.");
         console.log(data.origin);
     }
 }

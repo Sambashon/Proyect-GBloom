@@ -70,6 +70,8 @@ class GBloomEngine {
         this.map.draw(this.jgl, this.delta, this.width, this.height);
       }
 
+      DRAW = false;
+
       requestAnimationFrame(this.frame.bind(this));
     }
 
