@@ -9,6 +9,15 @@ RewriteRule ^auth/activar$ /php/scripts/auth/activar.php [L,QSA]
 # Restablecer Contraseña por medio de link de brindada por el correo
 RewriteRule ^auth/recuperar$ /auth/recuperar.html [L,QSA]
 
+# Verificar Acceso valido a una partida
+RewriteRule ^game/gameGuest/game.html$ /php/scripts/game/entrypoint.php [L,QSA]
+
+# Verificar Acceso valido a una lobby
+RewriteRule ^lobby/hostLobby/lobby.html$ /php/scripts/game/lobbyHost.php [L,QSA]
+
+# Verificar Acceso valido a una lobby
+RewriteRule ^lobby/guestLobby/lobby.html$ /php/scripts/game/lobbyGuest.php [L,QSA]
+
 # HTML Error
 ErrorDocument 400 /error/400.html
 ErrorDocument 403 /error/403.html

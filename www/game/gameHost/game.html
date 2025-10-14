@@ -18,6 +18,25 @@
     
 </head>
 <body>
+    <!-- Host Leave Modal -->
+    <div class="modal fade" id="hostModal" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+            <div class="modal-header centered-modal-header">
+                <h1 class="modal-title responsive-title text-outline" id="modalLabel">You're the host</h1>
+            </div>
+            <div class="modal-body">
+                <section class="modal-group">
+                    <h1 class="responsive-subtitle text-outline">Are you sure you want to end the game session?</h1>
+                </section>                
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="custom-button dark-red" id="backBtn">Leave</button>
+                <button type="button" class="custom-button" data-bs-dismiss="modal">Cancel</button>
+            </div>    
+            </div>
+        </div>
+    </div>
     <!--
     <a href="../../winorlose/lose/lose.html" class="fs-6">Simulate Loss</a>
     <a href="../../winorlose/win/win.html" class="fs-6">Simulate Win</a>
@@ -41,7 +60,7 @@
                 <section class="modal-group">
                     <button class="custom-button circle-button dark-red" id="SETTINGSBtn"  data-bs-toggle="modal" data-bs-target="#settingsMenu"><img src="../../Resources/Icons/settings-svgrepo-com.svg" alt="settings"></button>
                     <button class="custom-button circle-button dark-red" id="PLAYBtn" style="margin-bottom: 30px;"><img src="../../Resources/Icons/play-1003-svgrepo-com.svg" alt="play"></button>
-                    <button class="custom-button circle-button dark-red" id="LEAVEBtn"><img src="../../Resources/Icons/leave-svgrepo-com.svg" alt="leave"></button>
+                    <button class="custom-button circle-button dark-red" id="LEAVEBtn"><img src="../../Resources/Icons/leave-svgrepo-com.svg" alt="leave" data-bs-toggle="modal" data-bs-target="#hostModal"></button>
                 </section>
             </div>
             </div>

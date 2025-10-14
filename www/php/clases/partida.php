@@ -23,7 +23,6 @@ class Partida extends GBloomDB {
         );
     }
 
-    // Cambiar Aqui
     public function verificarHost(int $partidaId, string $token): array {
         $usuario = $this->getUserCredentials($token)["result"]["username"];
         
@@ -38,7 +37,7 @@ class Partida extends GBloomDB {
         $this->notFound->setFilterType(GError::inclusive);
         $this->notFound->filter($host === $usuario);
         
-        return $this->success;
+        return $this->returnSuccess(null);
     }
 
     public function getUltimaPartida(string $nombre, string $host): array {
@@ -54,6 +53,8 @@ class Partida extends GBloomDB {
     }
 
     public function crearPartida(string $nombre, string $token, int $cantidadJugadores, string $modoJuego): array {
+        $this->terminarPartidaActiva($token);
+
         $credentials = $this->getUserCredentials($token);
         $host = $credentials["result"]["username"];
         $this->validacionPartida->filter(["nombre" => $nombre, "cantidadJugadores" => $cantidadJugadores, "modoJuego" => $modoJuego]);
@@ -156,17 +157,7 @@ class Partida extends GBloomDB {
     }
 
     public function setupOrdenJugadores(string $token): array {
-        $credentials = $this->getUserCredentials($token);
-        
-        $username = $credentials["result"]["username"];
-        $solicitud = $this->pdo->prepare("select partidaId from juega where username = :username and jugando = 1;");
-        $solicitud->execute(["username" => $username]);
-        $partida = $solicitud->fetch();
-        
-        $this->notFound->setErrMessage("El usuario brindado no esta registrado en ninguna partida");
-        $this->notFound->filter($partida);
-        
-        $partidaId = $partida["partidaId"];
+        $partidaId = $this->getPartidaJugando($token)["result"];
         $isHost = $this->verificarHost($partidaId, $token);
         
         $solicitud = $this->pdo->prepare("
@@ -602,5 +593,20 @@ class Partida extends GBloomDB {
         } else {
             return $credentials;
         }
+    }
+
+    public function getPartidaJugando(string $token): array {
+        $credentials = $this->getUserCredentials($token);
+        
+        $username = $credentials["result"]["username"];
+        $solicitud = $this->pdo->prepare("select partidaId from juega where username = :username and jugando = 1;");
+        $solicitud->execute(["username" => $username]);
+        $partida = $solicitud->fetch();
+        
+        $this->notFound->setErrMessage("El usuario brindado no esta registrado en ninguna partida");
+        $this->notFound->filter($partida);
+        
+        $partidaId = $partida["partidaId"];
+        return $this->returnSuccess($partidaId);
     }
 }
