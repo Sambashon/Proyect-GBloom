@@ -3,6 +3,14 @@ let username;
 let email;
 let birthdate;
 let aboutme;
+let language;
+let gameres;
+
+language = localStorage.getItem("language") || "ENGLISH";
+gameres = localStorage.getItem("gameres") || "MEDIUM";
+
+const languageDropdown = document.querySelectorAll(".dropdown-item#language");
+const gameresDropdown = document.querySelectorAll(".dropdown-item#gameres");
 
 const footerMenu = document.querySelector(".footer-menu");
 const settingsBtn = document.getElementById("SETTINGSbtn");
@@ -14,18 +22,28 @@ const playSection = document.getElementById("PLAY");
 const profileSection = document.getElementById("PROFILE");
 
 const state = {
-    currentPanel: null,
-    volume: 100,
-    selectedGraphics: null
+    currentPanel: null
 }
 
-const volumeSlider = document.getElementById("volSlider");
-const volValue = document.getElementById("volValue");
-volumeSlider.addEventListener("input", (e) =>{
+const sfxSlider = document.getElementById("sfxSlider");
+const sfxValue = document.getElementById("sfxValue");
+sfxSlider.value = localStorage.getItem("sfx") || "100";
+sfxValue.textContent = localStorage.getItem("sfx") || "100";
+sfxSlider.addEventListener("input", (e) =>{
     const volume = e.target.value;
-    volValue.textContent = volume;
+    sfxValue.textContent = volume;
+    localStorage.setItem("sfx", volume);
 })
 
+const mscSlider = document.getElementById("mscSlider");
+const mscValue = document.getElementById("mscValue");
+mscSlider.value = localStorage.getItem("music") || "100";
+mscValue.textContent = localStorage.getItem("music") || "100";
+mscSlider.addEventListener("input", (e) =>{
+    const volume = e.target.value;
+    mscValue.textContent = volume;
+    localStorage.setItem("music", volume);
+})
 
 function closePanels(){
     [settingsSection, playSection, profileSection].forEach(section => {
@@ -53,13 +71,28 @@ profileSettingsBtn.addEventListener("click", () =>{
 })
 //-------SETTINGS SECTION
 //dropdowns
-document.querySelectorAll(".dropdown-item").forEach(item => {
-  item.addEventListener("click", () => {
+languageDropdown.forEach(item => {
     const dropdown = item.closest(".dropdown");
     const button = dropdown.querySelector(".dropdown-toggle");
-    button.innerText = item.innerText;
-    console.log("Selected:", item.innerText);
-  });
+    button.innerText = language;
+
+    item.addEventListener("click", () => {
+        button.innerText = item.innerText;
+        language = item.innerText;
+        localStorage.setItem("language", language);
+    });
+});
+
+gameresDropdown.forEach(item => {
+    const dropdown = item.closest(".dropdown");
+    const button = dropdown.querySelector(".dropdown-toggle");
+    button.innerText = gameres;
+
+    item.addEventListener("click", () => {
+        button.innerText = item.innerText;
+        gameres = item.innerText;
+        localStorage.setItem("gameres", gameres);
+    });
 });
 
 //----------------PLAY SECTION
@@ -160,7 +193,7 @@ async function requestUserData() {
         const today = new Date();
 
         document.querySelector("span#playername").textContent = username;
-        document.querySelector("h2#age").textContent = today.getFullYear() - birthdate.getFullYear();
+        document.querySelector("#age").textContent = today.getFullYear() - birthdate.getFullYear();
         document.querySelector("h2#aboutme").textContent = aboutme;
 
         profileBtn.addEventListener("click", () => togglePanel("Profile", profileSection));

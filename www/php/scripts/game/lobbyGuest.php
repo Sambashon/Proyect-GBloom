@@ -1,5 +1,5 @@
 <?php
-include "../../clases/lobby.php";
+include "includeAll.php";
 include "../filters.php";
 
 $lobby = new Lobby();
@@ -9,7 +9,8 @@ $filtroCodigoPartida = new GError(
     GError::notFound,
     GError::inclusive,
     [
-        fn() => isset($_COOKIE["golden-code"]) && !empty(trim($_COOKIE["golden-code"]))
+        fn() => (isset($_GET["codigo"]) && !empty(trim($_GET["codigo"]))) || 
+                (isset($_COOKIE["golden-code"]) && !empty(trim($_COOKIE["golden-code"])))
     ],
     "Validación Código Partida",
     true,
@@ -22,12 +23,25 @@ try {
     $filtroCodigoPartida->filter(null);
     
     $token = $_COOKIE["golden-token"];
-    $codigo = $_COOKIE["golden-code"];
     
-    $jugadores = $lobby->getLobbyUsuarios($codigo)["result"];
-    $nombre = $lobby->getLobbyNombre($codigo)["result"];
-    $host = $lobby->getLobbyHost($codigo)["result"];
-    $comienza = $lobby->partidaComienza($codigo);
+    if (isset($_GET["codigo"]) && !empty(trim($_GET["codigo"]))) {
+        $codigo = trim($_GET["codigo"]);
+        $solicitud = $lobby->verificarCodigo($codigo);
+
+        setcookie('golden-code', $codigo, [
+            'expires' => time() + 86400,
+            'path' => '/',
+            'secure' => false,
+            'httponly' => true,
+            'samesite' => 'Lax'
+        ]);
+        $host = $_SERVER['SERVER_NAME'];
+        header("Location: https://" . $host . "/lobby/guestLobby/lobby.html");
+    } else {
+        $codigo = $_COOKIE["golden-code"];
+    }
+
+    $lobbyHost = $lobby->getLobbyHost($codigo)["result"];
 
     include "../../../lobby/guestLobby/lobby.html";
 } catch (Exception $e) {

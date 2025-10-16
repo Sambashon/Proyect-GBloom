@@ -1,5 +1,5 @@
 <?php
-include "../../clases/partida.php";
+include "includeAll.php";
 include "../filters.php";
 
 $partida = new Partida();
@@ -11,7 +11,7 @@ try {
     $token = $_COOKIE["golden-token"];
     $partidaId = $partida->getPartidaJugando($token)["result"];
     
-    include "../../../game/gameGuest/game.html";
+    include "../../../game/game.html";
 } catch (Exception $e) {
     include "../../../error/403.html";
 }

@@ -1,5 +1,5 @@
 <?php
-include "../../../clases/lobby.php";
+include "../includeAll.php";
 include "../../filters.php";
 
 $lobby = new Lobby();
@@ -25,10 +25,11 @@ try {
     $codigo = $_COOKIE["golden-code"];
     
     $jugadores = $lobby->getLobbyUsuarios($codigo)["result"];
+    $cantidad = $lobby->getCantidadMaxima($codigo)["result"];
     $nombre = $lobby->getLobbyNombre($codigo)["result"];
     $host = $lobby->getLobbyHost($codigo)["result"];
     $comienza = $lobby->partidaComienza($codigo);
-    echo json_encode($lobby->returnSuccess(["codigo" => $codigo, "nombre" => $nombre, "host" => $host, "jugadores" => $jugadores, "comienza" => $comienza]));
+    echo json_encode($lobby->returnSuccess(["codigo" => $codigo, "nombre" => $nombre, "host" => $host, "jugadores" => $jugadores, "cantidadJugadores" => $cantidad, "comienza" => $comienza]));
     
 } catch (Exception $e) {
     echo $e->getMessage();

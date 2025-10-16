@@ -9,7 +9,7 @@ class Sounds {
         this.musicVolume = 0.5;
         this.effectsVolume = 0.7;
 
-        this.music.push(this.createAudio("pig","/engine/draftosaurus/music/pigstepTest.mp3", true));
+        this.music.push(this.createAudio("juiceMix","/engine/draftosaurus/music/juiceMix.mp3", true));
         this.effects.push(this.createAudio("place","/engine/draftosaurus/soundEffects/place.wav", false));
     }
 

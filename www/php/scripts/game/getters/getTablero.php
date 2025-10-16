@@ -1,5 +1,5 @@
 <?php
-include "../../../clases/draftosaurus.php";
+include "../includeAll.php";
 
 $draft = new Draftosaurus();
 $request = $_SERVER["REQUEST_METHOD"];

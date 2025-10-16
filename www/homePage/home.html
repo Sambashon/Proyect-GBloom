@@ -68,33 +68,27 @@
             </header>
             <section>
                 <!-- Volume control -->
-                <div class="row">
-                    <span class="text-outline responsive-subtitle">Volume:</span>
-                    <input type="range" min="0" max="100" step="1" value="100" class="volSlider" id="volSlider">
-                    <span class="text-outline responsive-subtitle" id="volValue">100</span>
-                </div>
-                <!-- Graphics dropdown -->
                 <div class="custom-row-space-between">
-                    <span class="text-outline responsive-subtitle">Graphics:</span>
-                    <div class="dropdown">
-                        <button class="btn btn-secondary dropdown-toggle customDropdown" type="button" id="graphicsDropdownBtn" data-bs-toggle="dropdown" aria-expanded="false">
-                            Select
-                        </button>
-                        <ul class="dropdown-menu customdropdownmenu" aria-labelledby="graphicsDropdownBtn">
-                            <li class="dropdown-item">LOW</li>
-                            <li class="dropdown-item">MEDIUM</li>
-                            <li class="dropdown-item">HIGH</li>
-                        </ul>
+                    <div class="row-custom">
+                        <span class="text-outline responsive-subtitle">Music:</span>
+                        <input type="range" min="0" max="100" step="1" value="100" class="mscSlider" id="mscSlider">
+                        <span class="text-outline responsive-subtitle" id="mscValue" style="width: 30px;">100</span>
                     </div>
                 </div>
+                <div class="row-custom">
+                    <span class="text-outline responsive-subtitle">Sound Effects:</span>
+                    <input type="range" min="0" max="100" step="1" value="100" class="sfxSlider" id="sfxSlider">
+                    <span class="text-outline responsive-subtitle" id="sfxValue" style="width: 30px;">100</span>
+                </div>
+                <!-- Graphics dropdown -->
                <div class="custom-row-space-between">
                     <span class="text-outline responsive-subtitle">Game resolution:</span>
                     <div class="dropdown">
                         <button class="btn btn-secondary dropdown-toggle customDropdown" type="button" id="gameResDropdownBtn" data-bs-toggle="dropdown" aria-expanded="false">Select</button>
                          <ul class="dropdown-menu customdropdownmenu" aria-labelledby="gameResDropdownBtn">
-                            <li class="dropdown-item">LOW</li>
-                            <li class="dropdown-item">MEDIUM</li>
-                            <li class="dropdown-item">HIGH</li>
+                            <li class="dropdown-item" id="gameres">LOW</li>
+                            <li class="dropdown-item" id="gameres">MEDIUM</li>
+                            <li class="dropdown-item" id="gameres">HIGH</li>
                         </ul>
                     </div>
                </div>
@@ -103,8 +97,8 @@
                     <div class="dropdown">
                         <button class="btn btn-secondary dropdown-toggle customDropdown" type="button" id="antiAliDropdownBtn" data-bs-toggle="dropdown" aria-expanded="false">ENGLISH</button>
                          <ul class="dropdown-menu customdropdownmenu" aria-labelledby="antiAliDropdownBtn">
-                            <li class="dropdown-item">ENGLISH</li>
-                            <li class="dropdown-item">ESPAÑOL</li>
+                            <li class="dropdown-item" id="language">ENGLISH</li>
+                            <li class="dropdown-item" id="language">ESPAÑOL</li>
                         </ul>
                     </div>
                </div>
@@ -161,9 +155,6 @@
                             <button class="nav-link active responsive-text text-outline" id="general-tab" type="button" role="tab" data-bs-toggle="tab" data-bs-target="#general-tab-pane" aria-controls="general-tab-pane" aria-selected="true">General</button>
                         </li>
                         <li class="nav-item" role="presentation">
-                            <button class="nav-link responsive-text text-outline" id="pD-tab" type="button" role="tab" data-bs-toggle="tab" data-bs-target="#pD-tab-pane" aria-controls="pD-tab-pane" aria-selected="false">Personal Data</button>
-                        </li>
-                        <li class="nav-item" role="presentation">
                             <button class="nav-link responsive-text text-outline" id="stats-tab" type="button" role="tab" data-bs-toggle="tab" data-bs-target="#stats-tab-pane" aria-controls="stats-tab-pane" aria-selected="false">Stats</button>
                         </li>
                     </ul>
@@ -172,13 +163,14 @@
                 <section class="tab-content" id="myTabContent">
                     <!-- General Content -->
                     <div class="tab-pane fade show active text-outline responsive-text" id="general-tab-pane" role="tabpanel" aria-labelledby="general-tab" tabindex="0">
-                        <h1>Age</h1>
-                        <h2 id="age"></h2>
+                        <h1>Age: <span id="age"></span></h1>
                         <h1>About Me</h1>
                         <h2 id="aboutme"></h2>
                     </div>
-                    <div class="tab-pane fade text-outline responsive-text" id="pD-tab-pane" role="tabpanel" aria-labelledby="pD-tab" tabindex="0">Personal Data stuff. Under construction</div>
-                    <div class="tab-pane fade text-outline responsive-text" id="stats-tab-pane" role="tabpanel" aria-labelledby="stats-tab" tabindex="0">Under construction</div>
+                    <div class="tab-pane fade text-outline responsive-text" id="stats-tab-pane" role="tabpanel" aria-labelledby="stats-tab" tabindex="0">
+                        <h1 id="wins">Wins: 0</h1>
+                        <h1 id="losts">Losts: 0</h1>
+                    </div>
                 </section>
             </article>
             </section>

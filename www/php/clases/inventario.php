@@ -1,6 +1,4 @@
 <?php
-include "partida.php";
-
 class Inventario extends Partida {
 
     public function __construct() {

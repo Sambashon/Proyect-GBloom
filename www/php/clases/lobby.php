@@ -1,6 +1,4 @@
 <?php
-include "partida.php";
-
 class Lobby extends GBloomDB {
 
     private Partida $partida;
@@ -153,5 +151,24 @@ class Lobby extends GBloomDB {
         $host = $this->notFound->filter($solicitud->fetch())["host"];
 
         return $this->returnSuccess($host);
+    }
+
+    public function getCantidadMaxima(string $codigo): array {
+        $this->notFound->setOrigin("Lobby->getCatidadMaxima()");
+        $this->notFound->setErrMessage("El codigo brindado no es valido");
+        $solicitud = $this->pdo->prepare("select p.cantidadJugadores from partida p join lobby l where l.codigo = :codigo and l.partidaId = p.id");
+        $solicitud->execute(["codigo" => $codigo]);
+        $cantidad = $this->notFound->filter($solicitud->fetch())["cantidadJugadores"];
+
+        return $this->returnSuccess($cantidad);
+    }
+
+    public function eliminarLobby(string $codigo): array {
+        $eliminar = $this->pdo->prepare("delete from conecta where codigo = :codigo");
+        $eliminar->execute(["codigo" => $codigo]);
+        $eliminar = $this->pdo->prepare("delete from lobby where codigo = :codigo");
+        $eliminar->execute(["codigo" => $codigo]);
+
+        return $this->returnSuccess(null);
     }
 }

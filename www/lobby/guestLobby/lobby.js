@@ -1,6 +1,7 @@
 let codigo;
 let nombre;
 let host;
+let cantidadMaxima;
 let jugadores;
 let comienza;
 
@@ -13,6 +14,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     await getLobbyInfo();
     jugadoresA = jugadores;
     document.querySelector("#gameTitle").textContent = nombre;
+    document.querySelector("#cantidadJugadores").textContent = `${jugadores.length}/${cantidadMaxima} Players`;
 
     drawPlayers(playersList, jugadoresA, jugadores);
 
@@ -21,10 +23,11 @@ document.addEventListener("DOMContentLoaded", async () => {
         await getLobbyInfo();
         if (jugadores.length != jugadoresA.length) {
             drawPlayers(playersList, jugadoresA, jugadores);
+            document.querySelector("#cantidadJugadores").textContent = `${jugadores.length}/${cantidadMaxima} Players`;
         }
 
         if (comienza) {
-            window.location.href = "../../game/gameGuest/game.html";
+            window.location.href = "/game/game.html";
         }
     }, 1000);
 });
@@ -35,7 +38,7 @@ backBtn.addEventListener("click", async () =>{
     });
 
     if (action.status == "success") {
-        window.location.href = "../../homePage/home.html"
+        window.location.href = "/homePage/home.html"
     } else {
         alert("Ocurrio un Error al tratar de salir de la sala de espera");
     }
@@ -68,11 +71,12 @@ async function getLobbyInfo() {
         const result = info.result;
         codigo = result.codigo;
         jugadores = result.jugadores;
+        cantidadMaxima = result.cantidadJugadores;
         comienza = result.comienza;
         nombre = result.nombre;
         host = result.host;
     } else {
-        alert("Ocurrio un Error al tratar de obtener los detalles de la sala de espera");
+        window.location.href = "/homePage/home.html"
     }
 }
 
@@ -89,7 +93,7 @@ function drawPlayers(list, playersA, players) {
 
         if (players[i]) {
             column.innerHTML = `<div class="profileContainer">
-            <img src="../../Resources/Icons/defautlprofilepic.png" alt="profilepicture" height="100" width="100">
+            <img src="/Resources/Icons/defautlprofilepic.png" alt="profilepicture" height="100" width="100">
             </div>
                         <p>${player.username}</p>`;
         } else {

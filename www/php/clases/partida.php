@@ -1,6 +1,4 @@
 <?php
-include "gbloomdb.php";
-
 class Partida extends GBloomDB {
 
     private GError $validacionPartida;
@@ -53,7 +51,11 @@ class Partida extends GBloomDB {
     }
 
     public function crearPartida(string $nombre, string $token, int $cantidadJugadores, string $modoJuego): array {
-        $this->terminarPartidaActiva($token);
+        try {
+            $this->terminarPartidaActiva($token);
+        } catch (Exception $e) {
+
+        }
 
         $credentials = $this->getUserCredentials($token);
         $host = $credentials["result"]["username"];
@@ -152,6 +154,7 @@ class Partida extends GBloomDB {
         $this->notFound->filter($partida);
         
         $this->pdo->prepare("update partida set horaFinal = CURTIME() where id = :id")->execute(["id" => $partida["id"]]);
+        $this->pdo->prepare("update juega set jugando = 0 where partidaId = :id")->execute(["id" => $partida["id"]]);
         
         return $this->returnSuccess(null);
     }
@@ -549,49 +552,21 @@ class Partida extends GBloomDB {
         }
     }
 
+    // Refactorizado
     public function isPartidaOver(string $token): array {
         $credentials = $this->getUserCredentials($token);
-        if ($credentials["state"] == "success") {
-            $username = $credentials["result"]["username"];
-            $solicitud = $this->pdo->prepare("select partidaId from juega where username = :username and jugando = 1;");
-            $solicitud->execute(["username" => $username]);
-            $partidaId = $solicitud->fetch();
+        $partidaId = $this->getPartidaJugando($token)["result"];
+        
+        $solicitud = $this->pdo->prepare("select horaFinal from partida where id = :id;");
+        $solicitud->execute(["id" => $partidaId]);
+        $solicitud = $solicitud->fetch();
 
-            if ($partidaId !== false) {
-                $partidaId = $partidaId["partidaId"];
+        $horaFinal = $solicitud["horaFinal"];
 
-                $solicitud = $this->pdo->prepare("select horaFinal from partida where id = :id;");
-                $solicitud->execute(["id" => $partidaId]);
-                $solicitud = $solicitud->fetch();
-
-                if ($solicitud !== false) {
-                    $horaFinal = $solicitud["horaFinal"];
-                    if ($horaFinal != "NULL") {
-                        return [
-                            "state" => "success",
-                            "result" => true
-                        ];
-                    } else {
-                        return [
-                            "state" => "success",
-                            "result" => false
-                        ];
-                    }
-                    
-                } else {
-                    return [
-                        "state" => "notFound",
-                        "ErrMessage" => "Error al buscar partida id"
-                    ];
-                }
-            } else {
-                return [
-                    "state" => "notFound",
-                    "ErrMessage" => "El usuario brindado no esta registrado en ninguna partida"
-                ];
-            }
+        if ($horaFinal != "NULL") {
+            return $this->returnSuccess(true);
         } else {
-            return $credentials;
+            return $this->returnSuccess(false);
         }
     }
 

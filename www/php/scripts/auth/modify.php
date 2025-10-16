@@ -1,5 +1,5 @@
 <?php
-include "../../clases/perfil.php";
+include "../game/includeAll.php";
 include "../filters.php";
 
 $perfil = new Perfil();

@@ -1,9 +1,10 @@
 <?php
-include "../../../clases/inventario.php";
+include "../includeAll.php";
 include "../../filters.php";
 
 $partida = new Partida();
 $inventario = new Inventario();
+$lobby = new Lobby();
 
 $filtroCodigoPartida = new GError(
     "Código Partida",
@@ -28,6 +29,7 @@ try {
     $accion = $partida->iniciarPartida($token, $codigo);
     $accion = $inventario->setupInventarios($token);
     $accion = $partida->setupOrdenJugadores($token);
+    $lobby->eliminarLobby($codigo);
     
     echo json_encode($accion);
     

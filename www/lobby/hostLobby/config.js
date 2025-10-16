@@ -36,14 +36,18 @@ editBtn.addEventListener("click", () => {
     nameInput.addEventListener("keydown", (e) =>{
         if(e.key === "Enter"){
             const name = nameInput.value;
-            partyTitle.innerText = name;
+            if (name) {
+                partyTitle.innerText = name;
+            }
             nameInput.replaceWith(partyTitle);
         }
     })
 
     nameInput.addEventListener("focusout", () =>{
         const name = nameInput.value;
-        partyTitle.innerText = name;
+        if (name) {
+            partyTitle.innerText = name;
+        }
         nameInput.replaceWith(partyTitle);
     })
 })

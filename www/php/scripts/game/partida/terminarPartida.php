@@ -1,5 +1,5 @@
 <?php
-include "../../../clases/partida.php";
+include "../includeAll.php";
 include "../../filters.php";
 
 $partida = new Partida();

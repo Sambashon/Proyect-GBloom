@@ -1,5 +1,5 @@
 <?php
-include "../../clases/perfil.php";
+include "../game/includeAll.php";
 
 $perfil = new Perfil();
 $request = $_SERVER["REQUEST_METHOD"];

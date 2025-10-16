@@ -9,10 +9,9 @@ try {
     $filtroTokenSesion->filter(null);
     
     $token = $_COOKIE["golden-token"];
-    $partidaId = $partida->getPartidaJugando($token)["result"];
-    $isHost = $partida->verificarHost($partidaId, $token);
+    $over = $partida->isPartidaOver($token)["result"];
     
-    echo json_encode($partida->returnSuccess(null));
+    echo json_encode($partida->returnSuccess($over));
 } catch (Exception $e) {
     echo $e->getMessage();
 }

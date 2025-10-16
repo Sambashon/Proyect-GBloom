@@ -100,46 +100,30 @@ logoutBtn.addEventListener("click", () =>{
     window.location.href = '../homePage/home.html';
 })
 
-function showError(input, message) {
+function showError(message) {
     const errorEl = document.querySelector(".error-message");
     errorEl.textContent = message;
 }
 
 function clearError(input) {
     const errorEl = document.querySelector(".error-message");
-    if (errorEl) errorEl.remove();
+    errorEl.textContent = "";
 }
 
 function validateProfileForm() {
     let valid = true;
 
     if (usernameInput.value.trim().length < 4 || usernameInput.value.trim().length > 32) {
-        showError(usernameInput, "Username must be between 4 and 32 characters long.");
+        showError("Username must be between 4 and 32 characters long.");
         valid = false;
-    } else {
+    } else if (valid) {
         clearError(usernameInput);
     }
-
-    /*
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(emailInput.value.trim())) {
-        showError(emailInput, "Please enter a valid email address.");
-        valid = false;
-    } else {
-        clearError(emailInput);
-    }
-    /* se mueve esto a otra parte
-    if (passwordInput.value.length < 8 || passwordInput.value.length > 100) {
-        showError(passwordInput, "Password must be between 8 and 100 characters.");
-        valid = false;
-    } else {
-        clearError(passwordInput);
-    }
-    */
+    
     if (aboutmeInput.value.trim().length > 200) {
-        showError(aboutmeInput, "Description cannot exceed 200 characters.");
+        showError("Description cannot exceed 200 characters.");
         valid = false;
-    } else {
+    } else if (valid) {
         clearError(aboutmeInput);
     }
 
@@ -150,7 +134,6 @@ save.addEventListener("submit", async (e) =>{
     e.preventDefault();
     if(!validateProfileForm()){
         const errEl = document.querySelector(".error-message");
-        errEl.textContent = "No errors";
         return;
     }
     try{

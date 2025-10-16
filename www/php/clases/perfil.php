@@ -1,7 +1,4 @@
 <?php
-include "gbloomdb.php";
-include "gbmailer.php";
-
 class Perfil extends GBloomDB {
 
     private GError $filtroRegistro;

@@ -39,6 +39,9 @@ async function setup(map, canvas) {
   }
 
   tablero = new Tablero(inventario);
+
+  document.querySelector("#loading").remove();
+  playMusic();
 }
 
 async function update(map, dt) {
@@ -105,4 +108,11 @@ async function executeScript(script, body) {
       return {success: true};
     }
 
+}
+
+function playMusic() {
+  document.addEventListener('click', function handler() {
+    radio.playSoundtrack("juiceMix");
+    document.removeEventListener('click', handler);
+  });
 }

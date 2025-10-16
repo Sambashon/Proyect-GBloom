@@ -1,5 +1,5 @@
 <?php
-include "../../../clases/inventario.php";
+include "../includeAll.php";
 include "../../filters.php";
 
 $inventario = new Inventario();

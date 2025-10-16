@@ -1,5 +1,5 @@
 <?php
-include "../../clases/lobby.php";
+include "includeAll.php";
 include "../filters.php";
 
 $lobby = new Lobby();

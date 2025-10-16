@@ -24,14 +24,7 @@ try {
     $token = $_COOKIE["golden-token"];
     $codigo = $_COOKIE["golden-code"];
     
-    $username = $lobby->getUserCredentials($token)["result"]["username"];
-    $host = $lobby->getLobbyHost($codigo)["result"];
-    $accion = $lobby->desconectaLobby($token, $codigo);
-
-    if ($host === $username) {
-        $lobby->eliminarLobby($codigo);
-    }
-
+    $comienza = $lobby->eliminarLobby($codigo);
     echo json_encode($lobby->returnSuccess(null));
     
 } catch (Exception $e) {
