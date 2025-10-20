@@ -1,53 +1,38 @@
 <?php
 include "../includeAll.php";
+include "../../filters.php";
 
-$draft = new Draftosaurus();
-$request = $_SERVER["REQUEST_METHOD"];
+$dado = new Dado();
+$tablero = new Tablero();
 
-switch ($request) {
-    case "POST":
-        if (isset($_COOKIE["golden-token"])) {
-            $token = $_COOKIE["golden-token"];
+$filtroDinosaurioParams = new GError(
+    "Parámetros Dinosaurio",
+    GError::notFound,
+    GError::all_match,
+    [
+        "dinosaurioId" => fn($data) => isset($data['dinosaurioId']),
+        "recinto" => fn($data) => isset($data['recinto'])
+    ],
+    "Validación Parámetros Colocar",
+    true,
+    "No se han encontrado los parametros necesarios para la accion solicitada"
+);
 
-            try {
-                $body = json_decode(file_get_contents('php://input'), true);
-            } catch (Exception $e) {
-                echo json_encode(["state" => "forbidden", "ErrMessage" => "El formato de entrada no es valido"]);
-                break;
-            }
-                
-            if (isset($body["dinosaurioId"]) && isset($body["recinto"])) {
-                $dinosaurioId = $body["dinosaurioId"];
-                $recinto = $body["recinto"];
-                $solicitud = $draft->getDado($token);
-                if ($solicitud["state"] == "success") {
-                    if ($solicitud["result"] == true) {
-                        $dadoId = $solicitud["result"];
-
-                        $accion = $draft->colocarDinosaurio($token, $dinosaurioId,  $recinto, $dadoId);
-                        echo json_encode($accion);
-                    } else {
-                        echo json_encode(["state" => "notFound", "ErrMessage" => "No se a tirado el dado todavia"]);
-                    }
-                    
-                } else {
-                    echo json_encode(["state" => "notFound", "ErrMessage" => "No se a podido obtener el dado de la partida"]);
-                }
-                
-            } else {
-                echo json_encode(["state" => "notFound", "ErrMessage" => "No se han encontrado los parametros necesarios para la accion solicitada"]);
-            }
-
-            
-
-        } else {
-            echo json_encode(["state" => "notFound", "ErrMessage" => "El token de sesion requerido no se encuentra registrado"]);
-            break;
-        }
-        break;
-    default:
-        echo json_encode(["state" => "forbidden", "ErrMessage" => "El metodo utilizado para la solicitud es invalida. Pofavor use GET"]);
-        break;
+try {
+    $filtroMetodoPost->filter($_SERVER["REQUEST_METHOD"]);
+    $filtroTokenSesion->filter(null);
+    $filtroBodyJSON->filter(file_get_contents('php://input'));
+    
+    $token = $_COOKIE["golden-token"];
+    $body = json_decode(file_get_contents('php://input'), true);
+    
+    $filtroDinosaurioParams->filter($body);
+    
+    $dadoId = $dado->getDado($token)["result"];
+    $accion = $tablero->colocarDinosaurio($token, $body["dinosaurioId"], $body["recinto"], $dadoId);
+    
+    echo json_encode($tablero->returnSuccess(null));
+} catch (Exception $e) {
+    echo $e->getMessage();
 }
-
 ?>

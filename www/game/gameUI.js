@@ -9,7 +9,7 @@ const languageDropdown = document.querySelectorAll(".dropdown-item#language");
 const gameresDropdown = document.querySelectorAll(".dropdown-item#gameres");
 const leaveBtn = document.querySelector("#LEAVEBtn");
 
-setInterval(partidaOver, 1000);
+setInterval(partidaOver, 2000);
 
 document.addEventListener("DOMContentLoaded", async () => {
   await getHost();

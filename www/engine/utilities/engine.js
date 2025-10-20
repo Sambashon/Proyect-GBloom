@@ -65,13 +65,14 @@ class GBloomEngine {
       this.delta = (thisFrameTime - this.lastFrameTime) / 1000;
       this.lastFrameTime = thisFrameTime;
 
+      //DRAW = false;
+      update(this.map, this.delta);
+      //DRAW = false;
+
       if (DRAW) {
-        update(this.map, this.delta);
         this.map.draw(this.jgl, this.delta, this.width, this.height);
-      }
-
-      DRAW = false;
-
+      }  
+      
       requestAnimationFrame(this.frame.bind(this));
     }
 
@@ -104,4 +105,28 @@ function init() {
   window.addEventListener('beforeunload', function() {
     DRAW = false;
   });
+}
+
+async function executeScript(script, body) {
+  let action;
+  if (body) {
+    action = await fetch("/php/scripts/game/" + script, {
+      method: "POST",
+      body: JSON.stringify(body)
+    }).then(function (response) {
+      return response.json();
+    });
+  } else {
+    action = await fetch("/php/scripts/game/" + script).then(function (response) {
+      return response.json();
+    });
+  }
+
+    if (action.result) {
+      return {success: true, result: action.result.result};
+    } else if (action.ErrMessage) {
+      return {success: false, ErrMessage: action.ErrMessage}
+    } else {
+      return {success: true};
+    }
 }

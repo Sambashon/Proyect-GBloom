@@ -1,24 +1,19 @@
 <?php
 include "../includeAll.php";
+include "../../filters.php";
 
-$draft = new Draftosaurus();
-$request = $_SERVER["REQUEST_METHOD"];
+$dado = new Dado();
 
-switch ($request) {
-    case "GET":
-        if (isset($_COOKIE["golden-token"])) {
-            $token = $_COOKIE["golden-token"];
-            $accion = $draft->getDado($token);
-
-            echo json_encode($accion);
-        } else {
-            echo json_encode(["state" => "notFound", "ErrMessage" => "El token de sesion requerido no se encuentra registrado"]);
-            break;
-        }
-        break;
-    default:
-        echo json_encode(["state" => "forbidden", "ErrMessage" => "El metodo utilizado para la solicitud es invalida. Pofavor use GET"]);
-        break;
+try {
+    $filtroMetodoGet->filter($_SERVER["REQUEST_METHOD"]);
+    $filtroTokenSesion->filter(true);
+    
+    $token = $_COOKIE["golden-token"];
+    $accion = $dado->getDado($token);
+    
+    echo json_encode($dado->returnSuccess($accion));
+    
+} catch (Exception $e) {
+    echo $e->getMessage();
 }
-
 ?>

@@ -12,21 +12,14 @@ let inventario = new Inventario();
 let state;
 let recinto;
 
+const dadoImg = document.querySelector(".DICE-CONTAINER>section>img");
+
 async function setup(map, canvas) {
   dino = ENGINE.spawnDino("rojo", "");
   dino.position = [0, -100, 0];
   dino.rotation[1] = Matrix3D.convertToRad(-90);
 
   //await empezarTurno();
-
-  /* El overlay es un plano que tiene una textura con areas transparentes (png). El motor 3d implementado todavía
-  no maneja este tipo de objetos de forma particular a otros (como sería apropiado),
-  es por eso que para evitar que el renderizado de los dinosaurios lleve sopresas, siempre hay que mantener estos 
-  objetos últimos en el orden de la fila de dibujado. */
-
-  let overlayModel = map.getModelById("overlay");
-  overlay = ENGINE.jgl.newObject({id: "overlay", model: overlayModel.model, position: [0, 10, 3], size: [2, 2, 2]});
-  map.push(overlay);
 
   // Set Up Tablero e Inventario
   let solicitud = await executeScript("getters/getInventario.php");
@@ -38,7 +31,31 @@ async function setup(map, canvas) {
     alert(solicitud.ErrMessage);
   }
 
+  solicitud = await executeScript("getters/getDado.php");
+  if (solicitud.success) {
+    dado = solicitud.result;
+    dadoImg.src = `/Resources/dado/${dado}.svg`;
+  }
+
   tablero = new Tablero(inventario);
+
+  solicitud = await executeScript("getters/getTablero.php");
+
+  if (solicitud.result) {
+    tablero.importarTablero(solicitud.result);
+  } else if (!solicitud.success) {
+    alert(solicitud.ErrMessage);
+  }
+
+  
+  /* El overlay es un plano que tiene una textura con areas transparentes (png). El motor 3d implementado todavía
+  no maneja este tipo de objetos de forma particular a otros (como sería apropiado),
+  es por eso que para evitar que el renderizado de los dinosaurios lleve sopresas, siempre hay que mantener estos 
+  objetos últimos en el orden de la fila de dibujado. */
+
+  let overlayModel = map.getModelById("overlay");
+  overlay = ENGINE.jgl.newObject({id: "overlay", model: overlayModel.model, position: [0, 10, 3], size: [2, 2, 2]});
+  map.push(overlay);
 
   document.querySelector("#loading").remove();
   playMusic();
@@ -54,61 +71,30 @@ async function update(map, dt) {
   recinto = tablero.fijarDinosaurioRecinto(dino);
   if (state === "colocado") {  
     if (recinto) {
-      if (tablero.agregarDinosaurio(dino, recinto)) {
-        //DRAW = false;
-        //action = await executeScript("partida/colocarDinosaurio.php", {dinosaurioId: dino.id, recinto: recinto});
-        //if (!action.success) {
-        //  alert(action.ErrMessage);
-        //}
-
-        //action = await executeScript("partida/colocarDinosaurioNulls.php", {dinosaurioId: dino.id, recinto: recinto});
-        //if (!action.success) {
-        //  alert(action.ErrMessage);
-        //}
+      if (await tablero.agregarDinosaurio(dino, recinto)) {
+        //DRAW = true;
         dino = ENGINE.spawnDino("rojo", "rojo");
         ENGINE.moveOverlayToLast(overlay);
         inventario.quitarDinosaurio(utlimoSlot);
         inventario.actualizarSlots(listener.slots);
         radio.playEffect("place");
+        listener.mouse.onDinosaurio = false;
         dino.position = [0, -100, 0];
         dino.rotation[1] = Matrix3D.convertToRad(-90);
         //action = await executeScript("partida/terminarTurno.php", true);
         //DRAW = false;
       } else {
+        //DRAW = true;
         dino.position = [0, -100, 0];
       }
     } else {
+      //DRAW = true;
       dino.position = [0, -100, 0];
     }
   }
 }
 
 init();
-
-async function executeScript(script, body) {
-  let action;
-  if (body) {
-    action = await fetch("/php/scripts/game/" + script, {
-      method: "POST",
-      body: body
-    }).then(function (response) {
-      return response.json();
-    });
-  } else {
-    action = await fetch("/php/scripts/game/" + script).then(function (response) {
-      return response.json();
-    });
-  }
-
-    if (action.result) {
-      return {success: true, result: action.result.result};
-    } else if (action.ErrMessage) {
-      return {success: false, ErrMessage: action.ErrMessage}
-    } else {
-      return {success: true};
-    }
-
-}
 
 function playMusic() {
   document.addEventListener('click', function handler() {

@@ -19,6 +19,7 @@ class Partida extends GBloomDB {
             true,
             "Datos de partida inválidos"
         );
+
     }
 
     public function verificarHost(int $partidaId, string $token): array {
@@ -183,376 +184,174 @@ class Partida extends GBloomDB {
         return $this->returnSuccess(null);
     }
 
-    // Cambiar desde aqui
     public function isTurnoTerminado(string $token): array {
-        $credentials = $this->getUserCredentials($token);
-        if ($credentials["state"] == "success") {
-            $username = $credentials["result"]["username"];
-            $solicitud = $this->pdo->prepare("select partidaId from juega where username = :username and jugando = 1;");
-            $solicitud->execute(["username" => $username]);
-            $solicitud = $solicitud->fetch();
-
-            if ($solicitud !== false) {
-                $partidaId = $solicitud["partidaId"];
-                $solicitud = $this->pdo->prepare("select estado from juega where partidaId = :partidaId;");
-                $solicitud->execute(["partidaId" => $partidaId]);
-                $solicitud = $solicitud->fetchAll();
-
-                if (!empty($solicitud)) {
-                    foreach ($solicitud as $usuario => $estado) {
-                        if ($estado == "jugandoTurno") {
-                            return [
-                                "state" => "success",
-                                "result" => false
-                            ];
-                        }
-                    }
-
-                    return [
-                        "state" => "success",
-                        "result" => true
-                    ];
-                } else {
-                    return [
-                        "state" => "notFound",
-                        "ErrMessage" => "No se han encontrado jugadores dentro de la partida"
-                    ];
-                }
-
-                if ($turnoActual == $numJugador) { 
-                    return [
-                        "state" => "success"
-                    ];
-                } else {
-                    return [
-                        "state" => "forbidden",
-                        "ErrMessage" => "El jugador brindado no le toca turno para tirar el dado"
-                    ];
-                }
-            } else {
-                return [
-                    "state" => "notFound",
-                    "ErrMessage" => "El usuario brindado no esta registrado en ninguna partida"
-                ];
+        $partidaId = $this->getPartidaJugando($token)["result"];
+        
+        $solicitud = $this->pdo->prepare("select estado from juega where partidaId = :partidaId;");
+        $solicitud->execute(["partidaId" => $partidaId]);
+        
+        $this->notFound->setOrigin("Partida->isTurnoTerminado()");
+        $this->notFound->setErrMessage("No se han encontrado jugadores dentro de la partida");
+        $estados = $this->notFound->filter($solicitud->fetchAll());
+        
+        foreach ($estados as $estado) {
+            if ($estado["estado"] == "jugandoTurno") {
+                return $this->returnSuccess(false);
             }
-        } else {
-            return $credentials;
         }
+        
+        return $this->returnSuccess(true);
     }
 
     public function pasarTurno(string $token): array {
-        $credentials = $this->getUserCredentials($token);
-        if ($credentials["state"] == "success") {
-            $username = $credentials["result"]["username"];
-            $solicitud = $this->pdo->prepare("select partidaId from juega where username = :username and jugando = 1;");
-            $solicitud->execute(["username" => $username]);
-            $partidaId = $solicitud->fetch();
-
-            if ($partidaId !== false) {
-                $partidaId = $partidaId["partidaId"];
-                $isHost = $this->verificarHost($partidaId, $token);
-
-                if ($isHost["state"] == "success") {
-                    $solicitud = $this->pdo->prepare("select turnoActual from partida where partidaId = :partidaId;");
-                    $solicitud->execute(["partidaId" => $partidaId]);
-                    $solicitud = $solicitud->fetch();
-
-                    if ($solicitud !== false) {
-                        $turnoActual = intval($solicitud["turnoActual"]);
-
-                        if ($turnoActual < 6) {
-                            $turnoActual++;
-                        } else {
-                            $turnoActual = 1;
-                        }
-
-                        $actualizar = $this->pdo->prepare("update partida set turnoActual = :turnoActual where id = :id");
-                        $actualizar->execute(["turnoActual" => $turnoActual, "id" => $partidaId]);
-
-                        return [
-                            "state" => "success"
-                        ];
-                    } else {
-                        return [
-                            "state" => "notFound",
-                            "ErrMessage" => "No hay usuarios conectados a la partida indexada"
-                        ];
-                    }
-                } else {
-                    return $isHost;
-                }
-            } else {
-                return [
-                    "state" => "notFound",
-                    "ErrMessage" => "El usuario brindado no esta registrado en ninguna partida"
-                ];
-            }
-        } else {
-            return $credentials;
-        }
+        $partidaId = $this->getPartidaJugando($token)["result"];
+        $this->verificarHost($partidaId, $token);
+        
+        $solicitud = $this->pdo->prepare("select turnoActual from partida where partidaId = :partidaId;");
+        $solicitud->execute(["partidaId" => $partidaId]);
+        
+        $this->notFound->setOrigin("Partida->pasarTurno()");
+        $this->notFound->setErrMessage("No hay usuarios conectados a la partida indexada");
+        $partida = $this->notFound->filter($solicitud->fetch());
+        
+        $turnoActual = intval($partida["turnoActual"]);
+        $nuevoTurno = $turnoActual < 6 ? $turnoActual + 1 : 1;
+        
+        $actualizar = $this->pdo->prepare("update partida set turnoActual = :turnoActual where partidaId = :partidaId");
+        $actualizar->execute(["turnoActual" => $nuevoTurno, "partidaId" => $partidaId]);
+        
+        return $this->returnSuccess(null);
     }
 
     public function pasarFase(string $token): array {
-        $credentials = $this->getUserCredentials($token);
-        if ($credentials["state"] == "success") {
-            $username = $credentials["result"]["username"];
-            $solicitud = $this->pdo->prepare("select partidaId from juega where username = :username and jugando = 1;");
-            $solicitud->execute(["username" => $username]);
-            $partidaId = $solicitud->fetch();
-
-            if ($partidaId !== false) {
-                $partidaId = $partidaId["partidaId"];
-                $isHost = $this->verificarHost($partidaId, $token);
-
-                if ($isHost["state"] == "success") {
-                    $solicitud = $this->pdo->prepare("select faseActual from partida where partidaId = :partidaId;");
-                    $solicitud->execute(["partidaId" => $partidaId]);
-                    $solicitud = $solicitud->fetch();
-
-                    if ($solicitud !== false) {
-                        $faseActual = intval($solicitud["faseActual"]);
-
-                        if ($faseActual < 2) {
-                            $faseActual++;
-                        } else {
-                            return [
-                                "state" => "forbidden",
-                                "ErrMessage" => "Ya termino la fase 2, ya no se puede pasar de fase nuevamente, la partida termino"
-                            ];
-                        }
-
-                        $actualizar = $this->pdo->prepare("update partida set turnoActual = :turnoActual where id = :id");
-                        $actualizar->execute(["turnoActual" => $faseActual, "id" => $partidaId]);
-
-                        return [
-                            "state" => "success"
-                        ];
-                    } else {
-                        return [
-                            "state" => "notFound",
-                            "ErrMessage" => "No hay usuarios conectados a la partida indexada"
-                        ];
-                    }
-                } else {
-                    return $isHost;
-                }
-            } else {
-                return [
-                    "state" => "notFound",
-                    "ErrMessage" => "El usuario brindado no esta registrado en ninguna partida"
-                ];
-            }
-        } else {
-            return $credentials;
+        $partidaId = $this->getPartidaJugando($token)["result"];
+        $this->verificarHost($partidaId, $token);
+        
+        $solicitud = $this->pdo->prepare("select faseActual from partida where partidaId = :partidaId;");
+        $solicitud->execute(["partidaId" => $partidaId]);
+        
+        $this->notFound->setOrigin("Partida->pasarFase()");
+        $this->notFound->setErrMessage("No hay usuarios conectados a la partida indexada");
+        $partida = $this->notFound->filter($solicitud->fetch());
+        $faseActual = intval($partida["faseActual"]);
+        
+        if ($faseActual >= 2) {
+            // Creeme que hacer esto de esta manera es mas simple que un filtro
+            throw new Exception(json_encode([
+                "status" => GError::forbidden,
+                "ErrMessage" => "Ya termino la fase 2, ya no se puede pasar de fase nuevamente, la partida termino"
+            ]));
         }
+        
+        $nuevaFase = $faseActual + 1;
+        
+        $actualizar = $this->pdo->prepare("update partida set faseActual = :faseActual where partidaId = :partidaId");
+        $actualizar->execute(["faseActual" => $nuevaFase, "partidaId" => $partidaId]);
+        
+        return $this->returnSuccess(null);
     }
 
-    public function contarPuntosJugadores(string $token): array {
-        $credentials = $this->getUserCredentials($token);
-        if ($credentials["state"] == "success") {
-            $username = $credentials["result"]["username"];
-            $solicitud = $this->pdo->prepare("select partidaId from juega where username = :username and jugando = 1;");
-            $solicitud->execute(["username" => $username]);
-            $partidaId = $solicitud->fetch();
-
-            if ($partidaId !== false) {
-                $partidaId = $partidaId["partidaId"];
-                $isHost = $this->verificarHost($partidaId, $token);
-
-                if ($isHost["state"] == "success") {
-                    $solicitud = $this->pdo->prepare("select username from juega where partidaId = :partidaId;");
-                    $solicitud->execute(["partidaId" => $partidaId]);
-                    $usuarios = $solicitud->fetchAll();
-
-                    if (!empty($usuarios)) {
-                        $tableros = [];
-                        for ($i = 0; $i < count($usuarios); $i++) {
-                            $solicitud = $this->pdo->prepare("select t.* from tablero t join juega j on t.username = j.username where j.partidaId = :partidaId and j.numJugador = :numJugador;");
-                            $solicitud->execute(["partidaId" => $partidaId, "numJugador" => $i + 1]);
-                            $solicitud = $solicitud->fetchAll();
-
-                            if (!empty($solicitud)) {
-                                $tableros[] = $solicitud;
-                            } else {
-                                return [
-                                    "state" => "notFound",
-                                    "ErrMessage" => "No se pudo obtener el inventario solicitado"
-                                ];
-                            }
-                        }
-
-                        $tablerosContados = [];
-                        foreach ($tableros as $tablero) {
-                            $tablerosContados[] = $this->contarPuntosTablero($tablero);
-                        }
-
-                        foreach ($tablerosContados as $tableroContado) {
-                            foreach ($tableros as $tablero) {
-                                if ($this->contarDinosauriosTablero($tablero, $tableroContado["rey"]) > $tableroContado["reyCounter"]) {
-                                    $tableroContado["puntos"] -= 7;
-                                }
-                            }
-                        }
-
-                        foreach ($tablerosContados as $tableroContado) {
-                            $actualizar = $this->pdo->prepare("update juega set puntos = :puntos where username = :username and partidaId = :partidaId;");
-                            $actualizar->execute(["puntos" => $tableroContado["puntos"], "username" => $tableroContado["username"], "partidaId" => $partidaId]);
-                        }
-
-                        return [
-                            "state" => "success"
-                        ];
-                    } else {
-                        return [
-                            "state" => "notFound",
-                            "ErrMessage" => "No hay usuarios conectados a la partida indexada"
-                        ];
-                    }
-                } else {
-                    return $isHost;
-                }
-            } else {
-                return [
-                    "state" => "notFound",
-                    "ErrMessage" => "El usuario brindado no esta registrado en ninguna partida"
-                ];
-            }
-        } else {
-            return $credentials;
+    public function contarPuntosJugadores(string $token, Tablero $tablero): array {
+        $partidaId = $this->getPartidaJugando($token)["result"];
+        $this->verificarHost($partidaId, $token);
+        
+        $solicitud = $this->pdo->prepare("select username from juega where partidaId = :partidaId;");
+        $solicitud->execute(["partidaId" => $partidaId]);
+        
+        $this->notFound->setOrigin("Partida->contarPuntosJugadores()");
+        $this->notFound->setErrMessage("No hay usuarios conectados a la partida indexada");
+        $usuarios = $this->notFound->filter($solicitud->fetchAll());
+        
+        $tablerosContados = [];
+        
+        foreach ($usuarios as $index => $usuario) {
+            $numJugador = $index + 1;
+            $solicitud = $this->pdo->prepare("select t.* from tablero t join juega j on t.username = j.username where j.partidaId = :partidaId and j.numJugador = :numJugador;");
+            $solicitud->execute(["partidaId" => $partidaId, "numJugador" => $numJugador]);
+            
+            $this->notFound->setErrMessage("No se pudo obtener el inventario solicitado");
+            $tablero = $this->notFound->filter($solicitud->fetchAll());
+            
+            $tablerosContados[] = $tablero->contarPuntosTablero($tablero);
         }
+        
+        foreach ($tablerosContados as $tableroContado) {
+            foreach ($tablerosContados as $otroTablero) {
+                if ($tablero->contarDinosauriosTablero($otroTablero["tablero"], $tableroContado["rey"]) > $tableroContado["reyCounter"]) {
+                    $tableroContado["puntos"] -= 7;
+                }
+            }
+            
+            $actualizar = $this->pdo->prepare("update juega set puntos = :puntos where username = :username and partidaId = :partidaId;");
+            $actualizar->execute([
+                "puntos" => $tableroContado["puntos"], 
+                "username" => $tableroContado["username"], 
+                "partidaId" => $partidaId
+            ]);
+        }
+        
+        return $this->returnSuccess(null);
     }
 
     public function empezarTurno(string $token): array {
         $credentials = $this->getUserCredentials($token);
-        if ($credentials["state"] == "success") {
-            $username = $credentials["result"]["username"];
-            $solicitud = $this->pdo->prepare("select partidaId from juega where username = :username and jugando = 1;");
-            $solicitud->execute(["username" => $username]);
-            $partidaId = $solicitud->fetch();
+        $username = $credentials["result"]["username"];
 
-            if ($partidaId !== false) {
-                $partidaId = $partidaId["partidaId"];
-
-                $actualizar = $this->pdo->prepare("update juega set estado = :estado where username = :username and partidaId = :partidaId;");
-                $actualizar->execute(["estado" => "jugandoTurno", "partidaId" => $partidaId, "username" => $username]);
-
-                return [
-                    "state" => "success"
-                ];
-            } else {
-                return [
-                    "state" => "notFound",
-                    "ErrMessage" => "El usuario brindado no esta registrado en ninguna partida"
-                ];
-            }
-        } else {
-            return $credentials;
-        }
+        $partidaId = $this->getPartidaJugando($token)["result"];
+        $this->verificarHost($partidaId, $token);
+        
+        $actualizar = $this->pdo->prepare("update juega set estado = :estado where username = :username and partidaId = :partidaId;");
+        $actualizar->execute([
+            "estado" => "jugandoTurno", 
+            "partidaId" => $partidaId, 
+            "username" => $username
+        ]);
+        
+        return $this->returnSuccess(null);
     }
 
     public function terminarTurno(string $token): array {
         $credentials = $this->getUserCredentials($token);
-        if ($credentials["state"] == "success") {
-            $username = $credentials["result"]["username"];
-            $solicitud = $this->pdo->prepare("select partidaId from juega where username = :username and jugando = 1;");
-            $solicitud->execute(["username" => $username]);
-            $partidaId = $solicitud->fetch();
-
-            if ($partidaId !== false) {
-                $partidaId = $partidaId["partidaId"];
-
-                $actualizar = $this->pdo->prepare("update juega set estado = :estado where username = :username and partidaId = :partidaId;");
-                $actualizar->execute(["estado" => "turnoTerminado", "partidaId" => $partidaId, "username" => $username]);
-
-                return [
-                    "state" => "success"
-                ];
-            } else {
-                return [
-                    "state" => "notFound",
-                    "ErrMessage" => "El usuario brindado no esta registrado en ninguna partida"
-                ];
-            }
-        } else {
-            return $credentials;
-        }
+        $username = $credentials["result"]["username"];
+        
+        $partidaId = $this->getPartidaJugando($token)["result"];
+        $this->verificarHost($partidaId, $token);
+        
+        $actualizar = $this->pdo->prepare("update juega set estado = :estado where username = :username and partidaId = :partidaId;");
+        $actualizar->execute([
+            "estado" => "turnoTerminado", 
+            "partidaId" => $partidaId, 
+            "username" => $username
+        ]);
+        
+        return $this->returnSuccess(null);
     }
 
     public function getTurnoActual(string $token): array {
-        $credentials = $this->getUserCredentials($token);
-        if ($credentials["state"] == "success") {
-            $username = $credentials["result"]["username"];
-            $solicitud = $this->pdo->prepare("select partidaId from juega where username = :username and jugando = 1;");
-            $solicitud->execute(["username" => $username]);
-            $partidaId = $solicitud->fetch();
-
-            if ($partidaId !== false) {
-                $partidaId = $partidaId["partidaId"];
-
-                $solicitud = $this->pdo->prepare("select turnoActual from partida where id = :id;");
-                $solicitud->execute(["id" => $partidaId]);
-                $solicitud = $solicitud->fetch();
-
-                if ($solicitud !== false) {
-                    return [
-                        "state" => "success",
-                        "result" => $solicitud["turnoActual"]
-                    ];
-                } else {
-                    return [
-                        "state" => "notFound",
-                        "ErrMessage" => "Error al buscar partida id"
-                    ];
-                }
-            } else {
-                return [
-                    "state" => "notFound",
-                    "ErrMessage" => "El usuario brindado no esta registrado en ninguna partida"
-                ];
-            }
-        } else {
-            return $credentials;
-        }
+        $partidaId = $this->getPartidaJugando($token)["result"];
+        $solicitud = $this->pdo->prepare("select turnoActual from partida where partidaId = :partidaId;");
+        $solicitud->execute(["partidaId" => $partidaId]);
+        
+        $this->notFound->setOrigin("Partida->getTurnoActual()");
+        $this->notFound->setErrMessage("Error al buscar partida id");
+        $partida = $this->notFound->filter($solicitud->fetch());
+        
+        return $this->returnSuccess($partida["turnoActual"]);
     }
 
     public function getFaseActual(string $token): array {
-        $credentials = $this->getUserCredentials($token);
-        if ($credentials["state"] == "success") {
-            $username = $credentials["result"]["username"];
-            $solicitud = $this->pdo->prepare("select partidaId from juega where username = :username and jugando = 1;");
-            $solicitud->execute(["username" => $username]);
-            $partidaId = $solicitud->fetch();
-
-            if ($partidaId !== false) {
-                $partidaId = $partidaId["partidaId"];
-
-                $solicitud = $this->pdo->prepare("select faseActual from partida where id = :id;");
-                $solicitud->execute(["id" => $partidaId]);
-                $solicitud = $solicitud->fetch();
-
-                if ($solicitud !== false) {
-                    return [
-                        "state" => "success",
-                        "result" => $solicitud["faseActual"]
-                    ];
-                } else {
-                    return [
-                        "state" => "notFound",
-                        "ErrMessage" => "Error al buscar partida id"
-                    ];
-                }
-            } else {
-                return [
-                    "state" => "notFound",
-                    "ErrMessage" => "El usuario brindado no esta registrado en ninguna partida"
-                ];
-            }
-        } else {
-            return $credentials;
-        }
+        $partidaId = $this->getPartidaJugando($token)["result"];
+        $this->notFound->setOrigin("Partida->getFaseActual");
+        
+        $solicitud = $this->pdo->prepare("select faseActual from partida where partidaId = :partidaId;");
+        $solicitud->execute(["partidaId" => $partidaId]);
+        
+        $this->notFound->setErrMessage("Error al buscar partida id");
+        $partida = $this->notFound->filter($solicitud->fetch());
+        
+        return $this->returnSuccess($partida["faseActual"]);
     }
 
-    // Refactorizado
     public function isPartidaOver(string $token): array {
         $credentials = $this->getUserCredentials($token);
         $partidaId = $this->getPartidaJugando($token)["result"];
@@ -563,7 +362,7 @@ class Partida extends GBloomDB {
 
         $horaFinal = $solicitud["horaFinal"];
 
-        if ($horaFinal != "NULL") {
+        if ($horaFinal !== NULL) {
             return $this->returnSuccess(true);
         } else {
             return $this->returnSuccess(false);

@@ -5,6 +5,7 @@ include "../../filters.php";
 $partida = new Partida();
 $inventario = new Inventario();
 $lobby = new Lobby();
+$dado = new Dado();
 
 $filtroCodigoPartida = new GError(
     "Código Partida",
@@ -29,6 +30,7 @@ try {
     $accion = $partida->iniciarPartida($token, $codigo);
     $accion = $inventario->setupInventarios($token);
     $accion = $partida->setupOrdenJugadores($token);
+    $accion = $dado->tirarDado($token);
     $lobby->eliminarLobby($codigo);
     
     echo json_encode($accion);

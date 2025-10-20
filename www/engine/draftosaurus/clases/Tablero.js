@@ -37,32 +37,33 @@ class Tablero {
     importarTablero(tablero) {
         for (let i = 0; i < tablero.length; i++) {
             const recinto = tablero[i];
-            const dinosaurio = ENGINE.spawnDino(recinto.dinosaurioId);
-            dinosaurio.rotation[1] = Matrix3D.convertToRad(-90);
-            this.colocarDinosaurioRecinto(dinosaurio, recinto.recinto);
-            console.log(dinosaurio);
-            switch (recinto.recinto) {
-                case "soledad":
-                    this.soledad.dinosaurios.push(dinosaurio);
-                    break;
-                case "romance":
-                    this.romance.dinosaurios.push(dinosaurio);
-                    break;
-                case "igualdad":
-                    this.igualdad.dinosaurios.push(dinosaurio);
-                    break;
-                case "desigualdad":
-                    this.desigualdad.dinosaurios.push(dinosaurio);
-                    break;
-                case "monarquia":
-                    this.monarquia.dinosaurios.push(dinosaurio);
-                    break;
-                case "tres":
-                    this.tres.dinosaurios.push(dinosaurio);
-                    break;
-                case "rio":
-                    this.rio.dinosaurios.push(dinosaurio);
-                    break;
+            for (let j = 0; j < recinto.cantidad; j++) {
+                const dinosaurio = ENGINE.spawnDino(recinto.dinosaurioId);
+                dinosaurio.rotation[1] = Matrix3D.convertToRad(-90);
+                this.colocarDinosaurioRecinto(dinosaurio, recinto.recinto);
+                switch (recinto.recinto) {
+                    case "soledad":
+                        this.soledad.dinosaurios.push(dinosaurio);
+                        break;
+                    case "romance":
+                        this.romance.dinosaurios.push(dinosaurio);
+                        break;
+                    case "igualdad":
+                        this.igualdad.dinosaurios.push(dinosaurio);
+                        break;
+                    case "desigualdad":
+                        this.desigualdad.dinosaurios.push(dinosaurio);
+                        break;
+                    case "monarquia":
+                        this.monarquia.dinosaurios.push(dinosaurio);
+                        break;
+                    case "tres":
+                        this.tres.dinosaurios.push(dinosaurio);
+                        break;
+                    case "rio":
+                        this.rio.dinosaurios.push(dinosaurio);
+                        break;
+                }
             }
         }
     }
@@ -197,93 +198,99 @@ class Tablero {
         }
     }
 
-    agregarDinosaurio(dinosaurio, recinto) {
+    async agregarDinosaurio(dinosaurio, recinto) {
         if (this.tablero.getDinosaurioById(dinosaurio.id) <= 0) return false;
 
-        switch (recinto) {
-            case "igualdad":
-                if (this.igualdad.dinosaurios.length < this.igualdad.cupos) {
-                    if (this.igualdad.dinosaurios.length > 0) {
-                        if (this.igualdad.dinosaurios[0].id == dinosaurio.id) {
+        let action = await executeScript("partida/colocarDinosaurio.php", {dinosaurioId: dino.id, recinto: recinto});
+        if (action.success) {
+            switch (recinto) {
+                case "igualdad":
+                    if (this.igualdad.dinosaurios.length < this.igualdad.cupos) {
+                        if (this.igualdad.dinosaurios.length > 0) {
+                            if (this.igualdad.dinosaurios[0].id == dinosaurio.id) {
+                                this.igualdad.dinosaurios.push(dinosaurio);
+                                return true;
+                            }
+                            else {
+                                alert("No puede colocar Dinosaurios en este recinto");
+                                return false;
+                            }
+                        } else {
                             this.igualdad.dinosaurios.push(dinosaurio);
                             return true;
                         }
-                        else {
-                            alert("No puede colocar Dinosaurios en este recinto");
-                            return false;
-                        }
                     } else {
-                        this.igualdad.dinosaurios.push(dinosaurio);
-                        return true;
+                        alert("No puede colocar Dinosaurios en este recinto");
+                        return false;
                     }
-                } else {
-                    alert("No puede colocar Dinosaurios en este recinto");
-                    return false;
-                }
-            
-            case "desigualdad":
-                if (this.desigualdad.dinosaurios.length < this.desigualdad.cupos) {
-                    for (let i = 0; i < this.desigualdad.dinosaurios.length; i++) {
-                        const dinosaurioRecinto = this.desigualdad.dinosaurios[i];
-                        if (dinosaurioRecinto.id == dinosaurio.id) {
-                            alert("No puede colocar Dinosaurios en este recinto");
-                            return false;
+                
+                case "desigualdad":
+                    if (this.desigualdad.dinosaurios.length < this.desigualdad.cupos) {
+                        for (let i = 0; i < this.desigualdad.dinosaurios.length; i++) {
+                            const dinosaurioRecinto = this.desigualdad.dinosaurios[i];
+                            if (dinosaurioRecinto.id == dinosaurio.id) {
+                                alert("No puede colocar Dinosaurios en este recinto");
+                                return false;
+                            }
                         }
+                        this.desigualdad.dinosaurios.push(dinosaurio);
+                        return true;
+                    } else {
+                        alert("No puede colocar Dinosaurios en este recinto");
+                        return false;
                     }
-                    this.desigualdad.dinosaurios.push(dinosaurio);
-                    return true;
-                } else {
-                    alert("No puede colocar Dinosaurios en este recinto");
+                
+                case "romance":
+                    if (this.romance.dinosaurios.length < this.romance.cupos) {
+                        this.romance.dinosaurios.push(dinosaurio);
+                        return true;
+                    } else {
+                        alert("No puede colocar Dinosaurios en este recinto");
+                        return false;
+                    }
+                
+                case "soledad":
+                    if (this.soledad.dinosaurios.length < this.soledad.cupos) {
+                        this.soledad.dinosaurios.push(dinosaurio);
+                        return true;
+                    } else {
+                        alert("No puede colocar Dinosaurios en este recinto");
+                        return false;
+                    }
+                
+                case "monarquia":
+                    if (this.monarquia.dinosaurios.length < this.monarquia.cupos) {
+                        this.monarquia.dinosaurios.push(dinosaurio);
+                        return true;
+                    } else {
+                        alert("No puede colocar Dinosaurios en este recinto");
+                        return false;
+                    }
+                
+                case "tres":
+                    if (this.tres.dinosaurios.length < this.tres.cupos) {
+                        this.tres.dinosaurios.push(dinosaurio);
+                        return true;
+                    } else {
+                        alert("No puede colocar Dinosaurios en este recinto");
+                        return false;
+                    }
+                
+                case "rio":
+                    if (this.rio.dinosaurios.length < this.rio.cupos) {
+                        this.rio.dinosaurios.push(dinosaurio);
+                        return true;
+                    } else {
+                        alert("No puede colocar Dinosaurios en este recinto");
+                        return false;
+                    }
+                
+                default:
                     return false;
-                }
-            
-            case "romance":
-                if (this.romance.dinosaurios.length < this.romance.cupos) {
-                    this.romance.dinosaurios.push(dinosaurio);
-                    return true;
-                } else {
-                    alert("No puede colocar Dinosaurios en este recinto");
-                    return false;
-                }
-            
-            case "soledad":
-                if (this.soledad.dinosaurios.length < this.soledad.cupos) {
-                    this.soledad.dinosaurios.push(dinosaurio);
-                    return true;
-                } else {
-                    alert("No puede colocar Dinosaurios en este recinto");
-                    return false;
-                }
-            
-            case "monarquia":
-                if (this.monarquia.dinosaurios.length < this.monarquia.cupos) {
-                    this.monarquia.dinosaurios.push(dinosaurio);
-                    return true;
-                } else {
-                    alert("No puede colocar Dinosaurios en este recinto");
-                    return false;
-                }
-            
-            case "tres":
-                if (this.tres.dinosaurios.length < this.tres.cupos) {
-                    this.tres.dinosaurios.push(dinosaurio);
-                    return true;
-                } else {
-                    alert("No puede colocar Dinosaurios en este recinto");
-                    return false;
-                }
-            
-            case "rio":
-                if (this.rio.dinosaurios.length < this.rio.cupos) {
-                    this.rio.dinosaurios.push(dinosaurio);
-                    return true;
-                } else {
-                    alert("No puede colocar Dinosaurios en este recinto");
-                    return false;
-                }
-            
-            default:
-                return false;
+            }
+        } else {
+            alert(action.ErrMessage);
+            return false;
         }
     }
 
