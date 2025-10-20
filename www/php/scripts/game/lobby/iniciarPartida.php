@@ -30,7 +30,7 @@ try {
     $accion = $partida->iniciarPartida($token, $codigo);
     $accion = $inventario->setupInventarios($token);
     $accion = $partida->setupOrdenJugadores($token);
-    $accion = $dado->tirarDado($token);
+    $accion = $dado->setupDado($token);
     $lobby->eliminarLobby($codigo);
     
     echo json_encode($accion);

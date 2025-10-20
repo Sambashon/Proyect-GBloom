@@ -43,6 +43,27 @@ class Dado extends Partida {
         return $this->returnSuccess(null);
     }
 
+    public function setupDado(string $token): array {
+        $credentials = $this->getUserCredentials($token);
+        $username = $credentials["result"]["username"];
+
+        $this->notFound->setOrigin("Dado->tirarDado()");
+        $this->notFound->setErrMessage("El usuario brindado no esta registrado en ninguna partida");
+        $solicitud = $this->pdo->prepare("select p.id, p.turnoActual, j.numJugador from juega j join partida p on j.partidaId = p.id where username = :username and jugando = 1;");
+        $solicitud->execute(["username" => $username]);
+        $partida = $this->notFound->filter($solicitud->fetch());
+
+        $this->notFound->setErrMessage("No se encuentran registradas las caras del dado en la base de datos");
+        $solicitud = $this->pdo->query("select id from dado;");
+        $dados = $this->notFound->filter($solicitud->fetchAll());
+
+        $dadoId = $dados[array_rand($dados)]["id"];
+        $actualizar = $this->pdo->prepare("update partida set dadoId = :dadoId where id = :id;");
+        $actualizar->execute(["dadoId" => $dadoId, "id" => $partida["id"]]);
+
+        return $this->returnSuccess(null);
+    }
+
     public function isTurnoTirarDado(string $token): array {
         $credentials = $this->getUserCredentials($token);
         $username = $credentials["result"]["username"];
