@@ -5,6 +5,8 @@ let birthdate;
 let aboutme;
 let language;
 let gameres;
+let wins;
+let played;
 
 language = localStorage.getItem("language") || "ENGLISH";
 gameres = localStorage.getItem("gameres") || "MEDIUM";
@@ -137,7 +139,6 @@ function handleSwipe() {
     const deltaY = touchEndY - touchStartY;
     const deltaX = touchEndX - touchStartX;
 
-    // detect mainly vertical movement and swipe down
     if (footerMenu.classList.contains("visible") && Math.abs(deltaY) > Math.abs(deltaX) && deltaY > 50) {
         console.log("Swipe down detected!");
         footerMenu.classList.remove("visible");
@@ -145,16 +146,7 @@ function handleSwipe() {
     }
 }
 
-// Cambiar aqui!!!!!!!!!!!!
 async function connectLobby(code) {
-    /* Logica temporal para jugar un jugador en la segunda entrega
-    const accion = await fetch("/php/scripts/game/lobby/crearPartida.php", {
-        method: "POST",
-        body: JSON.stringify({nombre: "Golden Match", cantidadJugadores: 5, modo: "virtual", codigo: code})
-    }).then(function (response) {
-        return response.json();
-    });
-    */
     const solicitud = await fetch("/php/scripts/game/lobby/verificarCodigo.php", {
         method: "POST",
         body: JSON.stringify({codigo: code})
@@ -168,7 +160,7 @@ async function connectLobby(code) {
         alert(solicitud.ErrMessage);
     }
     
-} 
+}
 
 async function requestUserData() {
     const response = await fetch("/php/scripts/utilities/credentials.php").then(function (response) {
@@ -189,12 +181,17 @@ async function requestUserData() {
         email = usuario.correo;
         aboutme = usuario.descripcion;
         birthdate = new Date(usuario.fechaNacimiento);
+        wins = usuario.victorias;
+        played = usuario.jugadas;
 
         const today = new Date();
 
         document.querySelector("span#playername").textContent = username;
         document.querySelector("#age").textContent = today.getFullYear() - birthdate.getFullYear();
         document.querySelector("h2#aboutme").textContent = aboutme;
+
+        document.querySelector("#wins").textContent = "Wins: " + wins;
+        document.querySelector("#played").textContent = "Played: " + played;
 
         profileBtn.addEventListener("click", () => togglePanel("Profile", profileSection));
         playBtn.addEventListener("click", () => togglePanel("Play", playSection));

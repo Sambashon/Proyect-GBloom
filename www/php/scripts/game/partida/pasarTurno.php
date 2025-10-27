@@ -14,7 +14,6 @@ try {
     $token = $_COOKIE["golden-token"];
     
     $turnos = $partida->getTurnoActual($token)["result"];
-    $cantidadJugadores = $partida->getCantidadJugadores($token);
     if ($turnos == 6) {
         $partida->pasarFase($token);
         $inventario->reponerInventarios($token);

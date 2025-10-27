@@ -12,14 +12,6 @@ const leaveBtn = document.querySelector("#LEAVEBtn");
 setInterval(partidaOver, 2000);
 let turnoTerminadoI;
 
-document.addEventListener("click", () =>{
-      ENGINE.map.draw(ENGINE.jgl, ENGINE.delta, ENGINE.width, ENGINE.height);
-})
-
-document.addEventListener("touchend", () =>{
-      ENGINE.map.draw(ENGINE.jgl, ENGINE.delta, ENGINE.width, ENGINE.height);
-})
-
 document.addEventListener("DOMContentLoaded", async () => {
   await getHost();
 
@@ -115,16 +107,16 @@ async function partidaOver() {
     return response.json();
   });
 
-  let ganadores = await executeScript("getters/getGanadores.php");
-  ganadores = ganadores.result.map(ganador => ganador.username);
-
-  if (ganadores.includes(username)) {
-    alert(`Ganaste!!! tu puntaje final es ${puntos}`);
-  } else {
-    alert(`Perdiste... tu puntaje final es ${puntos}`);
-  }
-
   if (response.status !== "success" || response.result) {
+    let ganadores = await executeScript("getters/getGanadores.php");
+    ganadores = ganadores.result.map(ganador => ganador.username);
+
+    if (ganadores.includes(username)) {
+      alert(`Ganaste!!! tu puntaje final es ${puntos}`);
+    } else {
+      alert(`Perdiste... tu puntaje final es ${puntos}`);
+    }
+    
     window.location.href = "/homePage/home.html";
   }
 }

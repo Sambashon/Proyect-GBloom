@@ -28,6 +28,15 @@ async function setup(map, canvas) {
 
   await empezarTurno(map);
 
+  document.addEventListener("click", () =>{
+    ENGINE.map.draw(ENGINE.jgl, ENGINE.delta, ENGINE.width, ENGINE.height);
+  })
+
+  document.addEventListener("touchend", () =>{
+    ENGINE.map.draw(ENGINE.jgl, ENGINE.delta, ENGINE.width, ENGINE.height);
+  })
+
+
   document.querySelector("#loading").remove();
   playMusic();
 }
@@ -38,9 +47,9 @@ async function update(map, dt) {
   }
 
   listener.mouse.world = listener.mouseToWorld(map.matViewProj, map.cameras[0]);
-  state = listener.dragDinosaurio(dino, map, inventario.getDinosaurioById(dino.id) > 0);
+  listener.dragDinosaurio(dino, map, inventario.getDinosaurioById(dino.id) > 0);
   recinto = tablero.fijarDinosaurioRecinto(dino);
-  if (state === "colocado") {
+  if (listener.mouse.colocado) {
     if (recinto && colocar) {
       colocar = false;
       if (await tablero.agregarDinosaurio(dino, recinto)) {
@@ -58,11 +67,13 @@ async function update(map, dt) {
         //DRAW = true;
         colocar = true;
         dino.position = [0, -100, 0];
+        ENGINE.map.draw(ENGINE.jgl, ENGINE.delta, ENGINE.width, ENGINE.height);
       }
     } else {
       colocar = true;
       //DRAW = true;
       dino.position = [0, -100, 0];
+      ENGINE.map.draw(ENGINE.jgl, ENGINE.delta, ENGINE.width, ENGINE.height);
     }
   }
 }
@@ -119,10 +130,10 @@ async function empezarTurno(map) {
 
   let jugadores = await executeScript("getters/getJugadores.php");
 
-  if (solicitud.result) {
+  if (jugadores.result) {
     jugadores = jugadores.result;
-  } else if (!solicitud.success) {
-    alert(solicitud.ErrMessage);
+  } else if (!jugadores.success) {
+    alert(jugadores.ErrMessage);
   }
 
   await executeScript("getters/contarPuntos.php");

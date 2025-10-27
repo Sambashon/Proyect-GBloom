@@ -253,11 +253,11 @@ class Tablero extends Partida {
             $tablero = $this->getTablero($token);
 
             foreach ($tablero["result"] as $tableroRecinto) {
-                if ($tableroRecinto["dinosaurioId"] == "rojo" && $dadoId == "notrex" && !isset($recintosProhibidos[$tableroRecinto["recinto"]]) && $recinto !== "rio") {
+                if ($tableroRecinto["dinosaurioId"] == "rojo" && $dadoId == "notrex" && !isset($recintosProhibidos[$tableroRecinto["recinto"]]) && $recinto !== "rio" && !$tiroDado) {
                     $recintosProhibidos[$tableroRecinto["recinto"]] = true;
                 }
 
-                if ($dadoId == "vacio" && !isset($recintosProhibidos[$tableroRecinto["recinto"]]) && $recinto !== "rio") {
+                if ($dadoId == "vacio" && !isset($recintosProhibidos[$tableroRecinto["recinto"]]) && $recinto !== "rio" && !$tiroDado) {
                     $recintosProhibidos[$tableroRecinto["recinto"]] = true;
                 }
             }

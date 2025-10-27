@@ -4,8 +4,10 @@ class InputListener {
         world: {x: null, y: null, z: null},
         pressing: false,
         onDinosaurio: false,
+        colocado: false,
         on: "",
-        focus: "canvas"
+        focus: "canvas",
+        focusA: "canvas"
     }
 
     canvas;
@@ -70,12 +72,14 @@ class InputListener {
 
         for (let i = 0; i < slots.length; i++) {
             slots[i].addEventListener("click", () => {
+                this.mouse.focusA = "slot" + i;
                 this.mouse.focus = "slot" + i;
             });
             
             // También agregar eventos táctiles para los slots
             slots[i].addEventListener("touchstart", (evt) => {
                 evt.preventDefault();
+                this.mouse.focusA = "slot" + i;
                 this.mouse.focus = "slot" + i;
             });
         }
@@ -90,9 +94,6 @@ class InputListener {
         
         this.mouse.position.x = (clientX - this.rect.left) * scaleX;
         this.mouse.position.y = (clientY - this.rect.top) * scaleY;
-        
-        //console.log("Scale factors:", scaleX, scaleY);
-        //console.log("Final coords:", this.mouse.position.x, this.mouse.position.y);
     }
 
     // Método para manejar clicks/taps
@@ -138,7 +139,7 @@ class InputListener {
                     posMundo = this.mouseToWorld(map.matViewProj, map.cameras[0]);
                     dinosaurio.position = posMundo || dinosaurio.position;
                 }
-                return "sincolocar";
+                this.mouse.colocado = false;
                 break;
             case "slot1":
                 dinosaurio.model = map.getModelById("azul").model;
@@ -149,7 +150,7 @@ class InputListener {
                     posMundo = this.mouseToWorld(map.matViewProj, map.cameras[0]);
                     dinosaurio.position = posMundo || dinosaurio.position;
                 }
-                return "sincolocar";
+                this.mouse.colocado = false;
                 break;
             case "slot2": 
                 dinosaurio.model = map.getModelById("rojo").model;
@@ -160,7 +161,7 @@ class InputListener {
                     posMundo = this.mouseToWorld(map.matViewProj, map.cameras[0]);
                     dinosaurio.position = posMundo || dinosaurio.position;
                 }
-                return "sincolocar";
+                this.mouse.colocado = false;
                 break;
             case "slot3":
                 dinosaurio.model = map.getModelById("morado").model;
@@ -171,7 +172,7 @@ class InputListener {
                     posMundo = this.mouseToWorld(map.matViewProj, map.cameras[0]);
                     dinosaurio.position = posMundo || dinosaurio.position;
                 }
-                return "sincolocar";
+                this.mouse.colocado = false;
                 break;
             case "slot4":
                 dinosaurio.model = map.getModelById("verde").model;
@@ -182,7 +183,7 @@ class InputListener {
                     posMundo = this.mouseToWorld(map.matViewProj, map.cameras[0]);
                     dinosaurio.position = posMundo || dinosaurio.position;
                 }
-                return "sincolocar";
+                this.mouse.colocado = false;
                 break;
             case "slot5":
                 dinosaurio.model = map.getModelById("naranja").model;
@@ -193,24 +194,26 @@ class InputListener {
                     posMundo = this.mouseToWorld(map.matViewProj, map.cameras[0]);
                     dinosaurio.position = posMundo || dinosaurio.position;
                 }
-                return "sincolocar";
+                this.mouse.colocado = false;
                 break;
             case "canvas":
                 this.onDinosaurio(dinosaurio, this.mouse.world)
-                if (this.mouse.onDinosaurio) {
+                if ((this.mouse.onDinosaurio || this.isMouseOnRecinto(this.mouse.world)) && this.mouse.focusA != "canvas") {
                     posMundo = this.mouseToWorld(map.matViewProj, map.cameras[0]);
                     dinosaurio.position = posMundo || dinosaurio.position;
-                    console.log(posMundo)
-                    return "colocado";
+                    this.mouse.focusA = this.mouse.focus;
+                    this.mouse.colocado = true;
+                    break;
                 } else {
-                    return "sincolocar";
+                    this.mouse.colocado = false;
+                    break;
                 }
             default:
                 if (move) {
                     posMundo = this.mouseToWorld(map.matViewProj, map.cameras[0]);
                     dinosaurio.position = posMundo || dinosaurio.position;
                 }
-                return "sincolocar"
+                this.mouse.colocado = false;
                 break;
         }
     }
@@ -279,5 +282,25 @@ class InputListener {
         let final = this.intersectsPlane(worldNear, rayDirection, [0,1,0], [0,15,0]);
         
         return final;
+    }
+
+    isMouseOnRecinto(position) {
+        if (!position) { return false; }
+        switch (true) {
+            case (position[0] >= -82 && position[2] >= -84) && (position[0] <= -25 && position[2] <= -40):
+                return true
+            case (position[0] >= -82 && position[2] >= -21) && (position[0] <= -39 && position[2] <= 20):
+                return true;
+            case (position[0] >= -74 && position[2] >= 37) && (position[0] <= -30 && position[2] <= 82):
+                return true;
+            case (position[0] >= 21 && position[2] >= -16) && (position[0] <= 82 && position[2] <= 26):
+                return true;
+            case (position[0] >= 44 && position[2] >= 34) && (position[0] <= 85 && position[2] <= 64):
+                return true;
+            case (position[0] >= -18 && position[2] >= 35) && (position[0] <= 38 && position[2] <= 96):
+                return true;
+            default:
+                return false;
+        }
     }
 }

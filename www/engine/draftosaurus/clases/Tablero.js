@@ -198,11 +198,10 @@ class Tablero {
         }
     }
 
-    async agregarDinosaurio(dinosaurio, recinto) {
+    async agregarDinosaurio(dinosaurio, recinto, listener) {
         if (this.tablero.getDinosaurioById(dinosaurio.id) <= 0) return false;
 
         let action = await executeScript("partida/colocarDinosaurio.php", {dinosaurioId: dinosaurio.id, recinto: recinto});
-            console.log(action);
 
         if (action.success) {
             const dino = ENGINE.spawnDino(dinosaurio.id, "fichas");
@@ -342,11 +341,9 @@ class Tablero {
                 }
                 break;
             case "romance":
-                console.log(this.romance.dinosaurios.length)
                 switch (this.romance.dinosaurios.length) {
                     case 0:
                         dinosaurio.position = [-62, 15, 68];
-                        console.log(86728)
                         break;
                     case 1:
                         dinosaurio.position = [-52, 15, 68];
