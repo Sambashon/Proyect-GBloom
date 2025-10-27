@@ -269,12 +269,10 @@ class Partida extends GBloomDB {
         $tablerosContados = [];
         
         foreach ($usuarios as $index => $usuario) {
-            $numJugador = $index + 1;
-            $solicitud = $this->pdo->prepare("select t.* from tablero t where t.partidaId = :partidaId and t.username in 
-                (select username from juega where partidaId = :partidaId and numJugador = :numJugador)");
-            $solicitud->execute(["partidaId" => $partidaId, "numJugador" => $numJugador]);
+            $solicitud = $this->pdo->prepare("select t.* from tablero t where t.partidaId = :partidaId and t.username = :username");
+            $solicitud->execute(["partidaId" => $partidaId, "username" => $usuario["username"]]);
             
-            $this->notFound->setErrMessage("No se pudo obtener el inventario solicitado");
+            $this->notFound->setErrMessage("No se pudo obtener el tablero solicitado");
             $contenido = $this->notFound->filter($solicitud->fetchAll());
 
             $tablerosContados[] = ["username" => $usuario["username"], "puntaje" => $tablero->contarPuntosTablero($contenido), "tablero" => $contenido];
@@ -299,16 +297,12 @@ class Partida extends GBloomDB {
     }
 
     public function empezarTurno(string $token): array {
-        $credentials = $this->getUserCredentials($token);
-        $username = $credentials["result"]["username"];
-
         $partidaId = $this->getPartidaJugando($token)["result"];
         
-        $actualizar = $this->pdo->prepare("update juega set estado = :estado where username = :username and partidaId = :partidaId;");
+        $actualizar = $this->pdo->prepare("update juega set estado = :estado where partidaId = :partidaId;");
         $actualizar->execute([
             "estado" => "jugandoTurno", 
-            "partidaId" => $partidaId, 
-            "username" => $username
+            "partidaId" => $partidaId
         ]);
         
         return $this->returnSuccess(null);
@@ -395,7 +389,7 @@ class Partida extends GBloomDB {
         $jugadores = $solicitud->fetchAll();
         
         $this->notFound->setErrMessage("El usuario brindado no esta registrado en ninguna partida");
-        $this->notFound->filter($solicitud);
+        $this->notFound->filter($jugadores);
         
         return $this->returnSuccess($jugadores);
     }
@@ -408,8 +402,22 @@ class Partida extends GBloomDB {
         $jugadores = $solicitud->fetchAll();
         
         $this->notFound->setErrMessage("El usuario brindado no esta registrado en ninguna partida");
-        $this->notFound->filter($solicitud);
+        $this->notFound->filter($jugadores);
         
         return $this->returnSuccess($jugadores);
+    }
+
+    public function getEstadoTurno(string $token): array {
+        $username = $this->getUserCredentials($token)["result"]["username"];
+        $partidaId = $this->getPartidaJugando($token)["result"];
+
+        $solicitud = $this->pdo->prepare("select estado from juega where partidaId = :partidaId and username = :username");
+        $solicitud->execute(["partidaId" => $partidaId, "username" => $username]);
+        $estado = $solicitud->fetch()["estado"];
+        
+        $this->notFound->setErrMessage("El usuario brindado no esta registrado en ninguna partida");
+        $this->notFound->filter($estado);
+        
+        return $this->returnSuccess($estado);
     }
 }

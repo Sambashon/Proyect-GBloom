@@ -4,6 +4,7 @@ include "../../filters.php";
 
 $dado = new Dado();
 $tablero = new Tablero();
+$partida = new Partida();
 
 $filtroDinosaurioParams = new GError(
     "Parámetros Dinosaurio",
@@ -28,8 +29,19 @@ try {
     
     $filtroDinosaurioParams->filter($body);
     
-    $dadoId = $dado->getDado($token)["result"];
-    $accion = $tablero->colocarDinosaurio($token, $body["dinosaurioId"], $body["recinto"], $dadoId);
+    $estado = $partida->getEstadoTurno($token)["result"];
+    
+    if ($estado == "jugandoTurno") {
+        $dadoId = $dado->getDado($token)["result"];
+        $accion = $tablero->colocarDinosaurio($token, $body["dinosaurioId"], $body["recinto"], $dadoId);
+    } else {
+        throw new Exception(json_encode([
+            "status" => GError::forbidden,
+            "ErrMessage" => "No puede volver a colocar hasta que termine el turno",
+            "ErrDetails" => [],
+            "origin" => ""
+        ]));
+    }
     
     echo json_encode($tablero->returnSuccess(null));
 } catch (Exception $e) {

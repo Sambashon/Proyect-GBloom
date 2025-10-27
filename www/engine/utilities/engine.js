@@ -40,7 +40,11 @@ class GBloomEngine {
             format: canvasFormat
         });
 
-        this.jgl = new JSCGL(device, context, canvasFormat, this.width, this.height);
+        try {
+          this.jgl = new JSCGL(device, context, canvasFormat, this.width, this.height);
+        } catch {
+          alert("Ocurrio un error al inicializar el juego recargue la pagina");
+        }
         await this.jgl.init();
 
         this.map = new Scene(this.scene);
@@ -52,7 +56,12 @@ class GBloomEngine {
 
         JSCGL.setGL(gl);
         gl.disable(gl.CULL_FACE);
-        this.jgl = new JSCGL(this.width, this.height);
+
+        try {
+          this.jgl = new JSCGL(this.width, this.height);
+        } catch {
+          alert("Ocurrio un error al inicializar el juego recargue la pagina");
+        }
 
         this.map = new Scene(this.scene);
         await this.map.loadScene(this.jgl);

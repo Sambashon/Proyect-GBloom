@@ -31,6 +31,7 @@ try {
     $accion = $inventario->setupInventarios($token);
     $accion = $partida->setupOrdenJugadores($token);
     $accion = $dado->setupDado($token);
+    $partida->empezarTurno($token);
     
     echo json_encode($accion);
     

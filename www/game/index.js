@@ -11,7 +11,7 @@ let puntos;
 let overlay;
 let tablero;
 let inventario = new Inventario();
-let state;
+let estado;
 let colocar = true;
 let empezar = false;
 let username;
@@ -50,6 +50,7 @@ async function update(map, dt) {
   listener.dragDinosaurio(dino, map, inventario.getDinosaurioById(dino.id) > 0);
   recinto = tablero.fijarDinosaurioRecinto(dino);
   if (listener.mouse.colocado) {
+    console.log(recinto, colocar, recinto && colocar);
     if (recinto && colocar) {
       colocar = false;
       if (await tablero.agregarDinosaurio(dino, recinto)) {
@@ -88,12 +89,13 @@ function playMusic() {
 }
 
 async function empezarTurno(map) {
-  const action = await executeScript("partida/empezarTurno.php", true);
-  if (!action.success) {
-    alert("No se pudo comenzar turno");
+  let solicitud = await executeScript("getters/getEstadoTurno.php");
+  
+  if (solicitud.result) {
+    estado = solicitud.result;
   }
 
-  let solicitud = await executeScript("getters/getInventario.php");
+  solicitud = await executeScript("getters/getInventario.php");
   
   if (solicitud.success) {
     inventario.importarInventario(solicitud.result);
@@ -128,6 +130,8 @@ async function empezarTurno(map) {
     alert(solicitud.ErrMessage);
   }
 
+  await executeScript("getters/contarPuntos.php");
+
   let jugadores = await executeScript("getters/getJugadores.php");
 
   if (jugadores.result) {
@@ -136,8 +140,11 @@ async function empezarTurno(map) {
     alert(jugadores.ErrMessage);
   }
 
-  await executeScript("getters/contarPuntos.php");
   drawPlayers(document.querySelector("table.leaderboard-table>tbody"), jugadores);
+
+  if (estado == "turnoTerminado") {
+    isTurnoTerminadoI = setInterval(isTurnoTerminado, 2000, map);
+  }
 
   overlay = ENGINE.jgl.newObject({id: "overlay", model: overlayModel.model, position: [0, 10, 3], size: [2, 2, 2]});
   map.push(overlay);
@@ -164,16 +171,19 @@ async function isTurnoTerminado(map) {
 
       colocar = true;
     } else if (empezar) {
-      await empezarTurno(map);
-      clearInterval(isTurnoTerminadoI);
-      empezar = false;
+      action = await executeScript("getters/getEstadoTurno.php");
+      if (action?.result == "jugandoTurno") {
+        await empezarTurno(map);
+        clearInterval(isTurnoTerminadoI);
+        empezar = false;
+      }
     }
   }
 }
 
 function drawPlayers(list, players) {
     list.innerHTML = "";
-    let leaderboard = players.sort((a, b) => a.puntos - b.puntos);
+    let leaderboard = players.sort((a, b) => b.puntos - a.puntos);
 
     leaderboard.forEach(player => {
       if (player.username == username) {
