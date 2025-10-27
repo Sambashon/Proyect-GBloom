@@ -7,6 +7,8 @@ create table usuario (
     fechaNacimiento date not null,
     descripcion varchar(200),
     verificado boolean default false, 
+    victorias int default 0,
+    jugadas int default 0,
     admin boolean default false, 
     primary key (username)
 );

@@ -75,7 +75,7 @@ async function getLobbyInfo() {
         comienza = result.comienza;
         nombre = result.nombre;
         host = result.host;
-    } else {
+    } else if (!comienza) {
         window.location.href = "/homePage/home.html"
     }
 }

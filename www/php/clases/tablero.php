@@ -68,7 +68,6 @@ class Tablero extends Partida {
 
         return $this->returnSuccess($tablero);
     }
-
     public function contarPuntosTablero(array $tablero): array {
         $trexRecinto = [];
         $tres = 0;
@@ -178,13 +177,11 @@ class Tablero extends Partida {
         $puntos += count($trexRecinto) + $parejas * 5;
 
         return [
-            "username" => $tablero[0]["username"],
             "puntos" => $puntos,
             "rey" => $rey,
             "reyCounter" => $reyCounter
         ];
     }
-
     public function contarDinosauriosTablero(array $tablero, string $dinosaurioId): int {
         $contador = 0;
         foreach ($tablero as $recinto) {
@@ -196,6 +193,7 @@ class Tablero extends Partida {
         return $contador;
     }
     public function colocarDinosaurio(string $token, string $dinosaurio, string $recinto, string $dadoId): array {
+        $forbidden = new GError("Colocar Filtro", GError::forbidden, GError::exclusive, [fn($input) => $input], "Tablero->colocarDinosaurio", true);
         $credentials = $this->getUserCredentials($token);
         $username = $credentials["result"]["username"];
         $partidaId = $this->getPartidaJugando($token)["result"];
@@ -212,6 +210,8 @@ class Tablero extends Partida {
         $baños = false;
         $bosque = false;
         $desierto = false;
+        $vacio = false;
+        $notrex = false;
 
         $this->filtroDinosaurioValido->filter($dinosaurio);
         $this->filtroRecintoValido->filter($recinto);
@@ -233,6 +233,12 @@ class Tablero extends Partida {
                 case "desierto":
                     $desierto = true;
                     break;
+                case "vacio":
+                    $vacio = true;
+                    break;
+                case "notrex":
+                    $notrex = true;
+                    break;
             }
         } else {
             $cafeteria = true;
@@ -247,18 +253,18 @@ class Tablero extends Partida {
             $tablero = $this->getTablero($token);
 
             foreach ($tablero["result"] as $tableroRecinto) {
-                if ($tableroRecinto["dinosaurioId"] == "rojo" && $dadoId == "notrex" && !isset($recintosProhibidos[$tableroRecinto["recinto"]])) {
+                if ($tableroRecinto["dinosaurioId"] == "rojo" && $dadoId == "notrex" && !isset($recintosProhibidos[$tableroRecinto["recinto"]]) && $recinto !== "rio") {
                     $recintosProhibidos[$tableroRecinto["recinto"]] = true;
                 }
 
-                if ($dadoId == "vacio" && !isset($recintosProhibidos[$tableroRecinto["recinto"]])) {
+                if ($dadoId == "vacio" && !isset($recintosProhibidos[$tableroRecinto["recinto"]]) && $recinto !== "rio") {
                     $recintosProhibidos[$tableroRecinto["recinto"]] = true;
                 }
             }
 
             $this->notFound->setOrigin("Tablero->colocarDinosaurio()");
             $this->notFound->setAutoThrow(false);
-            $this->notFound->setErrMessage("No puede colocar el dinosaurio porque un trex ocupa este recinto");
+            $this->notFound->setErrMessage("No se puede colocar el dinosaurio en este recinto");
             $this->notFound->filter(!isset($recintosProhibidos[$recinto]));
         } catch (Exception $e) {
 
@@ -268,7 +274,7 @@ class Tablero extends Partida {
         $this->notFound->setAutoThrow(true);
 
         switch (true) {
-            case ($recinto == "igualdad") && ($bosque || $cafeteria):
+            case ($recinto == "igualdad") && ($bosque || $cafeteria || $notrex || $vacio):
                 $solicitud = $this->pdo->prepare("select dinosaurioId, cantidad from tablero where partidaId = :partidaId and username = :username and recinto = :recinto;");
                 $solicitud->execute(["username" => $username, "partidaId" => $partidaId, "recinto" => $recinto]);
                 $solicitud = $solicitud->fetch();
@@ -293,10 +299,8 @@ class Tablero extends Partida {
                     $cantidad = $solicitud["cantidad"];
 
                     if ($cantidad > 6) {
-                        return [
-                            "status" => GError::forbidden,
-                            "ErrMessage" => "El recinto donde se esta tratando de colocar un dinosaurio se encuentra lleno"
-                        ];
+                        $forbidden->setErrMessage("El recinto donde se esta tratando de colocar un dinosaurio se encuentra lleno");
+                        $forbidden->filter(true);
                     } else {
                         $cantidad++;
                     }
@@ -317,13 +321,11 @@ class Tablero extends Partida {
 
                         return $this->returnSuccess(null);
                     } else {
-                        return [
-                            "status" => GError::forbidden,
-                            "ErrMessage" => "El recinto solo admite dinosaurios de la misma especie"
-                        ];
+                        $forbidden->setErrMessage("El recinto solo admite dinosaurios de la misma especie");
+                        $forbidden->filter(true);
                     }
                 }
-            case ($recinto == "desigualdad") && ($desierto || $baños):
+            case ($recinto == "desigualdad") && ($desierto || $baños || $notrex || $vacio):
                 $solicitud = $this->pdo->prepare("select dinosaurioId, cantidad from tablero where partidaId = :partidaId and username = :username and recinto = :recinto;");
                 $solicitud->execute(["username" => $username, "partidaId" => $partidaId, "recinto" => $recinto]);
                 $solicitud = $solicitud->fetchAll();
@@ -348,18 +350,14 @@ class Tablero extends Partida {
                     foreach ($solicitud as $dinosaurioExiste) {
                         $cantidad += $dinosaurioExiste["cantidad"];
                         if ($dinosaurioExiste["dinosaurioId"] == $dinosaurio) {
-                            return [
-                                "status" => GError::forbidden,
-                                "ErrMessage" => "El recinto solo admite un dinosaurio de cada especie"
-                            ];
+                            $forbidden->setErrMessage("El recinto solo admite un dinosaurio de cada especie");
+                            $forbidden->filter(true);
                         }
                     }
 
                     if ($cantidad > 6) {
-                        return [
-                            "status" => GError::forbidden,
-                            "ErrMessage" => "El recinto donde se esta tratando de colocar un dinosaurio se encuentra lleno"
-                        ];
+                        $forbidden->setErrMessage("El recinto donde se esta tratando de colocar un dinosaurio se encuentra lleno");
+                        $forbidden->filter(true);
                     }
 
                     $insertar = $this->pdo->prepare("insert into tablero(username, partidaId, dinosaurioId, recinto, cantidad) values (:username, :partidaId, :dinosaurioId, :recinto, 1);");
@@ -377,7 +375,7 @@ class Tablero extends Partida {
 
                     return $this->returnSuccess(null);
                 }
-            case ($recinto == "soledad") && ($desierto || $baños):
+            case ($recinto == "soledad") && ($desierto || $baños || $notrex || $vacio):
                 $solicitud = $this->pdo->prepare("select dinosaurioId, cantidad from tablero where partidaId = :partidaId and username = :username and recinto = :recinto;");
                 $solicitud->execute(["username" => $username, "partidaId" => $partidaId, "recinto" => $recinto]);
                 $solicitud = $solicitud->fetchAll();
@@ -404,10 +402,8 @@ class Tablero extends Partida {
                     }
 
                     if ($cantidad > 1) {
-                        return [
-                            "status" => GError::forbidden,
-                            "ErrMessage" => "El recinto donde se esta tratando de colocar un dinosaurio se encuentra lleno"
-                        ];
+                        $forbidden->setErrMessage("El recinto donde se esta tratando de colocar un dinosaurio se encuentra lleno");
+                        $forbidden->filter(true);
                     }
 
                     $insertar = $this->pdo->prepare("insert into tablero(username, partidaId, dinosaurioId, recinto, cantidad) values (:username, :partidaId, :dinosaurioId, :recinto, 1);");
@@ -425,7 +421,7 @@ class Tablero extends Partida {
 
                     return $this->returnSuccess(null);
                 }
-            case ($recinto == "romance") && ($desierto || $cafeteria):
+            case ($recinto == "romance") && ($desierto || $cafeteria || $notrex || $vacio):
                 $solicitud = $this->pdo->prepare("select dinosaurioId, cantidad from tablero where partidaId = :partidaId and username = :username and recinto = :recinto;");
                 $solicitud->execute(["username" => $username, "partidaId" => $partidaId, "recinto" => $recinto]);
                 $solicitud = $solicitud->fetchAll();
@@ -456,10 +452,8 @@ class Tablero extends Partida {
                     }
 
                     if ($cantidad > 6) {
-                        return [
-                            "status" => GError::forbidden,
-                            "ErrMessage" => "El recinto donde se esta tratando de colocar un dinosaurio se encuentra lleno"
-                        ];
+                        $forbidden->setErrMessage("El recinto donde se esta tratando de colocar un dinosaurio se encuentra lleno");
+                        $forbidden->filter(true);
                     } else {
                         $dinosaurios++;
                     }
@@ -484,7 +478,7 @@ class Tablero extends Partida {
                     
                     return $this->returnSuccess(null);
                 }
-            case ($recinto == "monarquia") && ($baños || $bosque):
+            case ($recinto == "monarquia") && ($baños || $bosque || $notrex || $vacio):
                 $solicitud = $this->pdo->prepare("select dinosaurioId, cantidad from tablero where partidaId = :partidaId and username = :username and recinto = :recinto;");
                 $solicitud->execute(["username" => $username, "partidaId" => $partidaId, "recinto" => $recinto]);
                 $solicitud = $solicitud->fetch();
@@ -505,12 +499,10 @@ class Tablero extends Partida {
 
                     return $this->returnSuccess(null);
                 } else {
-                    return [
-                        "status" => GError::forbidden,
-                        "ErrMessage" => "El recinto donde se esta tratando de colocar un dinosaurio se encuentra lleno"
-                    ];
+                    $forbidden->setErrMessage("El recinto donde se esta tratando de colocar un dinosaurio se encuentra lleno");
+                    $forbidden->filter(true);
                 }
-            case ($recinto == "tres") && ($cafeteria || $bosque):
+            case ($recinto == "tres") && ($cafeteria || $bosque || $notrex || $vacio):
                 $solicitud = $this->pdo->prepare("select dinosaurioId, cantidad from tablero where partidaId = :partidaId and username = :username and recinto = :recinto;");
                 $solicitud->execute(["username" => $username, "partidaId" => $partidaId, "recinto" => $recinto]);
                 $solicitud = $solicitud->fetchAll();
@@ -531,10 +523,8 @@ class Tablero extends Partida {
                     }
 
                     if ($cantidad > 3) {
-                        return [
-                            "status" => GError::forbidden,
-                            "ErrMessage" => "El recinto donde se esta tratando de colocar un dinosaurio se encuentra lleno"
-                        ];
+                        $forbidden->setErrMessage("El recinto donde se esta tratando de colocar un dinosaurio se encuentra lleno");
+                        $forbidden->filter(true);
                     } else {
                         $dinosaurios++;
                     }
@@ -559,7 +549,7 @@ class Tablero extends Partida {
 
                     return $this->returnSuccess(null);
                 }
-            case "rio":
+            case $recinto == "rio":
                 $solicitud = $this->pdo->prepare("select dinosaurioId, cantidad from tablero where partidaId = :partidaId and username = :username and recinto = :recinto;");
                 $solicitud->execute(["username" => $username, "partidaId" => $partidaId, "recinto" => $recinto]);
                 $solicitud = $solicitud->fetchAll();
@@ -580,10 +570,8 @@ class Tablero extends Partida {
                     }
 
                     if ($cantidad > 6) {
-                        return [
-                            "status" => GError::forbidden,
-                            "ErrMessage" => "El recinto donde se esta tratando de colocar un dinosaurio se encuentra lleno"
-                        ];
+                        $forbidden->setErrMessage("El recinto donde se esta tratando de colocar un dinosaurio se encuentra lleno");
+                        $forbidden->filter(true);
                     } else {
                         $dinosaurios++;
                     }
@@ -610,10 +598,8 @@ class Tablero extends Partida {
                     return $this->returnSuccess(null);
                 }
             default:
-                return [
-                    "status" => GError::forbidden,
-                    "ErrMessage" => "No se ha podido colocar el dinosaurio brindado debido a las reestricciones del dadoo de colocacio"
-                ];
+                $forbidden->setErrMessage("No se ha podido colocar el dinosaurio brindado debido a las reestricciones del dadoo de colocacio");
+                $forbidden->filter(true);
         }
     
     }

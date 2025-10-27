@@ -10,6 +10,15 @@ const gameresDropdown = document.querySelectorAll(".dropdown-item#gameres");
 const leaveBtn = document.querySelector("#LEAVEBtn");
 
 setInterval(partidaOver, 2000);
+let turnoTerminadoI;
+
+document.addEventListener("click", () =>{
+      ENGINE.map.draw(ENGINE.jgl, ENGINE.delta, ENGINE.width, ENGINE.height);
+})
+
+document.addEventListener("touchend", () =>{
+      ENGINE.map.draw(ENGINE.jgl, ENGINE.delta, ENGINE.width, ENGINE.height);
+})
 
 document.addEventListener("DOMContentLoaded", async () => {
   await getHost();
@@ -82,7 +91,7 @@ mscSlider.addEventListener("input", (e) =>{
 radio.setMusicVolume(parseInt(localStorage.getItem("music") || "100"));
 
 async function getHost() {
-  const response = await fetch("/php/scripts/game/getters/isHost.php").then(function (response) {
+  let response = await fetch("/php/scripts/game/getters/isHost.php").then(function (response) {
     return response.json();
   });
 
@@ -91,12 +100,29 @@ async function getHost() {
   } else {
     isHost = false;
   }
+
+  response = await fetch("/php/scripts/utilities/credentials.php").then(function (response) {
+    return response.json();
+  });
+
+  if (response.status == "success") {
+    username = response.result.username;
+  }
 }
 
 async function partidaOver() {
   const response = await fetch("/php/scripts/game/getters/isPartidaOver.php").then(function (response) {
     return response.json();
   });
+
+  let ganadores = await executeScript("getters/getGanadores.php");
+  ganadores = ganadores.result.map(ganador => ganador.username);
+
+  if (ganadores.includes(username)) {
+    alert(`Ganaste!!! tu puntaje final es ${puntos}`);
+  } else {
+    alert(`Perdiste... tu puntaje final es ${puntos}`);
+  }
 
   if (response.status !== "success" || response.result) {
     window.location.href = "/homePage/home.html";

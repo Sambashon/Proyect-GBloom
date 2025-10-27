@@ -17,6 +17,7 @@ class InputListener {
         this.slots = slots;
         this.radio = radio;
 
+        // Eventos de mouse
         canvas.addEventListener("mousedown", (evt) => {
             this.mouse.pressing = true;
         });
@@ -26,10 +27,7 @@ class InputListener {
         });
 
         canvas.addEventListener("mousemove", (evt) => {
-            this.rect = canvas.getBoundingClientRect();
-            const dpr = window.devicePixelRatio || 1;
-            this.mouse.position.x = (evt.clientX - this.rect.left) * dpr;
-            this.mouse.position.y = (evt.clientY - this.rect.top)  * dpr;
+            this.updateMousePosition(evt.clientX, evt.clientY);
         });
 
         canvas.addEventListener("mouseleave", () => {
@@ -42,25 +40,75 @@ class InputListener {
         });
 
         canvas.addEventListener("click", () => {
-            if (this.mouse.focus == "dinosaurio") {
-                this.mouse.focus = "canvas";
-                this.radio.playEffect("place");
-            } else if (this.mouse.onDinosaurio && this.mouse.focus == "canvas") {
-                this.mouse.focus = "dinosaurio";
-                this.radio.playEffect("place");
-            } else {
-                this.mouse.focus = "canvas";
-            }
+            this.handleClick();
+        });
+
+        // Eventos táctiles para dispositivos móviles
+        canvas.addEventListener("touchstart", (evt) => {
+            evt.preventDefault(); // Prevenir scroll
+            this.mouse.pressing = true;
+            const touch = evt.touches[0];
+            this.updateMousePosition(touch.clientX, touch.clientY);
+        });
+
+        canvas.addEventListener("touchmove", (evt) => {
+            evt.preventDefault(); // Prevenir scroll
+            const touch = evt.touches[0];
+            this.updateMousePosition(touch.clientX, touch.clientY);
+        });
+
+        canvas.addEventListener("touchend", (evt) => {
+            evt.preventDefault();
+            this.mouse.pressing = false;
+            this.handleClick();
+        });
+
+        canvas.addEventListener("touchcancel", () => {
+            this.mouse.pressing = false;
+            this.mouse.on = "";
         });
 
         for (let i = 0; i < slots.length; i++) {
             slots[i].addEventListener("click", () => {
                 this.mouse.focus = "slot" + i;
             });
+            
+            // También agregar eventos táctiles para los slots
+            slots[i].addEventListener("touchstart", (evt) => {
+                evt.preventDefault();
+                this.mouse.focus = "slot" + i;
+            });
+        }
+    }
+
+    // Método para actualizar la posición del mouse/touch
+    updateMousePosition(clientX, clientY) {
+        this.rect = this.canvas.getBoundingClientRect();
+        
+        const scaleX = this.canvas.width / this.rect.width;
+        const scaleY = this.canvas.height / this.rect.height;
+        
+        this.mouse.position.x = (clientX - this.rect.left) * scaleX;
+        this.mouse.position.y = (clientY - this.rect.top) * scaleY;
+        
+        //console.log("Scale factors:", scaleX, scaleY);
+        //console.log("Final coords:", this.mouse.position.x, this.mouse.position.y);
+    }
+
+    // Método para manejar clicks/taps
+    handleClick() {
+        if (this.mouse.focus == "dinosaurio") {
+            this.mouse.focus = "canvas";
+            this.radio.playEffect("place");
+        } else if (this.mouse.onDinosaurio && this.mouse.focus == "canvas") {
+            this.mouse.focus = "dinosaurio";
+            this.radio.playEffect("place");
+        } else {
+            this.mouse.focus = "canvas";
         }
     }
     
-    // Detecta si el mouse está sobre un dinoasaurio
+    // El resto de tus métodos se mantienen igual...
     onDinosaurio(dinosaurio, mouseMundo) {
         const offset = 10;
 
@@ -79,10 +127,6 @@ class InputListener {
     // Mueve al dinosaurio si el mouse está presionado y sobre el canvas o un slot
     dragDinosaurio(dinosaurio, map, move) {
         let posMundo;
-
-        /*if (move) {
-            DRAW = true;
-        }*/
 
         switch (this.mouse.focus) {
             case "slot0":
@@ -154,10 +198,11 @@ class InputListener {
             case "canvas":
                 this.onDinosaurio(dinosaurio, this.mouse.world)
                 if (this.mouse.onDinosaurio) {
-                    console.log("TNEGO COLOCs")
+                    posMundo = this.mouseToWorld(map.matViewProj, map.cameras[0]);
+                    dinosaurio.position = posMundo || dinosaurio.position;
+                    console.log(posMundo)
                     return "colocado";
                 } else {
-                    console.log("YA NO TNEGO COLOCs")
                     return "sincolocar";
                 }
             default:
@@ -168,11 +213,9 @@ class InputListener {
                 return "sincolocar"
                 break;
         }
-
     }
 
     // Métodos para obtener la posición del mouse en relación al mapa
-
     dot(a, b) {
         return a[0]*b[0] + a[1]*b[1] + a[2]*b[2];
     }
@@ -195,8 +238,8 @@ class InputListener {
     }
 
     normalizeScreenPos(x, y, width, height) {
-        const ndcX = 1 - (2 * x / width);
-        const ndcY = 1 - (2 * y / height);
+        const ndcX = 1 - (2 * x / this.canvas.width);
+        const ndcY = 1 - (2 * y / this.canvas.height);
         return [ndcX, ndcY];
     }
 
@@ -215,12 +258,12 @@ class InputListener {
     mouseToWorld(matViewProj, camera) {
         let ndcX, ndcY;
         try {
-        [ndcX, ndcY] = this.normalizeScreenPos(
-            this.mouse.position.x,
-            this.mouse.position.y,
-            this.rect.width,
-            this.rect.height
-        );
+            [ndcX, ndcY] = this.normalizeScreenPos(
+                this.mouse.position.x,
+                this.mouse.position.y,
+                this.rect.width,
+                this.rect.height
+            );
         }
         catch {
             return null;
@@ -237,5 +280,4 @@ class InputListener {
         
         return final;
     }
-
 }

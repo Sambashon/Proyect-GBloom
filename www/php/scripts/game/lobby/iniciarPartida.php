@@ -31,7 +31,6 @@ try {
     $accion = $inventario->setupInventarios($token);
     $accion = $partida->setupOrdenJugadores($token);
     $accion = $dado->setupDado($token);
-    $lobby->eliminarLobby($codigo);
     
     echo json_encode($accion);
     

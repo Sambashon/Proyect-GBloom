@@ -10,12 +10,18 @@ class GBloomEngine {
       this.scene = await fetch(this.context + "/scene.json").then( function (response) {
       return response.json();
       });
-
       this.canvas = document.querySelector("canvas");
-      this.width = innerWidth;
-      this.height = innerHeight;
-      this.canvas.width = this.width;
-      this.canvas.height = this.height;
+
+      const dpr = window.devicePixelRatio || 1;
+      const rect = this.canvas.getBoundingClientRect();
+
+      this.width = rect.width * dpr;
+      this.height = rect.height * dpr;
+
+      this.canvas.width = rect.width * dpr;
+      this.canvas.height = rect.height * dpr;
+      //this.canvas.width = this.width;
+      //this.canvas.height = this.height;
 
       if (navigator.gpu) {
         let context = this.canvas.getContext("webgpu");
@@ -65,12 +71,11 @@ class GBloomEngine {
       this.delta = (thisFrameTime - this.lastFrameTime) / 1000;
       this.lastFrameTime = thisFrameTime;
 
-      //DRAW = false;
       update(this.map, this.delta);
-      //DRAW = false;
 
       if (DRAW) {
         this.map.draw(this.jgl, this.delta, this.width, this.height);
+        DRAW = false;
       }  
       
       requestAnimationFrame(this.frame.bind(this));
@@ -122,8 +127,12 @@ async function executeScript(script, body) {
     });
   }
 
-    if (action.result) {
-      return {success: true, result: action.result.result};
+    if (typeof(action.result) !== "undefined" && typeof(action.result) !== "null") {
+      if (action.result?.result) {
+        return {success: true, result: action.result.result};
+      } else {
+        return {success: true, result: action.result};
+      }
     } else if (action.ErrMessage) {
       return {success: false, ErrMessage: action.ErrMessage}
     } else {

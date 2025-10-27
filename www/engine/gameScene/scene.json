@@ -53,7 +53,7 @@
         {"id": "deadTrees", "model": 7, "position": [0, -5, 0], "scale": [2, 2, 2]}
         ],
         "cameras": [
-            {"id": "camera00", "position": [0, 300, 10], "rotation": [0, 0, 1.57079633], "fov": 60, "active": false}
+            {"id": "camera00", "position": [0, 300, 0], "rotation": [0, 0, 1.57079633], "fov": 60, "active": false}
         ]
     }
 }

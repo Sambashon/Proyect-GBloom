@@ -139,6 +139,36 @@ class Inventario extends Partida {
             }
         }
         
-        return $this->returnSuccess();
+        return $this->returnSuccess(null);
+    }
+
+    public function reponerInventarios(string $token): array {
+        $username = $this->getUserCredentials($token)["result"]["username"];
+        
+        $solicitud = $this->pdo->prepare("select partidaId from juega where username = :username and jugando = 1;");
+        $solicitud->execute(["username" => $username]);
+        
+        $this->notFound->setOrigin("Draftosaurus->reponerInventarios()");
+        $this->notFound->setErrMessage("El usuario brindado no esta registrado en ninguna partida");
+        $partidaId = $this->notFound->filter($solicitud->fetch())["partidaId"];
+        
+        $this->verificarHost($partidaId, $token);
+        
+        $solicitud = $this->pdo->prepare("select username from juega where partidaId = :partidaId;");
+        $solicitud->execute(["partidaId" => $partidaId]);
+        $usuarios = $solicitud->fetchAll();
+        
+        $this->notFound->setErrMessage("No hay usuarios conectados a la partida indexada");
+        $this->notFound->filter(!empty($usuarios));
+        
+        $inventarios = $this->crearInventarios($usuarios);
+        foreach ($inventarios as $inventario) {
+            foreach ($inventario["dinosaurios"] as $id => $cantidad) {
+                $actualizar = $this->pdo->prepare("update inventario set cantidad = :cantidad where username = :username and partidaId = :partidaId and dinosaurioId = :dinosaurioId;");
+                $actualizar->execute(["username" => $inventario["username"], "partidaId" => $partidaId, "dinosaurioId" => $id, "cantidad" => $cantidad]);
+            }
+        }
+        
+        return $this->returnSuccess(null);
     }
 }

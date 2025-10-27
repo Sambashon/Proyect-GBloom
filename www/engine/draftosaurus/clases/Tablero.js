@@ -38,7 +38,7 @@ class Tablero {
         for (let i = 0; i < tablero.length; i++) {
             const recinto = tablero[i];
             for (let j = 0; j < recinto.cantidad; j++) {
-                const dinosaurio = ENGINE.spawnDino(recinto.dinosaurioId);
+                const dinosaurio = ENGINE.spawnDino(recinto.dinosaurioId, "fichas");
                 dinosaurio.rotation[1] = Matrix3D.convertToRad(-90);
                 this.colocarDinosaurioRecinto(dinosaurio, recinto.recinto);
                 switch (recinto.recinto) {
@@ -201,14 +201,20 @@ class Tablero {
     async agregarDinosaurio(dinosaurio, recinto) {
         if (this.tablero.getDinosaurioById(dinosaurio.id) <= 0) return false;
 
-        let action = await executeScript("partida/colocarDinosaurio.php", {dinosaurioId: dino.id, recinto: recinto});
+        let action = await executeScript("partida/colocarDinosaurio.php", {dinosaurioId: dinosaurio.id, recinto: recinto});
+            console.log(action);
+
         if (action.success) {
+            const dino = ENGINE.spawnDino(dinosaurio.id, "fichas");
+            dino.rotation[1] = Matrix3D.convertToRad(-90);
+            this.colocarDinosaurioRecinto(dino, recinto);
+
             switch (recinto) {
                 case "igualdad":
                     if (this.igualdad.dinosaurios.length < this.igualdad.cupos) {
                         if (this.igualdad.dinosaurios.length > 0) {
                             if (this.igualdad.dinosaurios[0].id == dinosaurio.id) {
-                                this.igualdad.dinosaurios.push(dinosaurio);
+                                this.igualdad.dinosaurios.push(dino);
                                 return true;
                             }
                             else {
@@ -216,7 +222,7 @@ class Tablero {
                                 return false;
                             }
                         } else {
-                            this.igualdad.dinosaurios.push(dinosaurio);
+                            this.igualdad.dinosaurios.push(dino);
                             return true;
                         }
                     } else {
@@ -233,7 +239,7 @@ class Tablero {
                                 return false;
                             }
                         }
-                        this.desigualdad.dinosaurios.push(dinosaurio);
+                        this.desigualdad.dinosaurios.push(dino);
                         return true;
                     } else {
                         alert("No puede colocar Dinosaurios en este recinto");
@@ -242,7 +248,7 @@ class Tablero {
                 
                 case "romance":
                     if (this.romance.dinosaurios.length < this.romance.cupos) {
-                        this.romance.dinosaurios.push(dinosaurio);
+                        this.romance.dinosaurios.push(dino);
                         return true;
                     } else {
                         alert("No puede colocar Dinosaurios en este recinto");
@@ -251,7 +257,7 @@ class Tablero {
                 
                 case "soledad":
                     if (this.soledad.dinosaurios.length < this.soledad.cupos) {
-                        this.soledad.dinosaurios.push(dinosaurio);
+                        this.soledad.dinosaurios.push(dino);
                         return true;
                     } else {
                         alert("No puede colocar Dinosaurios en este recinto");
@@ -260,7 +266,7 @@ class Tablero {
                 
                 case "monarquia":
                     if (this.monarquia.dinosaurios.length < this.monarquia.cupos) {
-                        this.monarquia.dinosaurios.push(dinosaurio);
+                        this.monarquia.dinosaurios.push(dino);
                         return true;
                     } else {
                         alert("No puede colocar Dinosaurios en este recinto");
@@ -269,7 +275,7 @@ class Tablero {
                 
                 case "tres":
                     if (this.tres.dinosaurios.length < this.tres.cupos) {
-                        this.tres.dinosaurios.push(dinosaurio);
+                        this.tres.dinosaurios.push(dino);
                         return true;
                     } else {
                         alert("No puede colocar Dinosaurios en este recinto");
@@ -278,7 +284,7 @@ class Tablero {
                 
                 case "rio":
                     if (this.rio.dinosaurios.length < this.rio.cupos) {
-                        this.rio.dinosaurios.push(dinosaurio);
+                        this.rio.dinosaurios.push(dino);
                         return true;
                     } else {
                         alert("No puede colocar Dinosaurios en este recinto");

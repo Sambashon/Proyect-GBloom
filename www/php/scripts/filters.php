@@ -47,7 +47,7 @@ $filtroSesionActiva = new GError(
     GError::forbidden,
     GError::exclusive,
     [
-        "sesion_activa_mismo_usuario" => function($input) {
+        "Ya tienes acceso actual a esta cuenta" => function($input) {
             if (!isset($_COOKIE["golden-token"])) {
                 return false;
             }

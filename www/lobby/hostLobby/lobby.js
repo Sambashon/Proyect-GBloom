@@ -63,7 +63,13 @@ if(startBtn){
         });
 
         if (action.status == "success") {
-            window.location.href = "/game/game.html";
+            await getLobbyInfo();
+            setTimeout(async () => {
+                let action = await fetch("/php/scripts/game/lobby/eliminarLobby.php", {method: "POST"}).then(function (response) {
+                    return response.json();
+                });
+                window.location.href = "/game/game.html";
+            }, 2500);
         } else {
             alert("Ocurrio un Error al tratar de iniciar partida");
         }
