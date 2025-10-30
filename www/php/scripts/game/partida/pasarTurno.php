@@ -22,7 +22,6 @@ try {
     }
     $dado->setupDado($token);
     $partida->pasarTurno($token);
-    $partida->empezarTurno($token);
     
     echo json_encode($partida->returnSuccess(null));
     

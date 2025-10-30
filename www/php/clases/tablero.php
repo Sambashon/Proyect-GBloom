@@ -307,11 +307,11 @@ class Tablero extends Partida {
 
                     if ($solicitud["dinosaurioId"] == $dinosaurio) {
                         $actualizar = $this->pdo->prepare("update tablero set cantidad = :cantidad where dinosaurioId = :dinosaurioId and recinto = :recinto and username = :username and partidaId = :partidaId;");
-                        $actualizar->execute(["username" => $username, "partidaId" => $partidaId, "dinosaurioId" => $dinosaurio, "recinto" => $recinto, "cantidad" => $recinto]);
+                        $actualizar->execute(["username" => $username, "partidaId" => $partidaId, "dinosaurioId" => $dinosaurio, "recinto" => $recinto, "cantidad" => $cantidad]);
                         
                         if ($cantidadDisponibles >= 1) {
                             
-                            $actualizar = $this->pdo->prepare("update inventario set cantidad = :cantidad where dinosaurioId = :dinosaurioId username = :username and partidaId = :partidaId;");
+                            $actualizar = $this->pdo->prepare("update inventario set cantidad = :cantidad where dinosaurioId = :dinosaurioId and username = :username and partidaId = :partidaId;");
                             $actualizar->execute(["username" => $username, "partidaId" => $partidaId, "dinosaurioId" => $dinosaurio, "cantidad" => $cantidadDisponibles-1]);
                         } else {
                             

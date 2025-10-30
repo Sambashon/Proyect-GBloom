@@ -156,7 +156,6 @@ class Partida extends GBloomDB {
         $this->notFound->filter($partida);
         
         $this->pdo->prepare("update partida set horaFinal = CURTIME() where id = :id")->execute(["id" => $partida["id"]]);
-        $this->pdo->prepare("update juega set jugando = 0 where partidaId = :id")->execute(["id" => $partida["id"]]);
         
         return $this->returnSuccess(null);
     }

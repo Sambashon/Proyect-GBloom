@@ -47,6 +47,8 @@ class GBloomEngine {
         }
         await this.jgl.init();
 
+        progressLoading(loaded, 80, 50);
+        
         this.map = new Scene(this.scene);
         await this.map.loadScene(this.jgl);
 
@@ -62,6 +64,8 @@ class GBloomEngine {
         } catch {
           alert("Ocurrio un error al inicializar el juego recargue la pagina");
         }
+
+        progressLoading(loaded, 80, 50);
 
         this.map = new Scene(this.scene);
         await this.map.loadScene(this.jgl);
@@ -108,6 +112,7 @@ class GBloomEngine {
 let DRAW = true;
 let ENGINE;
 let BACKGROUND_COLOR = [0.643, 0.255, 0.255,1];
+let loaded = document.querySelector("#loading>h1");
 
 // Define una funcion para iniciar el motor 3D cuando el index termine de definir las funciones setup y update
 function init() {
@@ -119,6 +124,17 @@ function init() {
   window.addEventListener('beforeunload', function() {
     DRAW = false;
   });
+}
+
+function sleep(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+async function progressLoading(bar, percentage, sleepTime) {
+  for (let i = parseInt(bar.textContent); i <= percentage; i++) {
+    bar.textContent = i + "%";
+    await sleep(sleepTime); 
+  }
 }
 
 async function executeScript(script, body) {

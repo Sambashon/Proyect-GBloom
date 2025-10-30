@@ -15,6 +15,7 @@ let estado;
 let colocar = true;
 let empezar = false;
 let username;
+let jugadores;
 let recinto;
 let overlayModel;
 
@@ -132,7 +133,7 @@ async function empezarTurno(map) {
 
   await executeScript("getters/contarPuntos.php");
 
-  let jugadores = await executeScript("getters/getJugadores.php");
+  jugadores = await executeScript("getters/getJugadores.php");
 
   if (jugadores.result) {
     jugadores = jugadores.result;
@@ -146,6 +147,7 @@ async function empezarTurno(map) {
     isTurnoTerminadoI = setInterval(isTurnoTerminado, 2000, map);
   }
 
+  turnModal.hide();
   overlay = ENGINE.jgl.newObject({id: "overlay", model: overlayModel.model, position: [0, 10, 3], size: [2, 2, 2]});
   map.push(overlay);
 }
@@ -162,7 +164,7 @@ async function isTurnoTerminado(map) {
   if (!action.success) {
     alert("No se pudo determinar turno Terminado");
   } else {
-    if (action.result && !empezar) {
+    if (action.result?.turnoTerminado && !empezar) {
       action = await executeScript("partida/pasarTurno.php", true);
 
       action = await executeScript("getters/isTurnoTirarDado.php");
@@ -171,12 +173,16 @@ async function isTurnoTerminado(map) {
 
       colocar = true;
     } else if (empezar) {
+      action = await executeScript("partida/empezarTurno.php", true);
       action = await executeScript("getters/getEstadoTurno.php");
       if (action?.result == "jugandoTurno") {
         await empezarTurno(map);
         clearInterval(isTurnoTerminadoI);
         empezar = false;
       }
+    } else if (action.result?.cantidad != 0) {
+      turnosTerminados.innerHTML = `Esperando a que termine el turno... <br><br>${action.result?.cantidad}/${jugadores.length} jugadores terminaron su turno`;
+      turnModal.show();
     }
   }
 }

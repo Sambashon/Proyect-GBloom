@@ -1,6 +1,8 @@
 let isHost;
 let language;
 let gameres;
+let turnModal = new bootstrap.Modal(document.querySelector("#turnModal"));
+let turnosTerminados = document.querySelector("#turnosTerminados");
 
 language = localStorage.getItem("language") || "ENGLISH";
 gameres = localStorage.getItem("gameres") || "MEDIUM";

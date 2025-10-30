@@ -9,9 +9,13 @@ try {
     $filtroTokenSesion->filter(null);
     
     $token = $_COOKIE["golden-token"];
-    $partidaId = $partida->getPartidaJugando($token)["result"];
+    $over = $partida->isPartidaOver($token)["result"];
+    if ($over) {
+        include "../../../error/403.html";
+    } else {
+        include "../../../game/game.html";
+    }
     
-    include "../../../game/game.html";
 } catch (Exception $e) {
     include "../../../error/403.html";
 }

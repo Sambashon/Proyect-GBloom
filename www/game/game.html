@@ -20,6 +20,7 @@
 <body>
     <div id="loading">
         <img src="/Resources/Icons/cargando.gif" width="100px" style="margin: auto;"></img>
+        <h1 style="position: absolute; left: 44%; top: 65%; color: white;">0%</h1>
     </div>
     <!-- Host Leave Modal -->
     <div class="modal fade" id="hostModal" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true">
@@ -40,10 +41,16 @@
             </div>
         </div>
     </div>
-    <!--
-    <a href="../../winorlose/lose/lose.html" class="fs-6">Simulate Loss</a>
-    <a href="../../winorlose/win/win.html" class="fs-6">Simulate Win</a>
-    -->    
+    <!-- Modal entre turnos -->
+    <div class="modal fade" id="turnModal" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog modal-dialog-centered">
+            <br>
+            <div class="modal-content">
+                <h1 id="turnosTerminados" class="modal-title responsive-title text-outline" id="modalLabel" style="margin: auto;">You're the host</h1>
+            </div>
+            <br>
+        </div>
+    </div>    
     <header class="topHeader">
         <div class="logo-container"><img src="/Resources/Logo/GBloomHorizontal.svg" alt="GBLOOM" class="img-fluid"></div>
         <section class="nav-buttons">
