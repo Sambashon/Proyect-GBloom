@@ -1,7 +1,7 @@
 #!/bin/bash
 
 echo "=== Bienvenido a Draftosaurus Server ==="
-echo "1. Instalar Draftosaurus Server"
+echo "1. Instalar Draftosaurus Server con Docker"
 echo "2. Rutinas & Backups"
 echo "3. Logs de Servidor"
 
@@ -11,18 +11,18 @@ case $option in
 
 1)
 
-echo "=== INSTALACIÓN DRAFTOSAURUS ==="
+echo "=== INSTALACIÓN DRAFTOSAURUS CON DOCKER ==="
 
-# 1. Instalar todo en lotes lógicos
-echo "1. Instalando paquetes base..."
-apt update
-apt install sudo apache2 openssh-server mariadb-server certbot python3-certbot-apache curl -y
+# 1. Instalar Docker y Docker Compose
+echo "1. Instalando Docker..."
+curl -fsSL https://get.docker.com | sh
+systemctl enable docker
+systemctl start docker
 
-echo "1.1 Creando usuario admin..."
-useradd -m -s /bin/bash goldenadmin
-echo "goldenadmin:Drafto123!" | chpasswd
-usermod -aG sudo goldenadmin
-usermod -aG www-data goldenadmin
+# 2. Instalar Docker Compose
+echo "2. Instalando Docker Compose..."
+curl -L "https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+chmod +x /usr/local/bin/docker-compose
 
 echo "2. Instalando PHP con todos los módulos..."
 mkdir /php

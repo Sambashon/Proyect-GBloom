@@ -1,5 +1,5 @@
 #!/bin/bash
-source /Draftosaurus/scripts/config.sh
+source ./config.sh
 
 # Crear directorio local si no existe
 mkdir -p "$LOCAL_DB_BACKUP_DIR"
@@ -12,8 +12,8 @@ DB_BACKUP_FILE="$LOCAL_DB_BACKUP_DIR/backup-$(date +%Y-%m-%d-%H-%M).sql.gz"
 
 echo "=== [DB BACKUP] === $(date)" | tee -a "$LOG_FILE"
 
-# Hacer backup de la base de datos y comprimir
-mysqldump -u root gbloom_db | gzip -q > "$DB_BACKUP_FILE"
+# Hacer backup de la base de datos desde el contenedor de MariaDB y comprimir
+docker exec $DB_CONTAINER sh -c "mysqldump -u$DB_USER -p$DB_PASS $DB_NAME" | gzip -q > "$DB_BACKUP_FILE"
 
 # --- LIMPIAR BACKUPS LOCALES ---
 # Listar backups locales ordenados de más antiguo a más reciente

@@ -1,14 +1,23 @@
 #!/bin/bash
 # ========================
-# Configuración global
+# Configuración global para Docker
 # ========================
 
-# Carpetas origen
+# Docker containers
+WEB_CONTAINER="apache_web"
+DB_CONTAINER="gbloom_db"
+
+# Database credentials from docker-compose
+DB_USER="gbloomer"
+DB_PASS="goldenblosser"
+DB_NAME="gbloom_db"
+
+# Carpetas origen (dentro del contenedor)
 SOURCE_DIR="/var/www/html"
 
-# Backups locales
-LOCAL_BACKUP_DIR="/Draftosaurus/backups"
-LOCAL_DB_BACKUP_DIR="/Draftosaurus/dbBackups"
+# Backups locales (fuera de los contenedores)
+LOCAL_BACKUP_DIR="./backups"
+LOCAL_DB_BACKUP_DIR="./dbBackups"
 
 # Backups remotos
 REMOTE_USER="backupuser"
@@ -19,4 +28,7 @@ REMOTE_DIR="/home/backupuser/backups"
 DATE=$(date +"%Y-%m-%d_%H-%M-%S")
 
 # Log
-LOG_FILE="/Draftosaurus/backups/backup.log"
+LOG_FILE="./backups/backup.log"
+
+# Crear directorios si no existen
+mkdir -p "$LOCAL_BACKUP_DIR" "$LOCAL_DB_BACKUP_DIR"
