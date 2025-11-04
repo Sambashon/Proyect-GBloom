@@ -1,0 +1,94 @@
+services:
+  webserver:
+    build:
+      context: ./
+      dockerfile: ./Dockerfile
+    container_name: apache_web
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./www:/var/www/html
+      - ./certs/etc:/etc/letsencrypt
+    environment:
+      - DB_HOST=database
+      - DB_NAME=${DB_NAME}
+      - DB_USER=${DB_USER}
+      - DB_PASSWORD=${DB_PASSWORD}
+    depends_on:
+      database:
+        condition: service_healthy
+    restart: unless-stopped
+    networks:
+      - app-network
+
+  database:
+    image: mariadb:latest
+    container_name: gbloom_db
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${DB_NAME}
+      MYSQL_USER: ${DB_USER}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+    ports:
+      - "3306:3306"
+    volumes:
+      - ./sql:/docker-entrypoint-initdb.d
+      - mysql-data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    restart: unless-stopped
+    networks:
+      - app-network
+
+  certbot:
+    image: certbot/certbot
+    container_name: certbot_client
+    volumes:
+      - ./certs/etc:/etc/letsencrypt
+      - ./certs/lib:/var/lib/letsencrypt
+      - ./www:/var/www/html
+    environment:
+      - CERTBOT_EMAIL=${CERTBOT_EMAIL}
+      - DOMAIN=${DOMAIN}
+    command: 
+      - certonly
+      - --webroot
+      - --webroot-path=/var/www/html
+      - --email
+      - ${CERTBOT_EMAIL}
+      - --agree-tos
+      - --no-eff-email
+      - --non-interactive
+      - -d
+      - ${DOMAIN}
+    depends_on:
+      - webserver
+    networks:
+      - app-network
+
+  certbot-renew:
+    image: certbot/certbot
+    container_name: certbot_renew
+    volumes:
+      - ./certs/etc:/etc/letsencrypt
+      - ./certs/lib:/var/lib/letsencrypt
+      - ./www:/var/www/html
+    entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew --webroot --webroot-path=/var/www/html; sleep 12h & wait $${!}; done;'"
+    depends_on:
+      - webserver
+    restart: unless-stopped
+    networks:
+      - app-network
+
+volumes:
+  mysql-data:
+    driver: local
+
+networks:
+  app-network:
+    driver: bridge
