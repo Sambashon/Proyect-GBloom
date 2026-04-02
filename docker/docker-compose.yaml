@@ -16,10 +16,10 @@ services:
     image: mariadb:latest
     container_name: gbloom_db
     environment:
-      MYSQL_ROOT_PASSWORD: goldenblosser
+      MYSQL_ROOT_PASSWORD:
       MYSQL_DATABASE: gbloom_db
       MYSQL_USER: gbloomer
-      MYSQL_PASSWORD: goldenblosser
+      MYSQL_PASSWORD:
     ports:
       - "3306:3306"
     volumes:
